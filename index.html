@@ -11,9 +11,7 @@
   <meta property="og:type" content="website">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="preload" href="assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/style.css">
 
   <script>
@@ -28,7 +26,7 @@
   <script src="js/main.js" defer></script>
 </head>
 <body>
-  <a class="skip" href="#about">Skip to content</a>
+  <a class="skip" href="#index">Skip to content</a>
 
   <!-- ============ SVG sprite: shared artwork used by the cards and sections ============ -->
   <svg class="sprite" aria-hidden="true" focusable="false">
@@ -145,11 +143,13 @@
     <nav aria-label="Sections">
       <ol class="menu__list">
         <li><a href="#about"><span class="mono">01</span><span class="menu__word">About</span></a></li>
-        <li><a href="#projects"><span class="mono">02</span><span class="menu__word">Projects</span></a></li>
-        <li><a href="#skills"><span class="mono">03</span><span class="menu__word">Technical</span></a></li>
-        <li><a href="#research"><span class="mono">04</span><span class="menu__word">Research</span></a></li>
-        <li><a href="#method"><span class="mono">05</span><span class="menu__word">Method</span></a></li>
-        <li><a href="#contact"><span class="mono">06</span><span class="menu__word">Contact</span></a></li>
+        <li><a href="#flare"><span class="mono">02</span><span class="menu__word">Flare AI</span></a></li>
+        <li><a href="#studio"><span class="mono">03</span><span class="menu__word">628 Studio</span></a></li>
+        <li><a href="#project-0"><span class="mono">04</span><span class="menu__word">Project 0</span></a></li>
+        <li><a href="#himonide"><span class="mono">05</span><span class="menu__word">Himonide</span></a></li>
+        <li><a href="#skills"><span class="mono">06</span><span class="menu__word">Technical</span></a></li>
+        <li><a href="#research"><span class="mono">07</span><span class="menu__word">Research</span></a></li>
+        <li><a href="#contact"><span class="mono">08</span><span class="menu__word">Contact</span></a></li>
       </ol>
     </nav>
     <p class="menu__foot mono"><span class="handle">aaa628</span> · 628 Studio · Kashmir, India</p>
@@ -292,25 +292,54 @@
           </a>
         </div>
       </div>
-      <p class="wheel__hint mono" aria-hidden="true">Drag to spin · Tap a card to open</p>
+      <p class="wheel__hint mono" aria-hidden="true">Drag to spin · Tap a card to open it</p>
     </section>
 
-    <!-- ============ 01 About ============ -->
-    <section class="section" id="about" aria-labelledby="about-title">
-      <div class="section__head">
-        <span class="mono section__num">01</span>
-        <h2 class="section__title" id="about-title">About</h2>
-        <p class="section__aside label">Who I am</p>
+    <!-- ============ Index: everything opens in a pop-up ============ -->
+    <section class="index" id="index" aria-labelledby="index-title">
+      <div class="index__intro">
+        <h2 class="visually-hidden" id="index-title">Index</h2>
+        <p class="index__lead">Independent student developer and aspiring aerospace physicist, working across <em>physics</em>, aerospace and systems engineering.</p>
+        <p class="mono index__meta">628 Studio · Cambridge IGCSE · Kashmir, India</p>
       </div>
+      <ol class="index__list">
+        <li><a href="#about"><span class="mono">01</span><span class="index__word">About</span><span class="index__note mono">Who I am</span></a></li>
+        <li><a href="#flare"><span class="mono">02</span><span class="index__word">Flare AI</span><span class="index__note mono">NASA Space Apps</span></a></li>
+        <li><a href="#studio"><span class="mono">03</span><span class="index__word">628 Studio</span><span class="index__note mono">Game dev</span></a></li>
+        <li><a href="#project-0"><span class="mono">04</span><span class="index__word">Project 0</span><span class="index__note mono">Open-world RPG</span></a></li>
+        <li><a href="#himonide"><span class="mono">05</span><span class="index__word">Himonide</span><span class="index__note mono">Robotics</span></a></li>
+        <li><a href="#skills"><span class="mono">06</span><span class="index__word">Technical</span><span class="index__note mono">Skills</span></a></li>
+        <li><a href="#research"><span class="mono">07</span><span class="index__word">Research</span><span class="index__note mono">Physics</span></a></li>
+        <li><a href="#contact"><span class="mono">08</span><span class="index__word">Contact</span><span class="index__note mono">Say hello</span></a></li>
+      </ol>
+    </section>
+  </main>
 
+  <footer class="footer">
+    <p class="label">© 2026 <span class="handle">aaa628</span></p>
+    <p class="mono footer__mid">Designed &amp; built by hand: HTML, CSS, JavaScript</p>
+    <a class="label footer__top" href="#top">Back to top ↑</a>
+  </footer>
+
+  <!-- ============ Pop-ups (opened from the cards, the index and the menu) ============ -->
+  <dialog class="modal" id="m-about" aria-labelledby="about-title">
+    <div class="modal__panel">
+      <div class="modal__head">
+        <p class="mono modal__crumb">01 / About</p>
+        <button class="pill modal__close" type="button" data-close>
+          <span class="label">Close</span><span class="modal__x" aria-hidden="true"></span>
+        </button>
+      </div>
+      <div class="modal__body">
+        <h2 class="modal__title" id="about-title">About</h2>
       <div class="about">
-        <div class="about__text reveal">
+        <div class="about__text">
           <p class="lead">I'm an independent student developer and aspiring aerospace physicist, working where <em>fundamental physics</em>, engineering, technology and complex systems meet.</p>
           <p>My work spans Unreal Engine 5 game development and world-building, systems architecture, robotics, and scientific data. I want to know how a system works at a fundamental level, connect ideas across disciplines, and turn them into structured projects I can check and improve.</p>
           <p>Most recently I led a three-person team at the NASA Space Apps Challenge, where we built <a class="inline-link" href="#flare">Flare AI</a>, a tool that grades fire-safety evidence from NASA's microgravity combustion experiments.</p>
         </div>
 
-        <dl class="facts reveal">
+        <dl class="facts">
           <div class="facts__row"><dt class="mono">Dev tag</dt><dd>aaa628</dd></div>
           <div class="facts__row"><dt class="mono">Studio</dt><dd>Founder, 628 Studio</dd></div>
           <div class="facts__row"><dt class="mono">Education</dt><dd>Cambridge IGCSE, second year</dd></div>
@@ -318,21 +347,34 @@
           <div class="facts__row"><dt class="mono">Focus</dt><dd>Physics · Aerospace · Systems Engineering</dd></div>
         </dl>
       </div>
-    </section>
 
-    <!-- ============ 02 Projects ============ -->
-    <section class="section" id="projects" aria-labelledby="projects-title">
-      <div class="section__head">
-        <span class="mono section__num">02</span>
-        <h2 class="section__title" id="projects-title">Projects</h2>
-        <p class="section__aside label">Selected work</p>
+      <h3 class="label modal__sub">How I work</h3>
+      <div class="method">
+        <p class="method__statement">I value iterative problem-solving, careful evaluation of technical approaches, and refining ideas through experimentation. When an implementation falls short of what it should be, I reassess the approach and look for a better way to build it.</p>
+        <ul class="method__list">
+          <li><span class="mono">i.</span>Iterative problem-solving</li>
+          <li><span class="mono">ii.</span>Attention to implementation quality</li>
+          <li><span class="mono">iii.</span>Systems-level thinking</li>
+          <li><span class="mono">iv.</span>Willingness to reassess technical decisions</li>
+          <li><span class="mono">v.</span>Verifying the work, including AI-assisted work</li>
+        </ul>
       </div>
-
-      <!-- Featured: Flare AI -->
-      <article class="feature" id="flare" aria-labelledby="flare-title">
-        <div class="feature__meta reveal">
+      </div>
+    </div>
+  </dialog>
+  <dialog class="modal" id="m-flare" aria-labelledby="flare-title">
+    <div class="modal__panel">
+      <div class="modal__head">
+        <p class="mono modal__crumb">02 / Projects / Flare AI</p>
+        <button class="pill modal__close" type="button" data-close>
+          <span class="label">Close</span><span class="modal__x" aria-hidden="true"></span>
+        </button>
+      </div>
+      <div class="modal__body">
+      <article class="feature" aria-labelledby="flare-title">
+        <div class="feature__meta">
           <p class="kicker mono"><span class="tag tag--accent">Featured</span> NASA Space Apps Challenge 2026 · “Flame in Freefall”</p>
-          <h3 class="feature__title" id="flare-title">Flare AI</h3>
+          <h2 class="feature__title" id="flare-title">Flare AI</h2>
           <p class="feature__sub">Evidence-graded fire safety from NASA microgravity data</p>
           <p class="feature__intro">I led a three-person team building Flare AI, a web tool that turns NASA's microgravity fire experiments into answers people can check. It brings together all 24 combustion investigations in NASA's Physical Sciences Informatics repository and 537 individual test records. Every value traces back to its NASA source, and our team checked every record by hand.</p>
 
@@ -350,7 +392,7 @@
           </div>
         </div>
 
-        <figure class="feature__visual reveal" aria-label="Illustration: a spherical flame, the shape fire takes in microgravity">
+        <figure class="feature__visual" aria-label="Illustration: a spherical flame, the shape fire takes in microgravity">
           <span class="cross cross--light" style="--x:6%;--y:7%" aria-hidden="true"></span>
           <span class="cross cross--light" style="--x:94%;--y:7%" aria-hidden="true"></span>
           <span class="cross cross--light" style="--x:6%;--y:93%" aria-hidden="true"></span>
@@ -367,7 +409,7 @@
           </figcaption>
         </figure>
 
-        <ul class="stats reveal" aria-label="Flare AI in numbers">
+        <ul class="stats" aria-label="Flare AI in numbers">
           <li><span class="stats__n">24</span><span class="stats__l">combustion investigations from NASA's PSI repository</span></li>
           <li><span class="stats__n">537</span><span class="stats__l">individual test records, each checked by hand</span></li>
           <li><span class="stats__n">4</span><span class="stats__l">experiment series: BASS, BASS-II, FLEX, Saffire</span></li>
@@ -377,14 +419,14 @@
         <div class="built">
           <h4 class="built__title label">What I built and directed</h4>
           <ol class="built__list">
-            <li class="reveal">
+            <li >
               <span class="mono built__n">01</span>
               <div>
                 <h5>Data pipeline</h5>
                 <p>A Python pipeline that extracts NASA's test tables and checks them automatically against NASA's original reports and files on every build.</p>
               </div>
             </li>
-            <li class="reveal">
+            <li >
               <span class="mono built__n">02</span>
               <div>
                 <h5>Interactive site</h5>
@@ -395,21 +437,21 @@
                 </ul>
               </div>
             </li>
-            <li class="reveal">
+            <li >
               <span class="mono built__n">03</span>
               <div>
                 <h5>AI research assistant</h5>
                 <p>Runs on Google Gemini through a serverless function. It answers only from NASA's records, cites every point, and says plainly when the data doesn't cover a question.</p>
               </div>
             </li>
-            <li class="reveal">
+            <li >
               <span class="mono built__n">04</span>
               <div>
                 <h5>Deployment and security</h5>
                 <p>Hosting on Netlify, a strict security policy, a server-side API key, usage limits, and automated browser tests.</p>
               </div>
             </li>
-            <li class="reveal">
+            <li >
               <span class="mono built__n">05</span>
               <div>
                 <h5>The submission</h5>
@@ -419,7 +461,7 @@
           </ol>
         </div>
 
-        <div class="learned reveal">
+        <div class="learned">
           <h4 class="label">What I learned</h4>
           <ul class="learned__list">
             <li><strong>Designing for scientific honesty.</strong> Never inventing numbers, and showing data gaps instead of hiding them.</li>
@@ -432,97 +474,130 @@
           <p class="fineprint mono">Built for the NASA Space Apps Challenge. Not affiliated with or endorsed by NASA.</p>
         </div>
       </article>
-
-      <!-- Other projects -->
-      <div class="projects">
-        <article class="project reveal" id="studio" aria-labelledby="studio-title">
-          <div class="project__art project__art--studio" aria-hidden="true">
-            <svg><use href="#sym-emblem"/></svg>
-          </div>
-          <div class="project__body">
-            <p class="project__meta mono"><span class="tag">Active</span> Founder</p>
-            <h3 class="project__title" id="studio-title">628 Studio</h3>
-            <p>An independent game-development and creative-technology studio that I founded. I handle most of the work outside 3D modelling and animation.</p>
-            <ul class="dash-list">
-              <li>Game design, planning and creative direction</li>
-              <li>Systems architecture and feature planning</li>
-              <li>Game-world construction and environment development</li>
-              <li>Technical planning and project documentation</li>
-              <li>World-building workflows in Gaea and World Machine</li>
-            </ul>
-            <ul class="chips chips--sm" aria-label="Tools"><li>Unreal Engine 5</li><li>Gaea</li><li>World Machine</li></ul>
-          </div>
-        </article>
-
-        <article class="project reveal" id="project-0" aria-labelledby="p0-title">
-          <div class="project__art project__art--p0" aria-hidden="true">
-            <svg><use href="#sym-topo"/></svg>
-            <span class="project__art-big">150<small>km²</small></span>
-          </div>
-          <div class="project__body">
-            <p class="project__meta mono"><span class="tag">In development</span> 628 Studio</p>
-            <h3 class="project__title" id="p0-title">Project 0 <span class="muted">(pj_0)</span></h3>
-            <p>An open-world multiplayer RPG set in a ninja world, in development at 628 Studio. My role: planning, world architecture, systems design, creative direction, environment building and feature specification.</p>
-            <dl class="spec">
-              <div><dt class="mono">World area</dt><dd>150 km² (planned)</dd></div>
-              <div><dt class="mono">Terrain</dt><dd>8129 × 8129</dd></div>
-              <div><dt class="mono">Server target</dt><dd>15 players</dd></div>
-              <div><dt class="mono">Villages</dt><dd>5 (Leaf, Sand, Mist, Cloud, Stone)</dd></div>
-              <div><dt class="mono">Level cap</dt><dd>1628</dd></div>
-            </dl>
-            <p class="small-head label">Planned systems</p>
-            <ul class="dash-list">
-              <li>Health and chakra systems</li>
-              <li>Village selection, travel and village identity</li>
-              <li>Village-exclusive and cross-village missions</li>
-              <li>Bingo Book and Outlaw Status</li>
-              <li>Ninja Merit, chakra-nature and special-ability progression</li>
-            </ul>
-          </div>
-        </article>
-
-        <article class="project reveal" id="himonide" aria-labelledby="himonide-title">
-          <div class="project__art project__art--himonide" aria-hidden="true">
-            <svg><use href="#sym-leg"/></svg>
-          </div>
-          <div class="project__body">
-            <p class="project__meta mono"><span class="tag">Experiment</span> Robotics</p>
-            <h3 class="project__title" id="himonide-title">Himonide</h3>
-            <p>An experimental robotics project: an Arduino Mega driving eleven servos, with ultrasonic distance sensing and infrared edge detection. I worked on hardware integration, servo configuration, sensor mapping and mechanical planning.</p>
-            <div class="tables">
-              <table class="table">
-                <caption class="label">Hardware</caption>
-                <tbody>
-                  <tr><th scope="row">Arduino Mega</th><td class="mono">×1</td></tr>
-                  <tr><th scope="row">Servo motors</th><td class="mono">×11 <span class="muted">(6 high-torque)</span></td></tr>
-                  <tr><th scope="row">Ultrasonic sensors</th><td class="mono">×2</td></tr>
-                  <tr><th scope="row">Infrared sensor</th><td class="mono">×1</td></tr>
-                </tbody>
-              </table>
-              <table class="table">
-                <caption class="label">Sensor pin map</caption>
-                <tbody>
-                  <tr><th scope="row">Foot ultrasonic</th><td class="mono">Echo D27 · Trig D28</td></tr>
-                  <tr><th scope="row">Servo 4 ultrasonic</th><td class="mono">Echo D29 · Trig D30</td></tr>
-                  <tr><th scope="row">Knee IR edge</th><td class="mono">D8</td></tr>
-                </tbody>
-              </table>
-            </div>
-            <p class="small-head label">Proposed next</p>
-            <p class="muted-p">A practical robotic arm and an automated plant-watering system. Both are concepts so far, not working prototypes.</p>
-          </div>
-        </article>
       </div>
-    </section>
-
-    <!-- ============ 03 Technical ============ -->
-    <section class="section" id="skills" aria-labelledby="skills-title">
-      <div class="section__head">
-        <span class="mono section__num">03</span>
-        <h2 class="section__title" id="skills-title">Technical</h2>
-        <p class="section__aside label">Tools &amp; skills</p>
+    </div>
+  </dialog>
+  <dialog class="modal" id="m-studio" aria-labelledby="studio-title">
+    <div class="modal__panel">
+      <div class="modal__head">
+        <p class="mono modal__crumb">03 / Projects / 628 Studio</p>
+        <button class="pill modal__close" type="button" data-close>
+          <span class="label">Close</span><span class="modal__x" aria-hidden="true"></span>
+        </button>
       </div>
-
+      <div class="modal__body">
+      <article class="project" aria-labelledby="studio-title">
+        <div class="project__art project__art--studio" aria-hidden="true">
+          <svg><use href="#sym-emblem"/></svg>
+        </div>
+        <div class="project__body">
+          <p class="project__meta mono"><span class="tag">Active</span> Founder</p>
+          <h2 class="project__title" id="studio-title">628 Studio</h2>
+          <p>An independent game-development and creative-technology studio that I founded. I handle most of the work outside 3D modelling and animation.</p>
+          <ul class="dash-list">
+            <li>Game design, planning and creative direction</li>
+            <li>Systems architecture and feature planning</li>
+            <li>Game-world construction and environment development</li>
+            <li>Technical planning and project documentation</li>
+            <li>World-building workflows in Gaea and World Machine</li>
+          </ul>
+          <ul class="chips chips--sm" aria-label="Tools"><li>Unreal Engine 5</li><li>Gaea</li><li>World Machine</li></ul>
+        </div>
+      </article>
+      </div>
+    </div>
+  </dialog>
+  <dialog class="modal" id="m-project-0" aria-labelledby="p0-title">
+    <div class="modal__panel">
+      <div class="modal__head">
+        <p class="mono modal__crumb">04 / Projects / Project 0</p>
+        <button class="pill modal__close" type="button" data-close>
+          <span class="label">Close</span><span class="modal__x" aria-hidden="true"></span>
+        </button>
+      </div>
+      <div class="modal__body">
+      <article class="project" aria-labelledby="p0-title">
+        <div class="project__art project__art--p0" aria-hidden="true">
+          <svg><use href="#sym-topo"/></svg>
+          <span class="project__art-big">150<small>km²</small></span>
+        </div>
+        <div class="project__body">
+          <p class="project__meta mono"><span class="tag">In development</span> 628 Studio</p>
+          <h2 class="project__title" id="p0-title">Project 0 <span class="muted">(pj_0)</span></h2>
+          <p>An open-world multiplayer RPG set in a ninja world, in development at 628 Studio. My role: planning, world architecture, systems design, creative direction, environment building and feature specification.</p>
+          <dl class="spec">
+            <div><dt class="mono">World area</dt><dd>150 km² (planned)</dd></div>
+            <div><dt class="mono">Terrain</dt><dd>8129 × 8129</dd></div>
+            <div><dt class="mono">Server target</dt><dd>15 players</dd></div>
+            <div><dt class="mono">Villages</dt><dd>5 (Leaf, Sand, Mist, Cloud, Stone)</dd></div>
+            <div><dt class="mono">Level cap</dt><dd>1628</dd></div>
+          </dl>
+          <p class="small-head label">Planned systems</p>
+          <ul class="dash-list">
+            <li>Health and chakra systems</li>
+            <li>Village selection, travel and village identity</li>
+            <li>Village-exclusive and cross-village missions</li>
+            <li>Bingo Book and Outlaw Status</li>
+            <li>Ninja Merit, chakra-nature and special-ability progression</li>
+          </ul>
+        </div>
+      </article>
+      </div>
+    </div>
+  </dialog>
+  <dialog class="modal" id="m-himonide" aria-labelledby="himonide-title">
+    <div class="modal__panel">
+      <div class="modal__head">
+        <p class="mono modal__crumb">05 / Projects / Himonide</p>
+        <button class="pill modal__close" type="button" data-close>
+          <span class="label">Close</span><span class="modal__x" aria-hidden="true"></span>
+        </button>
+      </div>
+      <div class="modal__body">
+      <article class="project" aria-labelledby="himonide-title">
+        <div class="project__art project__art--himonide" aria-hidden="true">
+          <svg><use href="#sym-leg"/></svg>
+        </div>
+        <div class="project__body">
+          <p class="project__meta mono"><span class="tag">Experiment</span> Robotics</p>
+          <h2 class="project__title" id="himonide-title">Himonide</h2>
+          <p>An experimental robotics project: an Arduino Mega driving eleven servos, with ultrasonic distance sensing and infrared edge detection. I worked on hardware integration, servo configuration, sensor mapping and mechanical planning.</p>
+          <div class="tables">
+            <table class="table">
+              <caption class="label">Hardware</caption>
+              <tbody>
+                <tr><th scope="row">Arduino Mega</th><td class="mono">×1</td></tr>
+                <tr><th scope="row">Servo motors</th><td class="mono">×11 <span class="muted">(6 high-torque)</span></td></tr>
+                <tr><th scope="row">Ultrasonic sensors</th><td class="mono">×2</td></tr>
+                <tr><th scope="row">Infrared sensor</th><td class="mono">×1</td></tr>
+              </tbody>
+            </table>
+            <table class="table">
+              <caption class="label">Sensor pin map</caption>
+              <tbody>
+                <tr><th scope="row">Foot ultrasonic</th><td class="mono">Echo D27 · Trig D28</td></tr>
+                <tr><th scope="row">Servo 4 ultrasonic</th><td class="mono">Echo D29 · Trig D30</td></tr>
+                <tr><th scope="row">Knee IR edge</th><td class="mono">D8</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="small-head label">Proposed next</p>
+          <p class="muted-p">A practical robotic arm and an automated plant-watering system. Both are concepts so far, not working prototypes.</p>
+        </div>
+      </article>
+      </div>
+    </div>
+  </dialog>
+  <dialog class="modal" id="m-skills" aria-labelledby="skills-title">
+    <div class="modal__panel">
+      <div class="modal__head">
+        <p class="mono modal__crumb">06 / Technical</p>
+        <button class="pill modal__close" type="button" data-close>
+          <span class="label">Close</span><span class="modal__x" aria-hidden="true"></span>
+        </button>
+      </div>
+      <div class="modal__body">
+        <h2 class="modal__title" id="skills-title">Technical</h2>
       <div class="marquee" aria-hidden="true">
         <div class="marquee__track">
           <span>Unreal Engine 5</span><span>Gaea</span><span>World Machine</span><span>Python</span><span>JavaScript</span><span>Arduino</span><span>Arch Linux</span><span>Netlify</span><span>Playwright</span><span>Gemini API</span><span>GitHub</span>
@@ -531,7 +606,7 @@
       </div>
 
       <div class="skills">
-        <div class="skill reveal">
+        <div class="skill">
           <p class="mono skill__n">A</p>
           <h3 class="skill__title">Game development &amp; digital environments</h3>
           <ul class="dash-list">
@@ -542,7 +617,7 @@
             <li>Gaea and World Machine terrain</li>
           </ul>
         </div>
-        <div class="skill reveal">
+        <div class="skill">
           <p class="mono skill__n">B</p>
           <h3 class="skill__title">Web, data &amp; AI</h3>
           <ul class="dash-list">
@@ -554,7 +629,7 @@
             <li>Git and GitHub pull-request workflow</li>
           </ul>
         </div>
-        <div class="skill reveal">
+        <div class="skill">
           <p class="mono skill__n">C</p>
           <h3 class="skill__title">Systems &amp; project design</h3>
           <ul class="dash-list">
@@ -564,7 +639,7 @@
             <li>Turning concepts into technical requirements</li>
           </ul>
         </div>
-        <div class="skill reveal">
+        <div class="skill">
           <p class="mono skill__n">D</p>
           <h3 class="skill__title">Robotics &amp; electronics</h3>
           <ul class="dash-list">
@@ -574,7 +649,7 @@
             <li>Electronics prototyping and mechanical planning</li>
           </ul>
         </div>
-        <div class="skill reveal">
+        <div class="skill">
           <p class="mono skill__n">E</p>
           <h3 class="skill__title">Computing &amp; systems</h3>
           <ul class="dash-list">
@@ -584,7 +659,7 @@
             <li>Development-environment setup</li>
           </ul>
         </div>
-        <div class="skill reveal">
+        <div class="skill">
           <p class="mono skill__n">F</p>
           <h3 class="skill__title">Research &amp; scientific thinking</h3>
           <ul class="dash-list">
@@ -595,22 +670,25 @@
           </ul>
         </div>
       </div>
-    </section>
-
-    <!-- ============ 04 Research ============ -->
-    <section class="section" id="research" aria-labelledby="research-title">
-      <div class="section__head">
-        <span class="mono section__num">04</span>
-        <h2 class="section__title" id="research-title">Research</h2>
-        <p class="section__aside label">Physics &amp; aerospace</p>
       </div>
-
-      <blockquote class="quote reveal">
+    </div>
+  </dialog>
+  <dialog class="modal" id="m-research" aria-labelledby="research-title">
+    <div class="modal__panel">
+      <div class="modal__head">
+        <p class="mono modal__crumb">07 / Research</p>
+        <button class="pill modal__close" type="button" data-close>
+          <span class="label">Close</span><span class="modal__x" aria-hidden="true"></span>
+        </button>
+      </div>
+      <div class="modal__body">
+        <h2 class="modal__title" id="research-title">Research</h2>
+      <blockquote class="quote">
         <p>“I learn science by understanding the underlying principles, deriving the relationships and connecting ideas across physics and mathematics, rather than relying on memorisation.”</p>
       </blockquote>
 
       <div class="research">
-        <div class="research__col reveal">
+        <div class="research__col">
           <h3 class="label">Physics</h3>
           <ul class="topic-list">
             <li>Mechanics and motion</li>
@@ -622,7 +700,7 @@
             <li>Electrolysis and physical chemistry</li>
           </ul>
         </div>
-        <div class="research__col reveal">
+        <div class="research__col">
           <h3 class="label">Aerospace &amp; space science</h3>
           <ul class="topic-list">
             <li>Space exploration and spacecraft technology</li>
@@ -640,7 +718,7 @@
         </div>
       </div>
 
-      <div class="converge reveal" aria-labelledby="converge-title">
+      <div class="converge" aria-labelledby="converge-title">
         <h3 class="label" id="converge-title">How the disciplines connect</h3>
         <ol class="converge__list">
           <li><span class="mono">01</span><strong>Physics</strong><span>A scientific foundation for understanding natural systems</span></li>
@@ -651,40 +729,24 @@
           <li class="converge__end"><span class="mono">→</span><strong>Aerospace</strong><span>The long-term direction where all of these meet</span></li>
         </ol>
       </div>
-    </section>
-
-    <!-- ============ 05 Method ============ -->
-    <section class="section" id="method" aria-labelledby="method-title">
-      <div class="section__head">
-        <span class="mono section__num">05</span>
-        <h2 class="section__title" id="method-title">Method</h2>
-        <p class="section__aside label">How I work</p>
       </div>
-      <div class="method">
-        <p class="method__statement reveal">I value iterative problem-solving, careful evaluation of technical approaches, and refining ideas through experimentation. When an implementation falls short of what it should be, I reassess the approach and look for a better way to build it.</p>
-        <ul class="method__list reveal">
-          <li><span class="mono">i.</span>Iterative problem-solving</li>
-          <li><span class="mono">ii.</span>Attention to implementation quality</li>
-          <li><span class="mono">iii.</span>Systems-level thinking</li>
-          <li><span class="mono">iv.</span>Willingness to reassess technical decisions</li>
-          <li><span class="mono">v.</span>Verifying the work, including AI-assisted work</li>
-        </ul>
+    </div>
+  </dialog>
+  <dialog class="modal" id="m-contact" aria-labelledby="contact-title">
+    <div class="modal__panel">
+      <div class="modal__head">
+        <p class="mono modal__crumb">08 / Contact</p>
+        <button class="pill modal__close" type="button" data-close>
+          <span class="label">Close</span><span class="modal__x" aria-hidden="true"></span>
+        </button>
       </div>
-    </section>
-
-    <!-- ============ 06 Contact ============ -->
-    <section class="section contact" id="contact" aria-labelledby="contact-title">
-      <div class="section__head">
-        <span class="mono section__num">06</span>
-        <h2 class="section__title" id="contact-title">Contact</h2>
-        <p class="section__aside label">Let's talk</p>
-      </div>
+      <div class="modal__body">
       <div class="contact__body">
         <div class="contact__bar" aria-hidden="true"></div>
-        <p class="contact__big reveal">Let's build<br>something.</p>
-        <p class="contact__text reveal">Open to collaborations, research projects, competitions and hackathon teams.</p>
+        <h2 class="contact__big" id="contact-title">Let's build<br>something.</h2>
+        <p class="contact__text">Open to collaborations, research projects, competitions and hackathon teams.</p>
         <!-- TODO(links): replace with your real email and profile URLs -->
-        <ul class="contact__links reveal">
+        <ul class="contact__links">
           <li><a href="mailto:hello@example.com" data-todo="email"><span class="mono">Email</span><span>hello@example.com</span><span aria-hidden="true">↗</span></a></li>
           <li><a href="#" data-todo="github"><span class="mono">GitHub</span><span>github.com/your-handle</span><span aria-hidden="true">↗</span></a></li>
           <li><a href="#" data-todo="linkedin"><span class="mono">LinkedIn</span><span>linkedin.com/in/your-handle</span><span aria-hidden="true">↗</span></a></li>
@@ -695,13 +757,8 @@
           <use href="#sym-emblem" x="-26" y="-26" width="52" height="52"/>
         </svg>
       </div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <p class="label">© 2026 <span class="handle">aaa628</span></p>
-    <p class="mono footer__mid">Designed &amp; built by hand: HTML, CSS, JavaScript</p>
-    <a class="label footer__top" href="#top">Back to top ↑</a>
-  </footer>
+      </div>
+    </div>
+  </dialog>
 </body>
 </html>

@@ -23,10 +23,11 @@ Any static host works: GitHub Pages (Settings → Pages → deploy from branch, 
 
 | Path | What it is |
 | --- | --- |
-| `index.html` | All content and the shared SVG artwork (sprite at the top of `<body>`) |
+| `index.html` | Hero, card wheel and index, then one `<dialog>` pop-up per section (`id="m-about"`, `m-flare`, …), plus the shared SVG artwork |
 | `css/style.css` | Design tokens (both themes), layout, cards, responsive rules |
-| `js/main.js` | Flipping title, card wheel (auto-spin, drag), theme toggle, menu, reveal-on-scroll |
+| `js/main.js` | Flipping title, card wheel (auto-spin, drag), pop-ups, theme toggle, menu |
 | `assets/favicon.svg` | Site icon (the 628 orbit emblem) |
+| `assets/fonts/` | Self-hosted Archivo and JetBrains Mono (SIL Open Font License), so the site works without Google Fonts |
 
 ## Placeholders to replace
 
@@ -34,6 +35,10 @@ Search `index.html` for `TODO`:
 
 - **`TODO(links)`**: the Flare AI live site, source code and demo video buttons (`data-todo="flare-…"`), plus email, GitHub and LinkedIn in Contact
 - **`TODO(photo)`**: the "Me" card in the wheel. Replace its contents with `<img src="assets/portrait.jpg" alt="…">` (both copies, `--i:2` and `--i:9`)
+
+## Pop-ups
+
+Any link to `#name` opens the pop-up `<dialog id="m-name">` instead of scrolling: the wheel cards, the index list and the menu all use this. Links can be shared too: `yoursite/#flare` opens straight into Flare AI. To add a section, copy one `<dialog class="modal">` block and give it a new `m-…` id.
 
 ## Editing the wheel
 

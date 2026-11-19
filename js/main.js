@@ -1,7 +1,8 @@
 /* aaa628 — Portfolio interactions
    - flipping hero letters
    - card wheel (auto-spin, drag with inertia, active label)
-   - theme toggle, menu overlay, header state, reveal-on-scroll
+   - pop-ups (cards, index and menu links open a dialog instead of scrolling)
+   - theme toggle, menu overlay, header state
    - topographic contour artwork */
 (function () {
   "use strict";
@@ -159,21 +160,78 @@
   window.addEventListener("scroll", onScrollHeader, { passive: true });
   onScrollHeader();
 
-  /* ---------- Reveal on scroll ---------- */
-  var reveals = document.querySelectorAll(".reveal");
-  if ("IntersectionObserver" in window && !reduceMotion.matches) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (en.isIntersecting) {
-          en.target.classList.add("is-in");
-          io.unobserve(en.target);
-        }
-      });
-    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
-    reveals.forEach(function (el) { io.observe(el); });
-  } else {
-    reveals.forEach(function (el) { el.classList.add("is-in"); });
+  /* ---------- Pop-ups ---------- */
+  // Any link to "#name" opens <dialog id="m-name"> if it exists.
+  var openDialog = null;
+  function dialogFor(hash) {
+    if (!hash || hash.length < 2) return null;
+    var d = document.getElementById("m-" + hash.slice(1));
+    return d && d.tagName === "DIALOG" ? d : null;
   }
+  function clearHash() {
+    try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+  }
+  function openModal(d) {
+    if (openDialog && openDialog !== d) closeModal(openDialog, true);
+    clearTimeout(d._closeTimer);
+    d.classList.remove("is-closing");
+    if (!d.open) {
+      d.showModal();
+      var panel = d.querySelector(".modal__panel");
+      if (panel) panel.scrollTop = 0;
+    }
+    openDialog = d;
+    try { history.replaceState(null, "", "#" + d.id.slice(2)); } catch (e) {}
+  }
+  function closeModal(d, instant) {
+    if (!d || !d.open) return;
+    if (openDialog === d) openDialog = null;
+    if (instant || reduceMotion.matches) {
+      d.classList.remove("is-closing");
+      d.close();
+    } else {
+      d.classList.add("is-closing");
+      d._closeTimer = setTimeout(function () {
+        d.classList.remove("is-closing");
+        d.close();
+      }, 220);
+    }
+    if (!openDialog) clearHash();
+  }
+
+  document.addEventListener("click", function (e) {
+    var link = e.target.closest('a[href^="#"]');
+    if (link) {
+      var d = dialogFor(link.getAttribute("href"));
+      if (d) {
+        e.preventDefault();
+        openModal(d);
+        return;
+      }
+    }
+    var closer = e.target.closest("[data-close]");
+    if (closer) {
+      closeModal(closer.closest("dialog"));
+      return;
+    }
+    // Clicking the dimmed area outside the panel closes the pop-up
+    if (e.target.tagName === "DIALOG" && e.target.classList.contains("modal")) closeModal(e.target);
+  });
+
+  document.querySelectorAll("dialog.modal").forEach(function (d) {
+    d.addEventListener("cancel", function (e) { // Escape key
+      e.preventDefault();
+      closeModal(d);
+    });
+  });
+
+  // Deep links: /#flare opens the Flare AI pop-up
+  function openFromHash() {
+    var d = dialogFor(location.hash);
+    if (d) openModal(d);
+  }
+  window.addEventListener("hashchange", openFromHash);
+  openFromHash();
 
   /* ---------- Card wheel ---------- */
   var stage = document.querySelector("[data-wheel]");
@@ -189,7 +247,6 @@
     var rot = -ME_INDEX * STEP;
     var vel = 0; // degrees per frame (inertia after a drag)
     var dragging = false;
-    var hovering = false;
     var visible = true;
     var moved = 0;
     var lastX = 0;
@@ -223,7 +280,7 @@
           vel *= 0.94;
         } else {
           vel = 0;
-          if (!hovering && !reduceMotion.matches) rot -= AUTO * dt;
+          if (!reduceMotion.matches) rot -= AUTO * dt;
         }
       }
       render();
@@ -291,8 +348,6 @@
     stage.addEventListener("dragstart", function (e) { e.preventDefault(); });
 
     cards.forEach(function (c) {
-      c.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") hovering = true; });
-      c.addEventListener("pointerleave", function () { hovering = false; });
       // Keyboard focus: bring the focused card to the top
       c.addEventListener("focus", function () {
         var i = cards.indexOf(c);
