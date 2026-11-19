@@ -12,6 +12,25 @@
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 
   <link rel="preload" href="assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <style>
+    /* Self-hosted fonts (SIL Open Font License). Declared here, not in style.css,
+       so the paths resolve from the page even when a previewer inlines the CSS. */
+    @font-face {
+      font-family: "Archivo";
+      font-style: normal;
+      font-weight: 100 900;
+      font-stretch: 62% 125%;
+      font-display: swap;
+      src: url("assets/fonts/archivo-latin.woff2") format("woff2");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      font-style: normal;
+      font-weight: 100 800;
+      font-display: swap;
+      src: url("assets/fonts/jetbrains-mono-latin.woff2") format("woff2");
+    }
+  </style>
   <link rel="stylesheet" href="css/style.css">
 
   <script>
@@ -142,14 +161,14 @@
     <div class="menu__bar" aria-hidden="true"></div>
     <nav aria-label="Sections">
       <ol class="menu__list">
-        <li><a href="#about"><span class="mono">01</span><span class="menu__word">About</span></a></li>
-        <li><a href="#flare"><span class="mono">02</span><span class="menu__word">Flare AI</span></a></li>
-        <li><a href="#studio"><span class="mono">03</span><span class="menu__word">628 Studio</span></a></li>
-        <li><a href="#project-0"><span class="mono">04</span><span class="menu__word">Project 0</span></a></li>
-        <li><a href="#himonide"><span class="mono">05</span><span class="menu__word">Himonide</span></a></li>
-        <li><a href="#skills"><span class="mono">06</span><span class="menu__word">Technical</span></a></li>
-        <li><a href="#research"><span class="mono">07</span><span class="menu__word">Research</span></a></li>
-        <li><a href="#contact"><span class="mono">08</span><span class="menu__word">Contact</span></a></li>
+        <li><a href="#about" data-open="about"><span class="mono">01</span><span class="menu__word">About</span></a></li>
+        <li><a href="#flare" data-open="flare"><span class="mono">02</span><span class="menu__word">Flare AI</span></a></li>
+        <li><a href="#studio" data-open="studio"><span class="mono">03</span><span class="menu__word">628 Studio</span></a></li>
+        <li><a href="#project-0" data-open="project-0"><span class="mono">04</span><span class="menu__word">Project 0</span></a></li>
+        <li><a href="#himonide" data-open="himonide"><span class="mono">05</span><span class="menu__word">Himonide</span></a></li>
+        <li><a href="#skills" data-open="skills"><span class="mono">06</span><span class="menu__word">Technical</span></a></li>
+        <li><a href="#research" data-open="research"><span class="mono">07</span><span class="menu__word">Research</span></a></li>
+        <li><a href="#contact" data-open="contact"><span class="mono">08</span><span class="menu__word">Contact</span></a></li>
       </ol>
     </nav>
     <p class="menu__foot mono"><span class="handle">aaa628</span> · 628 Studio · Kashmir, India</p>
@@ -207,85 +226,85 @@
 
         <div class="wheel__spin" data-wheel-spin>
           <!-- The first seven cards are real links; the second seven repeat them to fill the ring -->
-          <a class="card card--flare" href="#flare" data-label="Flare AI" style="--i:0">
+          <a class="card card--flare" href="#flare" data-open="flare" data-label="Flare AI" style="--i:0">
             <span class="card__top mono">01 / μg</span>
             <svg class="card__flame" aria-hidden="true"><use href="#sym-flame"/></svg>
             <svg class="card__ring" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="47"/></svg>
             <span class="card__name">Flare AI</span>
             <span class="card__foot mono">NASA Space Apps · 2026</span>
           </a>
-          <a class="card card--studio" href="#studio" data-label="628 Studio" style="--i:1">
+          <a class="card card--studio" href="#studio" data-open="studio" data-label="628 Studio" style="--i:1">
             <span class="card__tri card__tri--t" aria-hidden="true"></span>
             <svg class="card__emblem" aria-hidden="true"><use href="#sym-emblem"/></svg>
             <span class="card__tri card__tri--b" aria-hidden="true"></span>
             <span class="visually-hidden">628 Studio</span>
           </a>
-          <a class="card card--me" href="#about" data-label="Me" style="--i:2">
+          <a class="card card--me" href="#about" data-open="about" data-label="Me" style="--i:2">
             <!-- TODO(photo): swap this card's contents for <img src="assets/portrait.jpg" alt="Portrait of aaa628"> -->
             <span class="card__code label handle">aaa<br>628</span>
             <span class="card__hello mono">Hello, I'm</span>
             <span class="card__mono-big">aaa<br>628</span>
             <span class="card__foot mono">Student developer</span>
           </a>
-          <a class="card card--p0" href="#project-0" data-label="Project 0" style="--i:3">
+          <a class="card card--p0" href="#project-0" data-open="project-0" data-label="Project 0" style="--i:3">
             <svg class="card__topo" aria-hidden="true"><use href="#sym-topo"/></svg>
             <span class="card__top label">Project 0</span>
             <span class="card__big">150<small>km²</small></span>
             <span class="card__side mono">8129 × 8129 terrain</span>
             <span class="card__foot mono">628 Studio · UE5</span>
           </a>
-          <a class="card card--himonide" href="#himonide" data-label="Himonide" style="--i:4">
+          <a class="card card--himonide" href="#himonide" data-open="himonide" data-label="Himonide" style="--i:4">
             <svg class="card__leg" aria-hidden="true"><use href="#sym-leg"/></svg>
             <span class="card__vertical">Himonide</span>
             <span class="card__top mono">11 servos</span>
           </a>
-          <a class="card card--physics" href="#research" data-label="Research" style="--i:5">
+          <a class="card card--physics" href="#research" data-open="research" data-label="Research" style="--i:5">
             <span class="card__top label">Research</span>
             <svg class="card__orbit" aria-hidden="true"><use href="#sym-orbit"/></svg>
             <span class="card__eq mono">p = mv<br>F = Gm₁m₂ / r²<br>E = mc²</span>
           </a>
-          <a class="card card--contact" href="#contact" data-label="Contact" style="--i:6">
+          <a class="card card--contact" href="#contact" data-open="contact" data-label="Contact" style="--i:6">
             <svg class="card__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 L19 5 M8 5 H19 V16"/></svg>
             <span class="card__vertical">Contact</span>
             <span class="card__top mono">Say hello</span>
           </a>
           <!-- repeats (decorative) -->
-          <a class="card card--flare" href="#flare" data-label="Flare AI" style="--i:7" aria-hidden="true" tabindex="-1">
+          <a class="card card--flare" href="#flare" data-open="flare" data-label="Flare AI" style="--i:7" aria-hidden="true" tabindex="-1">
             <span class="card__top mono">01 / μg</span>
             <svg class="card__flame" aria-hidden="true"><use href="#sym-flame"/></svg>
             <svg class="card__ring" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="47"/></svg>
             <span class="card__name">Flare AI</span>
             <span class="card__foot mono">NASA Space Apps · 2026</span>
           </a>
-          <a class="card card--studio" href="#studio" data-label="628 Studio" style="--i:8" aria-hidden="true" tabindex="-1">
+          <a class="card card--studio" href="#studio" data-open="studio" data-label="628 Studio" style="--i:8" aria-hidden="true" tabindex="-1">
             <span class="card__tri card__tri--t"></span>
             <svg class="card__emblem"><use href="#sym-emblem"/></svg>
             <span class="card__tri card__tri--b"></span>
           </a>
-          <a class="card card--me" href="#about" data-label="Me" style="--i:9" aria-hidden="true" tabindex="-1">
+          <a class="card card--me" href="#about" data-open="about" data-label="Me" style="--i:9" aria-hidden="true" tabindex="-1">
             <span class="card__code label handle">aaa<br>628</span>
             <span class="card__hello mono">Hello, I'm</span>
             <span class="card__mono-big">aaa<br>628</span>
             <span class="card__foot mono">Student developer</span>
           </a>
-          <a class="card card--p0" href="#project-0" data-label="Project 0" style="--i:10" aria-hidden="true" tabindex="-1">
+          <a class="card card--p0" href="#project-0" data-open="project-0" data-label="Project 0" style="--i:10" aria-hidden="true" tabindex="-1">
             <svg class="card__topo"><use href="#sym-topo"/></svg>
             <span class="card__top label">Project 0</span>
             <span class="card__big">150<small>km²</small></span>
             <span class="card__side mono">8129 × 8129 terrain</span>
             <span class="card__foot mono">628 Studio · UE5</span>
           </a>
-          <a class="card card--himonide" href="#himonide" data-label="Himonide" style="--i:11" aria-hidden="true" tabindex="-1">
+          <a class="card card--himonide" href="#himonide" data-open="himonide" data-label="Himonide" style="--i:11" aria-hidden="true" tabindex="-1">
             <svg class="card__leg"><use href="#sym-leg"/></svg>
             <span class="card__vertical">Himonide</span>
             <span class="card__top mono">11 servos</span>
           </a>
-          <a class="card card--physics" href="#research" data-label="Research" style="--i:12" aria-hidden="true" tabindex="-1">
+          <a class="card card--physics" href="#research" data-open="research" data-label="Research" style="--i:12" aria-hidden="true" tabindex="-1">
             <span class="card__top label">Research</span>
             <svg class="card__orbit"><use href="#sym-orbit"/></svg>
             <span class="card__eq mono">p = mv<br>F = Gm₁m₂ / r²<br>E = mc²</span>
           </a>
-          <a class="card card--contact" href="#contact" data-label="Contact" style="--i:13" aria-hidden="true" tabindex="-1">
+          <a class="card card--contact" href="#contact" data-open="contact" data-label="Contact" style="--i:13" aria-hidden="true" tabindex="-1">
             <svg class="card__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 L19 5 M8 5 H19 V16"/></svg>
             <span class="card__vertical">Contact</span>
             <span class="card__top mono">Say hello</span>
@@ -303,14 +322,14 @@
         <p class="mono index__meta">628 Studio · Cambridge IGCSE · Kashmir, India</p>
       </div>
       <ol class="index__list">
-        <li><a href="#about"><span class="mono">01</span><span class="index__word">About</span><span class="index__note mono">Who I am</span></a></li>
-        <li><a href="#flare"><span class="mono">02</span><span class="index__word">Flare AI</span><span class="index__note mono">NASA Space Apps</span></a></li>
-        <li><a href="#studio"><span class="mono">03</span><span class="index__word">628 Studio</span><span class="index__note mono">Game dev</span></a></li>
-        <li><a href="#project-0"><span class="mono">04</span><span class="index__word">Project 0</span><span class="index__note mono">Open-world RPG</span></a></li>
-        <li><a href="#himonide"><span class="mono">05</span><span class="index__word">Himonide</span><span class="index__note mono">Robotics</span></a></li>
-        <li><a href="#skills"><span class="mono">06</span><span class="index__word">Technical</span><span class="index__note mono">Skills</span></a></li>
-        <li><a href="#research"><span class="mono">07</span><span class="index__word">Research</span><span class="index__note mono">Physics</span></a></li>
-        <li><a href="#contact"><span class="mono">08</span><span class="index__word">Contact</span><span class="index__note mono">Say hello</span></a></li>
+        <li><a href="#about" data-open="about"><span class="mono">01</span><span class="index__word">About</span><span class="index__note mono">Who I am</span></a></li>
+        <li><a href="#flare" data-open="flare"><span class="mono">02</span><span class="index__word">Flare AI</span><span class="index__note mono">NASA Space Apps</span></a></li>
+        <li><a href="#studio" data-open="studio"><span class="mono">03</span><span class="index__word">628 Studio</span><span class="index__note mono">Game dev</span></a></li>
+        <li><a href="#project-0" data-open="project-0"><span class="mono">04</span><span class="index__word">Project 0</span><span class="index__note mono">Open-world RPG</span></a></li>
+        <li><a href="#himonide" data-open="himonide"><span class="mono">05</span><span class="index__word">Himonide</span><span class="index__note mono">Robotics</span></a></li>
+        <li><a href="#skills" data-open="skills"><span class="mono">06</span><span class="index__word">Technical</span><span class="index__note mono">Skills</span></a></li>
+        <li><a href="#research" data-open="research"><span class="mono">07</span><span class="index__word">Research</span><span class="index__note mono">Physics</span></a></li>
+        <li><a href="#contact" data-open="contact"><span class="mono">08</span><span class="index__word">Contact</span><span class="index__note mono">Say hello</span></a></li>
       </ol>
     </section>
   </main>
@@ -336,7 +355,7 @@
         <div class="about__text">
           <p class="lead">I'm an independent student developer and aspiring aerospace physicist, working where <em>fundamental physics</em>, engineering, technology and complex systems meet.</p>
           <p>My work spans Unreal Engine 5 game development and world-building, systems architecture, robotics, and scientific data. I want to know how a system works at a fundamental level, connect ideas across disciplines, and turn them into structured projects I can check and improve.</p>
-          <p>Most recently I led a three-person team at the NASA Space Apps Challenge, where we built <a class="inline-link" href="#flare">Flare AI</a>, a tool that grades fire-safety evidence from NASA's microgravity combustion experiments.</p>
+          <p>Most recently I led a three-person team at the NASA Space Apps Challenge, where we built <a class="inline-link" href="#flare" data-open="flare">Flare AI</a>, a tool that grades fire-safety evidence from NASA's microgravity combustion experiments.</p>
         </div>
 
         <dl class="facts">

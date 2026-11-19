@@ -161,11 +161,14 @@
   onScrollHeader();
 
   /* ---------- Pop-ups ---------- */
-  // Any link to "#name" opens <dialog id="m-name"> if it exists.
+  // Links with data-open="name" open <dialog id="m-name">.
+  // (A data attribute, not the href: some previewers, e.g. htmlpreview.github.io,
+  // rewrite "#name" links into full URLs.)
   var openDialog = null;
-  function dialogFor(hash) {
-    if (!hash || hash.length < 2) return null;
-    var d = document.getElementById("m-" + hash.slice(1));
+  function dialogFor(name) {
+    name = (name || "").replace(/^#/, "");
+    if (!name) return null;
+    var d = document.getElementById("m-" + name);
     return d && d.tagName === "DIALOG" ? d : null;
   }
   function clearHash() {
@@ -198,9 +201,9 @@
   }
 
   document.addEventListener("click", function (e) {
-    var link = e.target.closest('a[href^="#"]');
+    var link = e.target.closest("[data-open]");
     if (link) {
-      var d = dialogFor(link.getAttribute("href"));
+      var d = dialogFor(link.getAttribute("data-open"));
       if (d) {
         e.preventDefault();
         openModal(d);
@@ -352,7 +355,7 @@
       swallowClick = true;
       setTimeout(function () { swallowClick = false; }, 400);
       if (e.type === "pointerup" && !wasDrag && downCard) {
-        var d = dialogFor(downCard.getAttribute("href"));
+        var d = dialogFor(downCard.getAttribute("data-open"));
         if (d) openModal(d);
       }
       downCard = null;
