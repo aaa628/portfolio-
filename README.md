@@ -30,7 +30,7 @@ Any static host works: GitHub Pages (Settings → Pages → deploy from branch, 
 | `index.html` | Hero, card wheel and index, then one `<dialog>` pop-up per section (`id="m-about"`, `m-flare`, …), plus the shared SVG artwork |
 | `css/style.css` | Design tokens (both themes), layout, cards, responsive rules |
 | `js/main.js` | Flipping title, card wheel (auto-spin, drag), pop-ups, theme toggle, menu |
-| `assets/favicon.svg` | Site icon (the 628 orbit emblem) |
+| `assets/favicon.svg` | Site icon (the fish logo) |
 
 ## Placeholders to replace
 

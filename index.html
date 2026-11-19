@@ -57,6 +57,11 @@
         <stop offset=".8" stop-color="#0e2b93" stop-opacity=".55"/>
         <stop offset="1" stop-color="#06143f" stop-opacity="0"/>
       </radialGradient>
+      <mask id="fish-cut" maskUnits="userSpaceOnUse" x="0" y="0" width="48" height="48">
+        <rect width="48" height="48" fill="#fff"/>
+        <circle cx="35" cy="21.5" r="3" fill="#000"/>
+        <path d="M24 15.5 Q20.5 24 24 32.5" fill="none" stroke="#000" stroke-width="2.4" stroke-linecap="round"/>
+      </mask>
       <filter id="f-flame" x="-25%" y="-25%" width="150%" height="150%">
         <feTurbulence type="fractalNoise" baseFrequency=".045" numOctaves="3" seed="11" result="n"/>
         <feDisplacementMap in="SourceGraphic" in2="n" scale="28" xChannelSelector="R" yChannelSelector="G"/>
@@ -67,12 +72,9 @@
       </filter>
     </defs>
 
-    <!-- 628 emblem: a body with an orbit and a satellite -->
+    <!-- Logo: a fish. The eye and gill are cut out (masked), so any background shows through -->
     <symbol id="sym-emblem" viewBox="0 0 48 48">
-      <circle cx="24" cy="24" r="11.5" fill="none" stroke="currentColor" stroke-width="3.2"/>
-      <ellipse cx="24" cy="24" rx="21" ry="7.5" fill="none" stroke="currentColor" stroke-width="3.2" transform="rotate(-28 24 24)"/>
-      <circle cx="41.6" cy="14.4" r="3.6" fill="currentColor"/>
-      <circle cx="24" cy="24" r="3.4" fill="currentColor"/>
+      <path mask="url(#fish-cut)" d="M13 24 Q27 8 44 24 Q27 40 13 24 Z M13 24 L3 13.5 L3 34.5 Z" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
     </symbol>
 
     <!-- Spherical microgravity flame -->
