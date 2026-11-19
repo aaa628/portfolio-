@@ -7,6 +7,10 @@ The layout follows a "Welcome to my Portfolio" reference design: a grey grid wit
 - **Light** (default): grey + red-orange, as in the reference
 - **Dark**: matte near-black + cyan (toggle in the header; the choice is remembered)
 
+## Fonts
+
+Archivo and JetBrains Mono (SIL Open Font License, latin subset) are embedded in `index.html` as base64, so they load anywhere, including in htmlpreview.github.io and on networks that block raw.githubusercontent.com.
+
 ## Run locally
 
 ```bash
@@ -27,7 +31,6 @@ Any static host works: GitHub Pages (Settings → Pages → deploy from branch, 
 | `css/style.css` | Design tokens (both themes), layout, cards, responsive rules |
 | `js/main.js` | Flipping title, card wheel (auto-spin, drag), pop-ups, theme toggle, menu |
 | `assets/favicon.svg` | Site icon (the 628 orbit emblem) |
-| `assets/fonts/` | Self-hosted Archivo and JetBrains Mono (SIL Open Font License), so the site works without Google Fonts |
 
 ## Placeholders to replace
 

@@ -879,9 +879,7 @@ html:has(.modal[open]) { overflow: hidden; }
   justify-content: space-between;
   gap: 16px;
   padding: 14px clamp(18px, 3vw, 36px);
-  background: color-mix(in srgb, var(--bg) 92%, transparent);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+  background: var(--bg);
   border-bottom: 1px solid var(--line);
 }
 .modal__head::before {
