@@ -1,4 +1,4 @@
-# AAA628 — Portfolio
+# aaa628 — Portfolio
 
 A static, single-page portfolio site: HTML, CSS and vanilla JavaScript. No build step and no dependencies.
 
@@ -25,14 +25,13 @@ Any static host works: GitHub Pages (Settings → Pages → deploy from branch, 
 | --- | --- |
 | `index.html` | All content and the shared SVG artwork (sprite at the top of `<body>`) |
 | `css/style.css` | Design tokens (both themes), layout, cards, responsive rules |
-| `js/main.js` | Flipping title, card wheel (auto-spin, drag, scroll), theme toggle, menu, reveal-on-scroll |
+| `js/main.js` | Flipping title, card wheel (auto-spin, drag), theme toggle, menu, reveal-on-scroll |
 | `assets/favicon.svg` | Site icon (the 628 orbit emblem) |
 
 ## Placeholders to replace
 
 Search `index.html` for `TODO`:
 
-- **`TODO(name)`**: "Your Name" in the `<title>`, the meta tags, the hero, the About facts and the footer
 - **`TODO(links)`**: the Flare AI live site, source code and demo video buttons (`data-todo="flare-…"`), plus email, GitHub and LinkedIn in Contact
 - **`TODO(photo)`**: the "Me" card in the wheel. Replace its contents with `<img src="assets/portrait.jpg" alt="…">` (both copies, `--i:2` and `--i:9`)
 

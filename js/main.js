@@ -1,6 +1,6 @@
-/* AAA628 — Portfolio interactions
+/* aaa628 — Portfolio interactions
    - flipping hero letters
-   - card wheel (auto-spin, drag with inertia, scroll-linked, active label)
+   - card wheel (auto-spin, drag with inertia, active label)
    - theme toggle, menu overlay, header state, reveal-on-scroll
    - topographic contour artwork */
 (function () {
@@ -15,22 +15,51 @@
     var frag = document.createDocumentFragment();
     for (var i = 0; i < word.length; i++) {
       var ch = document.createElement("span");
-      ch.className = "ch";
+      ch.className = "ch is-intro";
+      ch.addEventListener("animationend", function (e) {
+        if (e.animationName === "letter-in") e.currentTarget.classList.remove("is-intro");
+      });
       ch.style.setProperty("--i", String(i));
+      var inner = document.createElement("span");
+      inner.className = "ch__in";
       var f = document.createElement("span");
       f.className = "ch__f";
       f.textContent = word[i];
       var b = document.createElement("span");
       b.className = "ch__b";
       b.textContent = word[i];
-      ch.appendChild(f);
-      ch.appendChild(b);
+      inner.appendChild(f);
+      inner.appendChild(b);
+      ch.appendChild(inner);
       frag.appendChild(ch);
     }
     el.textContent = "";
     el.appendChild(frag);
   }
   document.querySelectorAll(".flip[data-word]").forEach(buildFlipWord);
+
+  // Hovering the title flips the letter under the pointer and its echo
+  var heroTitle = document.querySelector(".hero__title");
+  if (heroTitle && !reduceMotion.matches) {
+    var mains = heroTitle.querySelectorAll(".flip--main .ch");
+    var echoes = heroTitle.querySelectorAll(".flip--echo .ch");
+    var poke = function (el) {
+      if (!el || el.classList.contains("is-poked")) return;
+      el.classList.remove("is-intro");
+      el.classList.add("is-poked");
+      el.addEventListener("animationend", function done(e) {
+        if (e.target !== el) return;
+        el.classList.remove("is-poked");
+        el.removeEventListener("animationend", done);
+      });
+    };
+    mains.forEach(function (el, i) {
+      el.addEventListener("pointerenter", function () {
+        poke(el);
+        setTimeout(function () { poke(echoes[i]); }, 90);
+      });
+    });
+  }
 
   /* ---------- Topographic contours for Project 0 ---------- */
   function buildTopo() {
@@ -165,7 +194,6 @@
     var moved = 0;
     var lastX = 0;
     var lastT = 0;
-    var lastScroll = window.scrollY;
     var activeIndex = -1;
     var rafId = 0;
     var prevFrame = 0;
@@ -216,14 +244,6 @@
         if (visible) start();
       }).observe(stage);
     }
-
-    // Scrolling the page turns the wheel a little
-    window.addEventListener("scroll", function () {
-      var y = window.scrollY;
-      if (!reduceMotion.matches) rot -= (y - lastScroll) * 0.06;
-      lastScroll = y;
-      if (!rafId) render();
-    }, { passive: true });
 
     // Drag to spin
     stage.addEventListener("pointerdown", function (e) {
