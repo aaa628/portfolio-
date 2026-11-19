@@ -296,22 +296,35 @@
       }).observe(stage);
     }
 
-    // Drag to spin
+    // Press, drag or tap.
+    // The card is chosen at the moment of the press. On release it opens,
+    // unless the pointer travelled far enough to count as a drag. This works
+    // even though the wheel keeps turning under the pointer during the click.
+    var DRAG_PX = 10;
+    var downX = 0, downY = 0, downCard = null, lastPointerDown = 0;
+    var swallowClick = false;
+
     stage.addEventListener("pointerdown", function (e) {
       if (e.button !== undefined && e.button !== 0) return;
       dragging = true;
       moved = 0;
       vel = 0;
-      lastX = e.clientX;
-      lastT = performance.now();
+      lastX = downX = e.clientX;
+      downY = e.clientY;
+      lastT = lastPointerDown = performance.now();
+      downCard = e.target.closest ? e.target.closest(".card") : null;
       stage.classList.add("is-dragging");
     });
+    // Stop the mouse from focusing (and text-selecting) on press
+    stage.addEventListener("mousedown", function (e) { e.preventDefault(); });
+
     window.addEventListener("pointermove", function (e) {
       if (!dragging) return;
       var dx = e.clientX - lastX;
       lastX = e.clientX;
-      moved += Math.abs(dx);
-      if (moved > 6 && !stage.hasPointerCapture(e.pointerId)) {
+      moved = Math.max(moved, Math.abs(e.clientX - downX), Math.abs(e.clientY - downY));
+      if (moved < DRAG_PX) return; // small wobble during a click: ignore
+      if (!stage.hasPointerCapture(e.pointerId)) {
         try { stage.setPointerCapture(e.pointerId); } catch (err) {}
       }
       var deg = (dx / radiusPx()) * (180 / Math.PI);
@@ -322,30 +335,46 @@
       lastT = now;
       if (!rafId) render();
     });
-    function endDrag() {
+
+    function endDrag(e) {
       if (!dragging) return;
       dragging = false;
       stage.classList.remove("is-dragging");
-      if (performance.now() - lastT > 80) vel = 0;
-      vel = Math.max(-6, Math.min(6, vel));
+      var wasDrag = moved >= DRAG_PX;
+      if (wasDrag) {
+        if (performance.now() - lastT > 80) vel = 0;
+        vel = Math.max(-6, Math.min(6, vel));
+      } else {
+        vel = 0;
+      }
+      // The browser's own click may or may not follow (the card has moved);
+      // either way we handle it here and swallow that click.
+      swallowClick = true;
+      setTimeout(function () { swallowClick = false; }, 400);
+      if (e.type === "pointerup" && !wasDrag && downCard) {
+        var d = dialogFor(downCard.getAttribute("href"));
+        if (d) openModal(d);
+      }
+      downCard = null;
     }
     window.addEventListener("pointerup", endDrag);
     window.addEventListener("pointercancel", endDrag);
 
-    // A drag should not count as a click on a card
-    stage.addEventListener("click", function (e) {
-      if (moved > 6) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
+    // Swallow the native click that follows a pointer press on the wheel.
+    // Keyboard "clicks" (Enter on a focused card) are not swallowed.
+    window.addEventListener("click", function (e) {
+      if (!swallowClick) return;
+      swallowClick = false;
+      e.preventDefault();
+      e.stopPropagation();
     }, true);
     stage.addEventListener("dragstart", function (e) { e.preventDefault(); });
 
     cards.forEach(function (c) {
       // Keyboard focus (Tab) brings the focused card to the top.
-      // Mouse/touch focus must not move the wheel, or the card slides away mid-click.
+      // Focus caused by a pointer press must not move the wheel.
       c.addEventListener("focus", function () {
-        if (!c.matches(":focus-visible")) return;
+        if (performance.now() - lastPointerDown < 600) return;
         var i = cards.indexOf(c);
         var target = -i * STEP;
         var delta = ((target - rot) % 360 + 540) % 360 - 180;
