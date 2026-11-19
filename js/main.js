@@ -230,6 +230,41 @@
   // removed on load so a reload always starts on the plain page.
   if (dialogFor(location.hash)) clearHash();
 
+  /* ---------- Footer world: builds itself as it scrolls into view ---------- */
+  var footer = document.querySelector("[data-footer]");
+  var scene = document.querySelector("[data-footer-scene]");
+  if (footer && scene) {
+    var sceneSvg = scene.querySelector("svg");
+    var ticking = false;
+    var setProgress = function () {
+      ticking = false;
+      if (reduceMotion.matches) { footer.style.setProperty("--p", "1"); return; }
+      var r = scene.getBoundingClientRect();
+      var p = (window.innerHeight - r.top) / (r.height * 0.9);
+      p = Math.max(0, Math.min(1, p));
+      footer.style.setProperty("--p", p.toFixed(3));
+    };
+    window.addEventListener("scroll", function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(setProgress); }
+    }, { passive: true });
+    window.addEventListener("resize", setProgress);
+    setProgress();
+
+    // Ambient motion (walker, beacons, satellite) only while the footer is on screen
+    var setLive = function (live) {
+      footer.classList.toggle("is-live", live && !reduceMotion.matches);
+      if (sceneSvg && sceneSvg.pauseAnimations) {
+        if (live && !reduceMotion.matches) sceneSvg.unpauseAnimations();
+        else sceneSvg.pauseAnimations();
+      }
+    };
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (entries) { setLive(entries[0].isIntersecting); }).observe(footer);
+    } else {
+      setLive(true);
+    }
+  }
+
   /* ---------- Card wheel ---------- */
   var stage = document.querySelector("[data-wheel]");
   var spin = document.querySelector("[data-wheel-spin]");

@@ -1459,21 +1459,156 @@ html:has(.modal[open]) { overflow: hidden; }
 }
 @keyframes badge-spin { to { transform: rotate(360deg); } }
 
-/* ---------- Footer ---------- */
-.footer {
+/* ---------- Footer: sign-off band + a line-art world that builds itself ---------- */
+:root {
+  --band-bg: #0e0e0f;
+  --band-ink: #eceeee;
+  --band-ink-2: #8d9497;
+  --band-line: rgba(236, 238, 238, 0.14);
+}
+html[data-theme="dark"] {
+  --band-bg: #e8eced;
+  --band-ink: #0c0d0e;
+  --band-ink-2: #5b6366;
+  --band-line: rgba(12, 13, 14, 0.16);
+}
+
+.footer { --p: 1; margin-top: clamp(24px, 4vw, 56px); }
+.js .footer { --p: 0; }
+.footer p { margin: 0; }
+
+.footer__band {
+  background: var(--band-bg);
+  color: var(--band-ink);
+  padding: clamp(56px, 8vw, 112px) 0 26px;
+  transition: background-color 0.4s var(--ease), color 0.4s var(--ease);
+}
+.footer__inner {
   max-width: var(--max);
   margin: 0 auto;
-  padding: 28px var(--pad) 36px;
+  padding-inline: var(--pad);
+}
+.footer__band > .footer__inner:first-child {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 40px clamp(32px, 5vw, 88px);
+  align-items: start;
+}
+.footer__sign {
+  font-stretch: 125%;
+  font-weight: 800;
+  font-size: clamp(28px, 3.3vw, 50px);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+.footer__sign span { color: var(--band-ink-2); }
+.footer__cols {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px 24px;
+}
+.footer__h { color: var(--band-ink-2); margin-bottom: 14px !important; font-size: 11px; }
+.footer__cols li { padding: 3px 0; font-size: 16px; }
+.footer__cols a { text-decoration: none; }
+.footer__cols a:hover,
+.footer__top:hover { color: var(--accent); }
+.footer__meta {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 12px 24px;
-  border-top: 1px solid var(--line);
+  gap: 10px 24px;
+  margin-top: clamp(56px, 7vw, 96px) !important;
+  padding-top: 18px !important;
+  border-top: 1px solid var(--band-line);
+  color: var(--band-ink-2);
 }
-.footer p { margin: 0; }
-.footer__mid { color: var(--ink-3); text-transform: none; }
+.footer__meta .handle { color: var(--band-ink); }
 .footer__top { text-decoration: none; }
-.footer__top:hover { color: var(--accent); }
+.footer__band :focus-visible { outline-color: var(--accent); }
+
+.footer__scene {
+  position: relative;
+  overflow: hidden;
+  height: clamp(230px, 27.8vw, 430px);
+  background: var(--bg);
+}
+.footer__word {
+  position: absolute;
+  left: 50%;
+  bottom: 30%;
+  transform: translateX(-50%);
+  font-stretch: 125%;
+  font-weight: 900;
+  font-size: clamp(110px, 21vw, 330px);
+  line-height: 0.8;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+  color: color-mix(in srgb, var(--ink) 9%, transparent);
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.footer__svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+}
+
+/* each piece rises out of the ground once footer progress (--p) passes its start (--t) */
+.fx {
+  --k: clamp(0, (var(--p) - var(--t)) * 3.2, 1);
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transform: translateY(calc((1 - var(--k)) * 112%));
+  transition: transform 0.45s var(--ease);
+}
+.fx--far { transform: none; opacity: var(--k); transition: opacity 0.45s var(--ease); }
+
+.sc-shape { fill: var(--bg); stroke: var(--ink); stroke-width: 1.6; stroke-linejoin: round; }
+.sc-nofill { fill: none; }
+.sc-line { fill: none; stroke: var(--ink); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.sc-thick { stroke-width: 2.4; }
+.sc-faint { stroke: var(--ink-3); stroke-width: 1.2; }
+.sc-ground { stroke-width: 2; }
+.sc-road { fill: none; stroke: var(--ink-3); stroke-width: 1.4; stroke-dasharray: 18 14; }
+.sc-orbit { fill: none; stroke: var(--ink-3); stroke-width: 1; stroke-dasharray: 4 8; }
+.sc-win { fill: var(--bg); stroke: var(--ink); stroke-width: 1.1; }
+.sc-lit {
+  fill: var(--accent);
+  opacity: clamp(0, (var(--p) - var(--t) * 0.45 - 0.55 - var(--l) * 0.12) * 10, 1);
+  transition: opacity 0.3s;
+}
+.sc-sign {
+  fill: var(--ink);
+  font-family: var(--f-sans);
+  font-stretch: 125%;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+.sc-big { font-size: 24px; }
+.sc-vert { writing-mode: vertical-rl; font-size: 10px; }
+.sc-beacon,
+.sc-eye { fill: var(--accent); }
+.sc-led { fill: var(--ink); }
+
+.footer.is-live .sc-beacon { animation: sc-blink 2.4s ease-in-out infinite; }
+.footer.is-live .sc-led { animation: sc-blink 1.4s steps(2) infinite; animation-delay: calc(var(--l) * -1.4s); }
+@keyframes sc-blink { 50% { opacity: 0.15; } }
+
+/* Himonide walking the road */
+.sc-walker { transform: translateX(-80px); }
+.footer.is-live .sc-walker { animation: sc-walk 48s linear infinite; }
+.footer.is-live .sc-bob { animation: sc-bob 0.45s ease-in-out infinite alternate; }
+.sc-leg { transform-box: fill-box; transform-origin: 50% 0; }
+.footer.is-live .sc-leg--a { animation: sc-step 0.9s ease-in-out infinite alternate; }
+.footer.is-live .sc-leg--b { animation: sc-step 0.9s ease-in-out infinite alternate-reverse; }
+@keyframes sc-walk { from { transform: translateX(-80px); } to { transform: translateX(1520px); } }
+@keyframes sc-bob { to { transform: translateY(-2px); } }
+@keyframes sc-step { from { transform: rotate(-14deg); } to { transform: rotate(14deg); } }
 
 /* =========================================================================
    Responsive
@@ -1483,6 +1618,7 @@ html:has(.modal[open]) { overflow: hidden; }
 }
 
 @media (max-width: 900px) {
+  .footer__band > .footer__inner:first-child { grid-template-columns: 1fr; }
   .index { grid-template-columns: 1fr; }
   .modal__panel { width: calc(100% - 20px); max-height: calc(100dvh - 20px); border-radius: 18px; }
   .about,
@@ -1509,6 +1645,8 @@ html:has(.modal[open]) { overflow: hidden; }
 }
 
 @media (max-width: 640px) {
+  .footer__cols { grid-template-columns: 1fr 1fr; }
+  .footer__word { bottom: 38%; }
   .skills.skills--4 { grid-template-columns: 1fr; }
   .fields > div { grid-template-columns: 1fr; }
   .hl li { grid-template-columns: 28px 1fr; }
