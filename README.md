@@ -38,7 +38,7 @@ Search `index.html` for `TODO`:
 
 ## Pop-ups
 
-Any link to `#name` opens the pop-up `<dialog id="m-name">` instead of scrolling: the wheel cards, the index list and the menu all use this. Links can be shared too: `yoursite/#flare` opens straight into Flare AI. To add a section, copy one `<dialog class="modal">` block and give it a new `m-…` id.
+Any link to `#name` opens the pop-up `<dialog id="m-name">` instead of scrolling: the wheel cards, the index list and the menu all use this. To add a section, copy one `<dialog class="modal">` block and give it a new `m-…` id.
 
 ## Editing the wheel
 

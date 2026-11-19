@@ -181,7 +181,6 @@
       if (panel) panel.scrollTop = 0;
     }
     openDialog = d;
-    try { history.replaceState(null, "", "#" + d.id.slice(2)); } catch (e) {}
   }
   function closeModal(d, instant) {
     if (!d || !d.open) return;
@@ -196,7 +195,6 @@
         d.close();
       }, 220);
     }
-    if (!openDialog) clearHash();
   }
 
   document.addEventListener("click", function (e) {
@@ -225,13 +223,9 @@
     });
   });
 
-  // Deep links: /#flare opens the Flare AI pop-up
-  function openFromHash() {
-    var d = dialogFor(location.hash);
-    if (d) openModal(d);
-  }
-  window.addEventListener("hashchange", openFromHash);
-  openFromHash();
+  // Pop-ups never change the URL, and a leftover "#about"-style hash is
+  // removed on load so a reload always starts on the plain page.
+  if (dialogFor(location.hash)) clearHash();
 
   /* ---------- Card wheel ---------- */
   var stage = document.querySelector("[data-wheel]");
@@ -348,8 +342,10 @@
     stage.addEventListener("dragstart", function (e) { e.preventDefault(); });
 
     cards.forEach(function (c) {
-      // Keyboard focus: bring the focused card to the top
+      // Keyboard focus (Tab) brings the focused card to the top.
+      // Mouse/touch focus must not move the wheel, or the card slides away mid-click.
       c.addEventListener("focus", function () {
+        if (!c.matches(":focus-visible")) return;
         var i = cards.indexOf(c);
         var target = -i * STEP;
         var delta = ((target - rot) % 360 + 540) % 360 - 180;
