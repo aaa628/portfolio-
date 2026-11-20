@@ -1,5 +1,5 @@
 /* aaa628 — Portfolio interactions
-   - first-visit logo intro (pixel bloom)
+   - logo intro on every page load (pixel bloom)
    - flipping hero letters
    - card wheel (auto-spin, drag with inertia, active label)
    - pop-ups (cards, index and menu links open a dialog instead of scrolling)
@@ -11,7 +11,7 @@
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   var root = document.documentElement;
 
-  /* ---------- First-visit intro: the logo and name bloom out of a pixel grid ---------- */
+  /* ---------- Intro on every load: the logo and name bloom out of a pixel grid ---------- */
   var intro = document.querySelector("[data-intro]");
   function runIntro() {
     if (!intro) return;
@@ -161,7 +161,6 @@
       cancelAnimationFrame(raf);
       intro.classList.remove("is-playing", "is-leaving");
       root.classList.remove("intro-pending");
-      try { localStorage.setItem("aaa628-intro", "seen"); } catch (e) {}
       document.removeEventListener("keydown", onKey);
     }
     function skip() {

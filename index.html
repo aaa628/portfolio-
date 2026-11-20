@@ -39,17 +39,15 @@
       try { t = localStorage.getItem("aaa628-theme"); } catch (e) {}
       if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t);
       document.documentElement.classList.add("js");
-      // First visit: play the logo intro (skipped for reduced motion)
-      var seen = null;
-      try { seen = localStorage.getItem("aaa628-intro"); } catch (e) {}
+      // Every page load: play the logo intro (skipped for reduced motion)
       var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (!seen && !still) document.documentElement.classList.add("intro-pending");
+      if (!still) document.documentElement.classList.add("intro-pending");
     })();
   </script>
   <script src="js/main.js" defer></script>
 </head>
 <body>
-  <!-- First-visit logo reveal (pixel bloom). Drawn on the canvas by js/main.js -->
+  <!-- Logo reveal on every page load (pixel bloom). Drawn on the canvas by js/main.js -->
   <div class="intro" data-intro>
     <canvas class="intro__canvas" aria-hidden="true"></canvas>
     <p class="intro__count mono" aria-hidden="true"><span data-intro-count>000</span> / 628</p>

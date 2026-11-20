@@ -153,7 +153,7 @@ button { font: inherit; color: inherit; }
 .cross--light::before,
 .cross--light::after { background: rgba(255, 255, 255, 0.35); }
 
-/* ---------- First-visit intro (pixel bloom) ---------- */
+/* ---------- Intro on every page load (pixel bloom) ---------- */
 .intro {
   position: fixed;
   inset: 0;
