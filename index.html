@@ -220,8 +220,8 @@
         </a>
         <div class="pcard pcard--x" role="group" aria-label="X profile">
           <span class="pcard__banner" aria-hidden="true"><svg class="pcard__banner-mark"><use href="#sym-x"/></svg></span>
-          <!-- avatar: replace the <svg> with <img src="assets/avatar.jpg" alt=""> to use a photo -->
-          <span class="pcard__avatar" aria-hidden="true"><svg><use href="#sym-emblem"/></svg></span>
+          <!-- avatar: shows assets/avatar-x.jpg if that file exists, otherwise the fish logo -->
+          <span class="pcard__avatar" aria-hidden="true"><svg><use href="#sym-emblem"/></svg><img src="assets/avatar-x.jpg" alt="" loading="lazy" onerror="this.remove()"></span>
           <p class="pcard__name">aaa628</p>
           <p class="pcard__handle mono">@_aaa628</p>
           <p class="pcard__bio">i can fix the world but they don't let me have the source code</p>
@@ -235,7 +235,8 @@
       </button>
         <div class="pcard pcard--discord" role="group" aria-label="Discord profile">
           <span class="pcard__banner" aria-hidden="true"></span>
-          <span class="pcard__avatar" aria-hidden="true"><svg><use href="#sym-emblem"/></svg></span>
+          <!-- avatar: shows assets/avatar-discord.jpg if that file exists, otherwise the fish logo -->
+          <span class="pcard__avatar" aria-hidden="true"><svg><use href="#sym-emblem"/></svg><img src="assets/avatar-discord.jpg" alt="" loading="lazy" onerror="this.remove()"></span>
           <p class="pcard__name">aaa628</p>
           <p class="pcard__handle mono">aaa628no</p>
           <p class="pcard__bio">“Show me a man who fishes in winter, and I’ll show you a fanatic. Actually, a fanatic doesn’t hold a candle to a man who fishes in winter.”</p>

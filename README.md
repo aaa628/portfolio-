@@ -32,6 +32,10 @@ Any static host works: GitHub Pages (Settings → Pages → deploy from branch, 
 | `js/main.js` | Flipping title, card wheel (auto-spin, drag), pop-ups, theme toggle, menu |
 | `assets/favicon.svg` | Site icon (the fish logo) |
 
+## Profile-card avatars
+
+The X and Discord hover cards show `assets/avatar-x.jpg` and `assets/avatar-discord.jpg` when those files exist (square images, about 200 × 200 px, cropped to a circle automatically). Without them the cards fall back to the fish logo. To use an image hosted elsewhere, change the `src` of the `<img>` inside each `.pcard__avatar` in `index.html`.
+
 ## Placeholders to replace
 
 Search `index.html` for `TODO`:

@@ -514,7 +514,7 @@ html[data-theme="dark"] .header.is-scrolled { box-shadow: 0 1px 0 rgba(255, 255,
 }
 .pcard--discord .pcard__avatar { background: #0e0e0f; color: #eceeee; }
 .pcard__avatar svg { width: 36px; height: 36px; }
-.pcard__avatar img { width: 100%; height: 100%; object-fit: cover; }
+.pcard__avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .social:hover .pcard__avatar,
 .social:has(:focus-visible) .pcard__avatar { animation: pc-pop 0.5s var(--ease) 0.15s both; }
 @keyframes pc-pop { from { transform: scale(0.6); opacity: 0; } }
