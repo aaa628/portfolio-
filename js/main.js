@@ -304,7 +304,7 @@
   /* ---------- Menu overlay ---------- */
   var menu = document.getElementById("menu");
   var menuBtn = document.querySelector("[data-menu-toggle]");
-  function setMenu(open) {
+  function setMenu(open, fromKeyboard) {
     if (!menu || !menuBtn) return;
     menuBtn.setAttribute("aria-expanded", String(open));
     menuBtn.querySelector(".label").textContent = open ? "Close" : "Menu";
@@ -313,8 +313,9 @@
       menu.hidden = false;
       requestAnimationFrame(function () {
         menu.classList.add("is-open");
-        var first = menu.querySelector("a");
-        if (first) first.focus();
+        // move focus into the menu only for keyboard users (no stray focus box for mouse/touch)
+        var first = menu.querySelector(".menu__list a");
+        if (first && fromKeyboard) first.focus();
       });
     } else {
       menu.classList.remove("is-open");
@@ -322,8 +323,8 @@
     }
   }
   if (menuBtn) {
-    menuBtn.addEventListener("click", function () {
-      setMenu(menuBtn.getAttribute("aria-expanded") !== "true");
+    menuBtn.addEventListener("click", function (e) {
+      setMenu(menuBtn.getAttribute("aria-expanded") !== "true", e.detail === 0);
     });
   }
   if (menu) {

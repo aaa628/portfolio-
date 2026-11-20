@@ -256,25 +256,43 @@
 
   <!-- ============ Menu overlay ============ -->
   <div class="menu" id="menu" hidden>
-    <div class="menu__bar" aria-hidden="true"></div>
-    <nav aria-label="Sections">
-      <ol class="menu__list">
-        <li><a href="#about" data-open="about"><span class="mono">01</span><span class="menu__word">About</span></a></li>
-        <li><a href="#projects" data-open="projects"><span class="mono">02</span><span class="menu__word">Projects</span></a></li>
-        <li><a href="#skills" data-open="skills"><span class="mono">03</span><span class="menu__word">Capabilities</span></a></li>
-        <li><a href="#research" data-open="research"><span class="mono">04</span><span class="menu__word">Research</span></a></li>
-        <li><a href="#contact" data-open="contact"><span class="mono">05</span><span class="menu__word">Contact</span></a></li>
-      </ol>
-    </nav>
-    <div class="verse menu__verse" data-verse dir="rtl">
-      <p class="verse__line">
-        <span class="verse__ar" lang="ar">إذا غامرتَ في شرفٍ مرومٍ، فلا تقنعْ بما دونَ النجومِ</span>
-        <span class="verse__en" lang="en" hidden>“When you pursue a lofty ambition, accept nothing below the stars.”</span>
-      </p>
-      <p class="verse__by"><span class="verse__by-ar" lang="ar">— أبو الطيب المتنبي</span><span class="verse__by-en mono" lang="en" hidden>— Al-Mutanabbi</span></p>
-      <button class="verse__toggle" type="button" data-verse-toggle aria-pressed="false" aria-label="Show the English translation"><span class="mono">EN</span></button>
+    <div class="menu__inner">
+      <div class="menu__head mono"><span>Index</span><span>05 sections</span></div>
+      <div class="menu__grid">
+        <nav class="menu__nav" aria-label="Sections">
+          <ol class="menu__list">
+            <li style="--k:0"><a href="#about" data-open="about"><span class="mono menu__n">01</span><span class="menu__word">About</span><span class="mono menu__note">Profile</span><span class="menu__arrow" aria-hidden="true">→</span></a></li>
+            <li style="--k:1"><a href="#projects" data-open="projects"><span class="mono menu__n">02</span><span class="menu__word">Projects</span><span class="mono menu__note">06 builds</span><span class="menu__arrow" aria-hidden="true">→</span></a></li>
+            <li style="--k:2"><a href="#skills" data-open="skills"><span class="mono menu__n">03</span><span class="menu__word">Capabilities</span><span class="mono menu__note">A–D</span><span class="menu__arrow" aria-hidden="true">→</span></a></li>
+            <li style="--k:3"><a href="#research" data-open="research"><span class="mono menu__n">04</span><span class="menu__word">Research</span><span class="mono menu__note">R&amp;D focus</span><span class="menu__arrow" aria-hidden="true">→</span></a></li>
+            <li style="--k:4"><a href="#contact" data-open="contact"><span class="mono menu__n">05</span><span class="menu__word">Contact</span><span class="mono menu__note">Say hello</span><span class="menu__arrow" aria-hidden="true">→</span></a></li>
+          </ol>
+        </nav>
+        <aside class="menu__aside">
+          <section>
+            <p class="mono menu__label">Verse</p>
+            <div class="verse menu__verse" data-verse dir="rtl">
+              <p class="verse__line">
+                <span class="verse__ar" lang="ar">إذا غامرتَ في شرفٍ مرومٍ، فلا تقنعْ بما دونَ النجومِ</span>
+                <span class="verse__en" lang="en" hidden>“When you pursue a lofty ambition, accept nothing below the stars.”</span>
+              </p>
+              <p class="verse__by"><span class="verse__by-ar" lang="ar">— أبو الطيب المتنبي</span><span class="verse__by-en mono" lang="en" hidden>— Al-Mutanabbi</span></p>
+              <button class="verse__toggle" type="button" data-verse-toggle aria-pressed="false" aria-label="Show the English translation"><span class="mono">EN</span></button>
+            </div>
+          </section>
+          <section>
+            <p class="mono menu__label">Elsewhere</p>
+            <ul class="menu__social">
+              <li><a href="https://x.com/_aaa628" target="_blank" rel="noopener"><span class="mono">X</span><span>@_aaa628</span><span class="mono menu__act" aria-hidden="true">Open ↗</span></a></li>
+              <li><button type="button" data-discord aria-label="Copy my Discord username, aaa628no"><span class="mono">Discord</span><span>aaa628no</span><span class="mono menu__act" aria-hidden="true"><span data-discord-label>Copy</span></span></button></li>
+              <!-- TODO(links): same email placeholder as the Contact pop-up -->
+              <li><a href="mailto:hello@example.com" data-todo="email"><span class="mono">Email</span><span>hello@example.com</span><span class="mono menu__act" aria-hidden="true">Write ↗</span></a></li>
+            </ul>
+          </section>
+        </aside>
+      </div>
+      <div class="menu__foot mono"><span><span class="handle">aaa628</span> · 628 Studio</span><span>Kashmir, India</span></div>
     </div>
-    <p class="menu__foot mono"><span class="handle">aaa628</span> · 628 Studio · Kashmir, India</p>
   </div>
 
   <main>
