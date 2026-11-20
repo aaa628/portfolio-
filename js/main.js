@@ -11,6 +11,77 @@
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   var root = document.documentElement;
 
+  /* ---------- Menu footer: a livelier copy of the page footer at the bottom of the menu ----------
+     Cloned before anything else binds, so its Discord/copy/replay buttons are wired like the original. */
+  (function () {
+    var menuEl = document.getElementById("menu");
+    var src = document.querySelector("[data-footer]");
+    if (!menuEl || !src) return;
+    var NS = "http://www.w3.org/2000/svg";
+    var mf = src.cloneNode(true);
+    mf.removeAttribute("data-footer");
+    mf.setAttribute("data-menu-footer", "");
+    mf.classList.add("footer--menu");
+    // unique ids inside the copy
+    mf.querySelectorAll("[id]").forEach(function (el) { el.id = el.id + "-m"; });
+    mf.querySelectorAll("[clip-path]").forEach(function (el) {
+      el.setAttribute("clip-path", el.getAttribute("clip-path").replace(/#([\w-]+)\)/, "#$1-m)"));
+    });
+    var scene = mf.querySelector("[data-footer-scene]");
+    scene.removeAttribute("data-footer-scene");
+    scene.setAttribute("data-menu-scene", "");
+    // "Back to top" scrolls the menu instead of the page
+    var top = mf.querySelector(".footer__top");
+    if (top) {
+      var btn = document.createElement("button");
+      btn.type = "button"; btn.className = top.className + " footer__replay"; btn.setAttribute("data-menu-top", "");
+      btn.textContent = "Back to index ↑";
+      top.replaceWith(btn);
+    }
+    // wordmark letters rise one by one
+    var word = mf.querySelector(".footer__word");
+    if (word) {
+      var t = word.textContent; word.textContent = "";
+      t.split("").forEach(function (ch, i) {
+        var sp = document.createElement("span"); sp.textContent = ch; sp.style.setProperty("--i", i); word.appendChild(sp);
+      });
+    }
+    var svg = mf.querySelector("svg.footer__svg");
+    var world = svg && svg.querySelector("g[clip-path]");
+    // rocket: exhaust flame under the body
+    var rocket = svg && svg.querySelector(".sc-rocket");
+    if (rocket) {
+      var flame = document.createElementNS(NS, "path");
+      flame.setAttribute("class", "sc-flame");
+      flame.setAttribute("d", "M745 366 Q757 412 769 366 Q763 380 757 368 Q751 380 745 366 Z");
+      rocket.insertBefore(flame, rocket.firstChild);
+    }
+    // smoke on the pad, stars in the sky
+    if (world) {
+      var smoke = document.createElementNS(NS, "g");
+      smoke.setAttribute("class", "sc-smoke");
+      [[-34, 0], [-18, 6], [0, 10], [18, 6], [34, 0], [-50, -4], [50, -4]].forEach(function (o, i) {
+        var c = document.createElementNS(NS, "circle");
+        c.setAttribute("cx", 757 + o[0]); c.setAttribute("cy", 368 + o[1] * -1); c.setAttribute("r", 9 + (i % 3) * 3);
+        c.style.setProperty("--d", (i * 0.07).toFixed(2) + "s");
+        smoke.appendChild(c);
+      });
+      world.appendChild(smoke);
+      var stars = document.createElementNS(NS, "g");
+      stars.setAttribute("class", "sc-stars");
+      for (var i = 0; i < 18; i++) {
+        var st = document.createElementNS(NS, "circle");
+        st.setAttribute("cx", (40 + Math.random() * 1360).toFixed(0));
+        st.setAttribute("cy", (14 + Math.random() * 110).toFixed(0));
+        st.setAttribute("r", (0.9 + Math.random() * 1.2).toFixed(1));
+        st.style.setProperty("--d", (-Math.random() * 4).toFixed(2) + "s");
+        stars.appendChild(st);
+      }
+      svg.insertBefore(stars, svg.firstChild.nextSibling);
+    }
+    menuEl.appendChild(mf);
+  })();
+
   /* ---------- Intro on every load: the logo and name bloom out of a pixel grid ---------- */
   var intro = document.querySelector("[data-intro]");
   function runIntro() {
@@ -426,6 +497,54 @@
       }, 0);
     });
     menu.resetPreview = function () { current = ""; showPanel("now"); };
+  }
+
+  /* ---------- Menu footer: builds as the menu scrolls; rocket launches once complete ---------- */
+  var mfoot = menu && menu.querySelector("[data-menu-footer]");
+  if (mfoot) {
+    var mscene = mfoot.querySelector("[data-menu-scene]");
+    var msvg = mscene.querySelector("svg");
+    var mTicking = false;
+    var setMenuProgress = function () {
+      mTicking = false;
+      if (menu.hidden) return;
+      if (reduceMotion.matches) { mfoot.style.setProperty("--p", "1"); mfoot.classList.add("is-built"); return; }
+      var r = mscene.getBoundingClientRect();
+      var p = Math.max(0, Math.min(1, (window.innerHeight - r.top) / (r.height * 0.85)));
+      mfoot.style.setProperty("--p", p.toFixed(3));
+      mfoot.classList.toggle("is-built", p > 0.97);
+    };
+    menu.addEventListener("scroll", function () {
+      if (!mTicking) { mTicking = true; requestAnimationFrame(setMenuProgress); }
+    }, { passive: true });
+    window.addEventListener("resize", setMenuProgress);
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.target === mfoot) {
+            mfoot.classList.toggle("is-live", en.isIntersecting && !reduceMotion.matches);
+            if (msvg && msvg.pauseAnimations) { en.isIntersecting && !reduceMotion.matches ? msvg.unpauseAnimations() : msvg.pauseAnimations(); }
+          } else if (en.isIntersecting) {
+            mfoot.classList.add("is-in");               // the sign-off band slides in
+          }
+        });
+      }, { root: menu, threshold: 0.15 }).observe(mfoot);
+    }
+    var bandObs = "IntersectionObserver" in window && new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) mfoot.classList.add("is-in");
+    }, { root: menu, threshold: 0.2 });
+    if (bandObs) bandObs.observe(mfoot.querySelector(".footer__band")); else mfoot.classList.add("is-in");
+    menu.addEventListener("click", function (e) {
+      if (e.target.closest("[data-menu-top]")) menu.scrollTo({ top: 0, behavior: reduceMotion.matches ? "auto" : "smooth" });
+    });
+    // each time the menu opens: back to the top, world un-built, band hidden again
+    new MutationObserver(function () {
+      if (!menu.hidden) {
+        menu.scrollTop = 0;
+        mfoot.classList.remove("is-in", "is-built");
+        setMenuProgress();
+      }
+    }).observe(menu, { attributes: true, attributeFilter: ["hidden"] });
   }
 
   /* ---------- Menu: live local time (IST) ---------- */
