@@ -36,6 +36,8 @@ Any static host works: GitHub Pages (Settings → Pages → deploy from branch, 
 
 The X and Discord hover cards show `assets/avatar-x.jpg` and `assets/avatar-discord.jpg` when those files exist (square images, about 200 × 200 px, cropped to a circle automatically). Without them the cards fall back to the fish logo. To use an image hosted elsewhere, change the `src` of the `<img>` inside each `.pcard__avatar` in `index.html`.
 
+The cards' banners use `assets/banner-x.jpg` and `assets/banner-discord.jpg` (4:1, 584 × 144 px, i.e. 2× the 292 × 72 banner). They are `<img>` tags inside each `.pcard__banner` in `index.html`; if a file is missing, the card's grid pattern shows instead. Keep the bottom-left corner unimportant: the avatar covers it.
+
 ## Placeholders to replace
 
 Search `index.html` for `TODO`:
