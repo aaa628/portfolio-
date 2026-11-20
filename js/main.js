@@ -340,9 +340,20 @@
 
   /* ---------- Header background after scrolling ---------- */
   var header = document.getElementById("header");
+  var lastY = window.scrollY;
   function onScrollHeader() {
     if (!header) return;
-    header.classList.toggle("is-scrolled", window.scrollY > 24);
+    var y = window.scrollY;
+    header.classList.toggle("is-scrolled", y > 24);
+    // fade away while scrolling down, come back on the way up
+    var menuOpen = menuBtn && menuBtn.getAttribute("aria-expanded") === "true";
+    if (y < 80 || menuOpen) {
+      header.classList.remove("is-hidden");
+      lastY = y;
+    } else if (Math.abs(y - lastY) > 6) {
+      header.classList.toggle("is-hidden", y > lastY && !header.querySelector(":focus-visible"));
+      lastY = y;
+    }
     var max = document.documentElement.scrollHeight - window.innerHeight;
     header.style.setProperty("--sp", max > 0 ? Math.min(1, window.scrollY / max).toFixed(4) : "0");
   }
@@ -354,6 +365,35 @@
     }, { passive: true });
   }
   window.addEventListener("scroll", onScrollHeader, { passive: true });
+  // keyboard users tabbing into the header always get it back
+  if (header) header.addEventListener("focusin", function () {
+    if (header.querySelector(":focus-visible")) header.classList.remove("is-hidden");
+  });
+
+  /* ---------- Verse: Arabic <-> English ---------- */
+  var verses = document.querySelectorAll("[data-verse]");
+  var showingEnglish = false;
+  function setVerse(english) {
+    showingEnglish = english;
+    verses.forEach(function (v) {
+      v.classList.add("is-swapping");
+      setTimeout(function () {
+        v.setAttribute("dir", english ? "ltr" : "rtl");
+        v.querySelector(".verse__ar").hidden = english;
+        v.querySelector(".verse__by-ar").hidden = english;
+        v.querySelector(".verse__en").hidden = !english;
+        v.querySelector(".verse__by-en").hidden = !english;
+        var t = v.querySelector("[data-verse-toggle]");
+        t.setAttribute("aria-pressed", String(english));
+        t.setAttribute("aria-label", english ? "Show the original Arabic" : "Show the English translation");
+        t.innerHTML = english ? '<span class="verse__glyph" lang="ar">ع</span>' : '<span class="mono">EN</span>';
+        v.classList.remove("is-swapping");
+      }, reduceMotion.matches ? 0 : 200);
+    });
+  }
+  document.querySelectorAll("[data-verse-toggle]").forEach(function (t) {
+    t.addEventListener("click", function () { setVerse(!showingEnglish); });
+  });
   onScrollHeader();
 
   /* ---------- Pop-ups ---------- */
