@@ -309,13 +309,14 @@
     menuBtn.setAttribute("aria-expanded", String(open));
     menuBtn.querySelector(".label").textContent = open ? "Close" : "Menu";
     document.body.style.overflow = open ? "hidden" : "";
+    root.classList.toggle("menu-open", open);          // the header steps aside
     if (open) {
       menu.hidden = false;
       requestAnimationFrame(function () {
         menu.classList.add("is-open");
-        // move focus into the menu only for keyboard users (no stray focus box for mouse/touch)
-        var first = menu.querySelector(".menu__list a");
-        if (first && fromKeyboard) first.focus();
+        // keyboard: start on the first section; mouse/touch: park focus on Close (no visible ring)
+        var target = fromKeyboard ? menu.querySelector(".menu__list a") : menu.querySelector("[data-menu-close]");
+        if (target) target.focus({ preventScroll: true });
       });
     } else {
       menu.classList.remove("is-open");
@@ -329,6 +330,7 @@
   }
   if (menu) {
     menu.addEventListener("click", function (e) {
+      if (e.target.closest("[data-menu-close]")) { setMenu(false); if (menuBtn) menuBtn.focus({ preventScroll: true }); return; }
       if (e.target.closest("a")) setMenu(false);
     });
   }
@@ -391,18 +393,25 @@
       current = name;
       mpv.querySelectorAll(".mpv__panel").forEach(function (p) {
         var on = p.getAttribute("data-panel") === name;
-        p.hidden = !on;
         p.classList.toggle("is-active", on);
+        p.setAttribute("aria-hidden", String(!on));
       });
       navItems.forEach(function (li) { li.classList.toggle("is-current", li.getAttribute("data-preview") === name); });
     };
     var backToNow = function () {
+      clearTimeout(intent);
       clearTimeout(backTimer);
       backTimer = setTimeout(function () { showPanel("now"); }, 260);
     };
+    var intent = 0;
     navItems.forEach(function (li) {
       var name = li.getAttribute("data-preview");
-      li.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") showPanel(name); });
+      // a short intent delay, so sweeping across rows doesn't flicker the preview
+      li.addEventListener("pointerenter", function (e) {
+        if (e.pointerType !== "mouse") return;
+        clearTimeout(intent); clearTimeout(backTimer);
+        intent = setTimeout(function () { showPanel(name); }, 70);
+      });
       li.querySelector("a").addEventListener("focus", function () { showPanel(name); });
     });
     menu.querySelector(".menu__list").addEventListener("pointerleave", backToNow);

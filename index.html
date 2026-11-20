@@ -248,7 +248,6 @@
         <span class="label theme-toggle__text">Dark</span>
       </button>
       <button class="pill menu-toggle" type="button" aria-expanded="false" aria-controls="menu" data-menu-toggle>
-        <kbd class="menu-toggle__esc mono" aria-hidden="true">Esc</kbd>
         <span class="label">Menu</span>
         <span class="menu-toggle__lines" aria-hidden="true"></span>
       </button>
@@ -258,7 +257,12 @@
   <!-- ============ Menu overlay ============ -->
   <div class="menu" id="menu" hidden>
     <div class="menu__inner">
-      <div class="menu__head mono"><span>Index</span><span>05 sections</span></div>
+      <div class="menu__head mono">
+        <span>Index · 05 sections</span>
+        <button class="menu__close" type="button" data-menu-close aria-label="Close menu">
+          <kbd class="menu__kbd" aria-hidden="true">Esc</kbd><span class="label">Close</span><span class="menu__x" aria-hidden="true"></span>
+        </button>
+      </div>
       <div class="menu__grid">
         <nav class="menu__nav" aria-label="Sections">
           <ol class="menu__list">
@@ -282,11 +286,11 @@
                 <div><dt class="mono">Local time</dt><dd><span data-clock>--:--:--</span> <span class="mono mpv__muted">IST · UTC+5:30</span></dd></div>
               </dl>
             </div>
-            <div class="mpv__panel" data-panel="about" hidden></div>
-            <div class="mpv__panel" data-panel="projects" hidden></div>
-            <div class="mpv__panel" data-panel="skills" hidden></div>
-            <div class="mpv__panel" data-panel="research" hidden></div>
-            <div class="mpv__panel" data-panel="contact" hidden></div>
+            <div class="mpv__panel" data-panel="about" aria-hidden="true"></div>
+            <div class="mpv__panel" data-panel="projects" aria-hidden="true"></div>
+            <div class="mpv__panel" data-panel="skills" aria-hidden="true"></div>
+            <div class="mpv__panel" data-panel="research" aria-hidden="true"></div>
+            <div class="mpv__panel" data-panel="contact" aria-hidden="true"></div>
           </div>
           <section class="menu__else">
             <p class="mono menu__label">Elsewhere</p>
