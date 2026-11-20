@@ -45,6 +45,10 @@ Any link to `#name` opens the pop-up `<dialog id="m-name">` instead of scrolling
 
 ## Editing the wheel
 
-The ring holds 14 cards: 7 real links, then the same 7 repeated (`aria-hidden`) to fill the circle. Each card's `style="--i:N"` sets its position. If you change a card, change its repeat too. `data-label` is the text shown under the ▲ pointer when that card is at the top.
+The ring holds 15 cards: 5 real links (Projects, Me, Capabilities, Research, Contact), then the same 5 repeated twice (`aria-hidden`) to fill the circle. Each card's `style="--i:N"` sets its position and `--n` on `.wheel__spin` is the total. If you change a card, change its repeats too. `data-label` is the text shown under the ▲ pointer when that card is at the top.
+
+## Projects
+
+The Projects card opens `m-projects`, an index of every project. Each row opens that project's own pop-up (`m-flare`, `m-studio`, `m-project-0`, `m-himonide`, `m-avionics`, `m-ai-lab`), which has a "← Projects" button back to the index. To add a project, add a row to the index and copy one project `<dialog>`.
 
 Motion respects the visitor's "reduce motion" setting: auto-spin, the letter flip and the marquee all stop.

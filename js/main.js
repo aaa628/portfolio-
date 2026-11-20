@@ -274,7 +274,7 @@
     var N = cards.length;
     var STEP = 360 / N;
     var AUTO = 5; // degrees per second
-    var ME_INDEX = 2; // start with the "Me" card at the top
+    var ME_INDEX = 1; // start with the "Me" card at the top
 
     var rot = -ME_INDEX * STEP;
     var vel = 0; // degrees per frame (inertia after a drag)

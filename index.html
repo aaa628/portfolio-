@@ -121,6 +121,41 @@
       <path d="M60 128 L98 128" stroke="currentColor" stroke-width="1" opacity=".6"/>
     </symbol>
 
+    <!-- Rocket avionics: flight profile with the planned state machine -->
+    <symbol id="sym-flight" viewBox="0 0 200 200">
+      <path d="M14 172 H186" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <path d="M34 172 C 38 120 58 66 104 46" fill="none" stroke="currentColor" stroke-width="2"/>
+      <path d="M104 46 C 134 34 156 92 168 172" fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="4 5"/>
+      <g fill="currentColor">
+        <circle cx="34" cy="172" r="3.2"/><circle cx="41" cy="122" r="3.2"/><circle cx="62" cy="82" r="3.2"/>
+        <circle cx="104" cy="46" r="5" class="flight-apogee"/><circle cx="150" cy="86" r="3.2"/><circle cx="168" cy="172" r="3.2"/>
+      </g>
+      <g fill="currentColor" font-family="JetBrains Mono, monospace" font-size="8">
+        <text x="40" y="186">LAUNCH</text><text x="10" y="120">BOOST</text><text x="70" y="86">COAST</text>
+        <text x="86" y="30">APOGEE</text><text x="156" y="82">DESCENT</text><text x="146" y="186">LANDED</text>
+      </g>
+      <path d="M104 46 V172" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2 4" opacity=".5"/>
+    </symbol>
+
+    <!-- AI workflow: a model wired to tools, inside a context ring -->
+    <symbol id="sym-nodes" viewBox="0 0 200 200">
+      <circle cx="100" cy="100" r="78" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 6" opacity=".6"/>
+      <g fill="none" stroke="currentColor" stroke-width="1.4">
+        <path d="M100 100 L100 34 M100 100 L162 80 M100 100 L140 156 M100 100 L60 156 M100 100 L38 80"/>
+      </g>
+      <g fill="currentColor"><circle cx="100" cy="100" r="22"/></g>
+      <text x="100" y="104" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" class="nodes-core">LLM</text>
+      <g class="nodes-tool" stroke="currentColor" stroke-width="1.4">
+        <rect x="80" y="22" width="40" height="18" rx="4"/><rect x="142" y="71" width="40" height="18" rx="4"/>
+        <rect x="120" y="147" width="40" height="18" rx="4"/><rect x="40" y="147" width="40" height="18" rx="4"/>
+        <rect x="18" y="71" width="40" height="18" rx="4"/>
+      </g>
+      <g fill="currentColor" font-family="JetBrains Mono, monospace" font-size="7.5" text-anchor="middle">
+        <text x="100" y="34">CODE</text><text x="162" y="83">TOOLS</text><text x="140" y="159">DOCS</text>
+        <text x="60" y="159">SHELL</text><text x="38" y="83">CONTEXT</text>
+      </g>
+    </symbol>
+
     <!-- Orbit diagram -->
     <symbol id="sym-orbit" viewBox="0 0 200 200">
       <g transform="rotate(-18 100 100)">
@@ -160,13 +195,10 @@
     <nav aria-label="Sections">
       <ol class="menu__list">
         <li><a href="#about" data-open="about"><span class="mono">01</span><span class="menu__word">About</span></a></li>
-        <li><a href="#flare" data-open="flare"><span class="mono">02</span><span class="menu__word">Flare AI</span></a></li>
-        <li><a href="#studio" data-open="studio"><span class="mono">03</span><span class="menu__word">628 Studio</span></a></li>
-        <li><a href="#project-0" data-open="project-0"><span class="mono">04</span><span class="menu__word">Project 0</span></a></li>
-        <li><a href="#himonide" data-open="himonide"><span class="mono">05</span><span class="menu__word">Himonide</span></a></li>
-        <li><a href="#skills" data-open="skills"><span class="mono">06</span><span class="menu__word">Capabilities</span></a></li>
-        <li><a href="#research" data-open="research"><span class="mono">07</span><span class="menu__word">Research</span></a></li>
-        <li><a href="#contact" data-open="contact"><span class="mono">08</span><span class="menu__word">Contact</span></a></li>
+        <li><a href="#projects" data-open="projects"><span class="mono">02</span><span class="menu__word">Projects</span></a></li>
+        <li><a href="#skills" data-open="skills"><span class="mono">03</span><span class="menu__word">Capabilities</span></a></li>
+        <li><a href="#research" data-open="research"><span class="mono">04</span><span class="menu__word">Research</span></a></li>
+        <li><a href="#contact" data-open="contact"><span class="mono">05</span><span class="menu__word">Contact</span></a></li>
       </ol>
     </nav>
     <p class="menu__foot mono"><span class="handle">aaa628</span> · 628 Studio · Kashmir, India</p>
@@ -222,87 +254,89 @@
           <span class="wheel__label label" data-wheel-label>Me</span>
         </p>
 
-        <div class="wheel__spin" data-wheel-spin>
-          <!-- The first seven cards are real links; the second seven repeat them to fill the ring -->
-          <a class="card card--flare" href="#flare" data-open="flare" data-label="Flare AI" style="--i:0">
-            <span class="card__top mono">01 / <span class="nocase">μg</span></span>
-            <svg class="card__flame" aria-hidden="true"><use href="#sym-flame"/></svg>
-            <svg class="card__ring" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="47"/></svg>
-            <span class="card__name">Flare AI</span>
-            <span class="card__foot mono">NASA Space Apps · 2026</span>
+        <div class="wheel__spin" data-wheel-spin style="--n:15">
+          <!-- Five cards, then two decorative repeats of the same five to fill the ring -->
+          <a class="card card--projects" href="#projects" data-open="projects" data-label="Projects" style="--i:0">
+            <span class="card__top mono">Index</span>
+            <span class="card__count">06</span>
+            <span class="card__title">Projects</span>
+            <span class="card__list mono">Flare AI<br>628 Studio<br>Project 0<br>Himonide<br>Avionics<br>AI Lab</span>
           </a>
-          <a class="card card--studio" href="#studio" data-open="studio" data-label="628 Studio" style="--i:1">
-            <span class="card__tri card__tri--t" aria-hidden="true"></span>
-            <svg class="card__emblem" aria-hidden="true"><use href="#sym-emblem"/></svg>
-            <span class="card__tri card__tri--b" aria-hidden="true"></span>
-            <span class="visually-hidden">628 Studio</span>
-          </a>
-          <a class="card card--me" href="#about" data-open="about" data-label="Me" style="--i:2">
+          <a class="card card--me" href="#about" data-open="about" data-label="Me" style="--i:1">
             <!-- TODO(photo): swap this card's contents for <img src="assets/portrait.jpg" alt="Portrait of aaa628"> -->
             <span class="card__code label handle">aaa<br>628</span>
             <span class="card__hello mono">Hello, I'm</span>
             <span class="card__mono-big">aaa<br>628</span>
             <span class="card__foot mono">Student developer</span>
           </a>
-          <a class="card card--p0" href="#project-0" data-open="project-0" data-label="Project 0" style="--i:3">
-            <svg class="card__topo" aria-hidden="true"><use href="#sym-topo"/></svg>
-            <span class="card__top label">Project 0</span>
-            <span class="card__big">150<small>km²</small></span>
-            <span class="card__side mono">Open world · 5 villages</span>
-            <span class="card__foot mono">628 Studio · UE5</span>
+          <a class="card card--caps" href="#skills" data-open="skills" data-label="Capabilities" style="--i:2">
+            <span class="card__top mono">Capabilities</span>
+            <span class="card__stack">Worlds<br>Software<br>Hardware<br>Systems</span>
+            <span class="card__foot mono">A · B · C · D</span>
           </a>
-          <a class="card card--himonide" href="#himonide" data-open="himonide" data-label="Himonide" style="--i:4">
-            <svg class="card__leg" aria-hidden="true"><use href="#sym-leg"/></svg>
-            <span class="card__vertical">Himonide</span>
-            <span class="card__top mono">R&amp;D · Perception</span>
-          </a>
-          <a class="card card--physics" href="#research" data-open="research" data-label="Research" style="--i:5">
+          <a class="card card--physics" href="#research" data-open="research" data-label="Research" style="--i:3">
             <span class="card__top label">Research</span>
             <svg class="card__orbit" aria-hidden="true"><use href="#sym-orbit"/></svg>
             <span class="card__eq mono">LLM systems<br>Applied physics<br>Hardware</span>
           </a>
-          <a class="card card--contact" href="#contact" data-open="contact" data-label="Contact" style="--i:6">
+          <a class="card card--contact" href="#contact" data-open="contact" data-label="Contact" style="--i:4">
             <svg class="card__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 L19 5 M8 5 H19 V16"/></svg>
             <span class="card__vertical">Contact</span>
             <span class="card__top mono">Say hello</span>
           </a>
           <!-- repeats (decorative) -->
-          <a class="card card--flare" href="#flare" data-open="flare" data-label="Flare AI" style="--i:7" aria-hidden="true" tabindex="-1">
-            <span class="card__top mono">01 / <span class="nocase">μg</span></span>
-            <svg class="card__flame" aria-hidden="true"><use href="#sym-flame"/></svg>
-            <svg class="card__ring" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="47"/></svg>
-            <span class="card__name">Flare AI</span>
-            <span class="card__foot mono">NASA Space Apps · 2026</span>
+          <a class="card card--projects" href="#projects" data-open="projects" data-label="Projects" style="--i:5" aria-hidden="true" tabindex="-1">
+            <span class="card__top mono">Index</span>
+            <span class="card__count">06</span>
+            <span class="card__title">Projects</span>
+            <span class="card__list mono">Flare AI<br>628 Studio<br>Project 0<br>Himonide<br>Avionics<br>AI Lab</span>
           </a>
-          <a class="card card--studio" href="#studio" data-open="studio" data-label="628 Studio" style="--i:8" aria-hidden="true" tabindex="-1">
-            <span class="card__tri card__tri--t"></span>
-            <svg class="card__emblem"><use href="#sym-emblem"/></svg>
-            <span class="card__tri card__tri--b"></span>
-          </a>
-          <a class="card card--me" href="#about" data-open="about" data-label="Me" style="--i:9" aria-hidden="true" tabindex="-1">
+          <a class="card card--me" href="#about" data-open="about" data-label="Me" style="--i:6" aria-hidden="true" tabindex="-1">
+            <!-- TODO(photo): swap this card's contents for <img src="assets/portrait.jpg" alt="Portrait of aaa628"> -->
             <span class="card__code label handle">aaa<br>628</span>
             <span class="card__hello mono">Hello, I'm</span>
             <span class="card__mono-big">aaa<br>628</span>
             <span class="card__foot mono">Student developer</span>
           </a>
-          <a class="card card--p0" href="#project-0" data-open="project-0" data-label="Project 0" style="--i:10" aria-hidden="true" tabindex="-1">
-            <svg class="card__topo"><use href="#sym-topo"/></svg>
-            <span class="card__top label">Project 0</span>
-            <span class="card__big">150<small>km²</small></span>
-            <span class="card__side mono">Open world · 5 villages</span>
-            <span class="card__foot mono">628 Studio · UE5</span>
+          <a class="card card--caps" href="#skills" data-open="skills" data-label="Capabilities" style="--i:7" aria-hidden="true" tabindex="-1">
+            <span class="card__top mono">Capabilities</span>
+            <span class="card__stack">Worlds<br>Software<br>Hardware<br>Systems</span>
+            <span class="card__foot mono">A · B · C · D</span>
           </a>
-          <a class="card card--himonide" href="#himonide" data-open="himonide" data-label="Himonide" style="--i:11" aria-hidden="true" tabindex="-1">
-            <svg class="card__leg"><use href="#sym-leg"/></svg>
-            <span class="card__vertical">Himonide</span>
-            <span class="card__top mono">R&amp;D · Perception</span>
-          </a>
-          <a class="card card--physics" href="#research" data-open="research" data-label="Research" style="--i:12" aria-hidden="true" tabindex="-1">
+          <a class="card card--physics" href="#research" data-open="research" data-label="Research" style="--i:8" aria-hidden="true" tabindex="-1">
             <span class="card__top label">Research</span>
-            <svg class="card__orbit"><use href="#sym-orbit"/></svg>
+            <svg class="card__orbit" aria-hidden="true"><use href="#sym-orbit"/></svg>
             <span class="card__eq mono">LLM systems<br>Applied physics<br>Hardware</span>
           </a>
-          <a class="card card--contact" href="#contact" data-open="contact" data-label="Contact" style="--i:13" aria-hidden="true" tabindex="-1">
+          <a class="card card--contact" href="#contact" data-open="contact" data-label="Contact" style="--i:9" aria-hidden="true" tabindex="-1">
+            <svg class="card__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 L19 5 M8 5 H19 V16"/></svg>
+            <span class="card__vertical">Contact</span>
+            <span class="card__top mono">Say hello</span>
+          </a>
+          <a class="card card--projects" href="#projects" data-open="projects" data-label="Projects" style="--i:10" aria-hidden="true" tabindex="-1">
+            <span class="card__top mono">Index</span>
+            <span class="card__count">06</span>
+            <span class="card__title">Projects</span>
+            <span class="card__list mono">Flare AI<br>628 Studio<br>Project 0<br>Himonide<br>Avionics<br>AI Lab</span>
+          </a>
+          <a class="card card--me" href="#about" data-open="about" data-label="Me" style="--i:11" aria-hidden="true" tabindex="-1">
+            <!-- TODO(photo): swap this card's contents for <img src="assets/portrait.jpg" alt="Portrait of aaa628"> -->
+            <span class="card__code label handle">aaa<br>628</span>
+            <span class="card__hello mono">Hello, I'm</span>
+            <span class="card__mono-big">aaa<br>628</span>
+            <span class="card__foot mono">Student developer</span>
+          </a>
+          <a class="card card--caps" href="#skills" data-open="skills" data-label="Capabilities" style="--i:12" aria-hidden="true" tabindex="-1">
+            <span class="card__top mono">Capabilities</span>
+            <span class="card__stack">Worlds<br>Software<br>Hardware<br>Systems</span>
+            <span class="card__foot mono">A · B · C · D</span>
+          </a>
+          <a class="card card--physics" href="#research" data-open="research" data-label="Research" style="--i:13" aria-hidden="true" tabindex="-1">
+            <span class="card__top label">Research</span>
+            <svg class="card__orbit" aria-hidden="true"><use href="#sym-orbit"/></svg>
+            <span class="card__eq mono">LLM systems<br>Applied physics<br>Hardware</span>
+          </a>
+          <a class="card card--contact" href="#contact" data-open="contact" data-label="Contact" style="--i:14" aria-hidden="true" tabindex="-1">
             <svg class="card__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 L19 5 M8 5 H19 V16"/></svg>
             <span class="card__vertical">Contact</span>
             <span class="card__top mono">Say hello</span>
@@ -321,13 +355,10 @@
       </div>
       <ol class="index__list">
         <li><a href="#about" data-open="about"><span class="mono">01</span><span class="index__word">About</span><span class="index__note mono">Profile</span></a></li>
-        <li><a href="#flare" data-open="flare"><span class="mono">02</span><span class="index__word">Flare AI</span><span class="index__note mono">Research tool</span></a></li>
-        <li><a href="#studio" data-open="studio"><span class="mono">03</span><span class="index__word">628 Studio</span><span class="index__note mono">Studio</span></a></li>
-        <li><a href="#project-0" data-open="project-0"><span class="mono">04</span><span class="index__word">Project 0</span><span class="index__note mono">World</span></a></li>
-        <li><a href="#himonide" data-open="himonide"><span class="mono">05</span><span class="index__word">Himonide</span><span class="index__note mono">Robotics R&amp;D</span></a></li>
-        <li><a href="#skills" data-open="skills"><span class="mono">06</span><span class="index__word">Capabilities</span><span class="index__note mono">Capabilities</span></a></li>
-        <li><a href="#research" data-open="research"><span class="mono">07</span><span class="index__word">Research</span><span class="index__note mono">R&amp;D focus</span></a></li>
-        <li><a href="#contact" data-open="contact"><span class="mono">08</span><span class="index__word">Contact</span><span class="index__note mono">Contact</span></a></li>
+        <li><a href="#projects" data-open="projects"><span class="mono">02</span><span class="index__word">Projects</span><span class="index__note mono">06 builds</span></a></li>
+        <li><a href="#skills" data-open="skills"><span class="mono">03</span><span class="index__word">Capabilities</span><span class="index__note mono">Capabilities</span></a></li>
+        <li><a href="#research" data-open="research"><span class="mono">04</span><span class="index__word">Research</span><span class="index__note mono">R&amp;D focus</span></a></li>
+        <li><a href="#contact" data-open="contact"><span class="mono">05</span><span class="index__word">Contact</span><span class="index__note mono">Contact</span></a></li>
       </ol>
     </section>
   </main>
@@ -341,8 +372,8 @@
             <p class="mono footer__h">Index</p>
             <ul>
               <li><a href="#about" data-open="about">About</a></li>
-              <li><a href="#flare" data-open="flare">Flare AI</a></li>
-              <li><a href="#studio" data-open="studio">628 Studio</a></li>
+              <li><a href="#projects" data-open="projects">Projects</a></li>
+              <li><a href="#skills" data-open="skills">Capabilities</a></li>
               <li><a href="#research" data-open="research">Research</a></li>
             </ul>
           </div>
@@ -416,13 +447,80 @@
       </div>
     </div>
   </dialog>
+  <dialog class="modal" id="m-projects" aria-labelledby="projects-title">
+    <div class="modal__panel">
+      <div class="modal__head">
+        <p class="mono modal__crumb">02 / Projects</p>
+        <button class="pill modal__close" type="button" data-close>
+          <span class="label">Close</span><span class="modal__x" aria-hidden="true"></span>
+        </button>
+      </div>
+      <div class="modal__body">
+        <h2 class="modal__title" id="projects-title">Projects</h2>
+        <p class="plist__intro">Six builds across software, worlds and hardware. Status is stated plainly: deployed, in development or concept.</p>
+        <ol class="plist">
+          <li><a href="#flare" data-open="flare">
+            <span class="plist__thumb plist__thumb--flare" aria-hidden="true"><svg><use href="#sym-flame"/></svg></span>
+            <span class="mono plist__n">01</span>
+            <span class="plist__name">Flare AI</span>
+            <span class="plist__line">Evidence-graded fire safety from NASA microgravity data.</span>
+            <span class="plist__meta mono">Research tool · Deployed</span>
+            <span class="plist__arrow" aria-hidden="true">→</span>
+          </a></li>
+          <li><a href="#studio" data-open="studio">
+            <span class="plist__thumb plist__thumb--studio" aria-hidden="true"><svg><use href="#sym-emblem"/></svg></span>
+            <span class="mono plist__n">02</span>
+            <span class="plist__name">628 Studio</span>
+            <span class="plist__line">An independent studio for interactive worlds.</span>
+            <span class="plist__meta mono">Studio · Active</span>
+            <span class="plist__arrow" aria-hidden="true">→</span>
+          </a></li>
+          <li><a href="#project-0" data-open="project-0">
+            <span class="plist__thumb plist__thumb--p0" aria-hidden="true"><svg><use href="#sym-topo"/></svg></span>
+            <span class="mono plist__n">03</span>
+            <span class="plist__name">Project 0</span>
+            <span class="plist__line">A 150 km² multiplayer world of rival villages.</span>
+            <span class="plist__meta mono">World · In development</span>
+            <span class="plist__arrow" aria-hidden="true">→</span>
+          </a></li>
+          <li><a href="#himonide" data-open="himonide">
+            <span class="plist__thumb plist__thumb--himonide" aria-hidden="true"><svg><use href="#sym-leg"/></svg></span>
+            <span class="mono plist__n">04</span>
+            <span class="plist__name">Himonide</span>
+            <span class="plist__line">A legged robot built to perceive the ground it stands on.</span>
+            <span class="plist__meta mono">Robotics · R&amp;D build</span>
+            <span class="plist__arrow" aria-hidden="true">→</span>
+          </a></li>
+          <li><a href="#avionics" data-open="avionics">
+            <span class="plist__thumb plist__thumb--avionics" aria-hidden="true"><svg><use href="#sym-flight"/></svg></span>
+            <span class="mono plist__n">05</span>
+            <span class="plist__name">Rocket Avionics</span>
+            <span class="plist__line">Flight computer and telemetry architecture.</span>
+            <span class="plist__meta mono">Embedded · Concept</span>
+            <span class="plist__arrow" aria-hidden="true">→</span>
+          </a></li>
+          <li><a href="#ai-lab" data-open="ai-lab">
+            <span class="plist__thumb plist__thumb--ailab" aria-hidden="true"><svg><use href="#sym-nodes"/></svg></span>
+            <span class="mono plist__n">06</span>
+            <span class="plist__name">AI Workflow Lab</span>
+            <span class="plist__line">Language models as engineering tools.</span>
+            <span class="plist__meta mono">AI · Ongoing</span>
+            <span class="plist__arrow" aria-hidden="true">→</span>
+          </a></li>
+        </ol>
+      </div>
+    </div>
+  </dialog>
   <dialog class="modal" id="m-flare" aria-labelledby="flare-title">
     <div class="modal__panel">
       <div class="modal__head">
         <p class="mono modal__crumb">02 / Projects / Flare AI</p>
-        <button class="pill modal__close" type="button" data-close>
-          <span class="label">Close</span><span class="modal__x" aria-hidden="true"></span>
-        </button>
+        <div class="modal__actions">
+          <a class="pill modal__back" href="#projects" data-open="projects"><span class="label">← Projects</span></a>
+          <button class="pill modal__close" type="button" data-close>
+            <span class="label">Close</span><span class="modal__x" aria-hidden="true"></span>
+          </button>
+        </div>
       </div>
       <div class="modal__body">
       <article class="feature" aria-labelledby="flare-title">
@@ -494,10 +592,13 @@
   <dialog class="modal" id="m-studio" aria-labelledby="studio-title">
     <div class="modal__panel">
       <div class="modal__head">
-        <p class="mono modal__crumb">03 / Projects / 628 Studio</p>
-        <button class="pill modal__close" type="button" data-close>
-          <span class="label">Close</span><span class="modal__x" aria-hidden="true"></span>
-        </button>
+        <p class="mono modal__crumb">02 / Projects / 628 Studio</p>
+        <div class="modal__actions">
+          <a class="pill modal__back" href="#projects" data-open="projects"><span class="label">← Projects</span></a>
+          <button class="pill modal__close" type="button" data-close>
+            <span class="label">Close</span><span class="modal__x" aria-hidden="true"></span>
+          </button>
+        </div>
       </div>
       <div class="modal__body">
       <article class="project" aria-labelledby="studio-title">
@@ -528,10 +629,13 @@
   <dialog class="modal" id="m-project-0" aria-labelledby="p0-title">
     <div class="modal__panel">
       <div class="modal__head">
-        <p class="mono modal__crumb">04 / Projects / Project 0</p>
-        <button class="pill modal__close" type="button" data-close>
-          <span class="label">Close</span><span class="modal__x" aria-hidden="true"></span>
-        </button>
+        <p class="mono modal__crumb">02 / Projects / Project 0</p>
+        <div class="modal__actions">
+          <a class="pill modal__back" href="#projects" data-open="projects"><span class="label">← Projects</span></a>
+          <button class="pill modal__close" type="button" data-close>
+            <span class="label">Close</span><span class="modal__x" aria-hidden="true"></span>
+          </button>
+        </div>
       </div>
       <div class="modal__body">
       <article class="project" aria-labelledby="p0-title">
@@ -564,10 +668,13 @@
   <dialog class="modal" id="m-himonide" aria-labelledby="himonide-title">
     <div class="modal__panel">
       <div class="modal__head">
-        <p class="mono modal__crumb">05 / Projects / Himonide</p>
-        <button class="pill modal__close" type="button" data-close>
-          <span class="label">Close</span><span class="modal__x" aria-hidden="true"></span>
-        </button>
+        <p class="mono modal__crumb">02 / Projects / Himonide</p>
+        <div class="modal__actions">
+          <a class="pill modal__back" href="#projects" data-open="projects"><span class="label">← Projects</span></a>
+          <button class="pill modal__close" type="button" data-close>
+            <span class="label">Close</span><span class="modal__x" aria-hidden="true"></span>
+          </button>
+        </div>
       </div>
       <div class="modal__body">
       <article class="project" aria-labelledby="himonide-title">
@@ -596,10 +703,88 @@
       </div>
     </div>
   </dialog>
+  <dialog class="modal" id="m-avionics" aria-labelledby="avionics-title">
+    <div class="modal__panel">
+      <div class="modal__head">
+        <p class="mono modal__crumb">02 / Projects / Rocket Avionics</p>
+        <div class="modal__actions">
+          <a class="pill modal__back" href="#projects" data-open="projects"><span class="label">← Projects</span></a>
+          <button class="pill modal__close" type="button" data-close>
+            <span class="label">Close</span><span class="modal__x" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+      <div class="modal__body">
+      <article class="project" aria-labelledby="avionics-title">
+        <div class="project__art project__art--avionics" aria-hidden="true">
+          <svg><use href="#sym-flight"/></svg>
+        </div>
+        <div class="project__body">
+          <p class="project__meta mono"><span class="tag">Concept · Embedded</span></p>
+          <h2 class="project__title" id="avionics-title">Rocket Avionics</h2>
+          <p class="project__lead">A flight computer and telemetry architecture for a small rocket: sense, classify, transmit, log. Architecture defined; not yet built or flown.</p>
+          <dl class="dgrid">
+            <div><dt class="mono">Platform</dt><dd>ESP32 flight computer</dd></div>
+            <div><dt class="mono">Sensing</dt><dd>Inertial · Barometric · GPS</dd></div>
+            <div><dt class="mono">Link</dt><dd>LoRa telemetry · onboard log</dd></div>
+            <div><dt class="mono">Status</dt><dd>Concept · 2026</dd></div>
+          </dl>
+          <p class="small-head label">Planned architecture</p>
+          <ol class="hl">
+            <li><span class="mono hl__n">01</span><strong class="hl__t">Flight-state machine</strong><span class="hl__d">Each phase of flight classified automatically from sensor data.</span></li>
+            <li><span class="mono hl__n">02</span><strong class="hl__t">One timeline</strong><span class="hl__d">Every sample timestamped and synchronised, logged on board.</span></li>
+            <li><span class="mono hl__n">03</span><strong class="hl__t">Ground station</strong><span class="hl__d">Python software to receive, visualise and analyse telemetry.</span></li>
+            <li><span class="mono hl__n">04</span><strong class="hl__t">Sim against reality</strong><span class="hl__d">Measured flight data checked against OpenRocket simulation.</span></li>
+          </ol>
+          <p class="chain mono chain--states" aria-label="Flight states"><span>Idle</span><span aria-hidden="true">→</span><span>Armed</span><span aria-hidden="true">→</span><span>Launch</span><span aria-hidden="true">→</span><span>Boost</span><span aria-hidden="true">→</span><span>Coast</span><span aria-hidden="true">→</span><span>Apogee</span><span aria-hidden="true">→</span><span>Descent</span><span aria-hidden="true">→</span><span>Landed</span></p>
+        </div>
+      </article>
+      </div>
+    </div>
+  </dialog>
+  <dialog class="modal" id="m-ai-lab" aria-labelledby="ailab-title">
+    <div class="modal__panel">
+      <div class="modal__head">
+        <p class="mono modal__crumb">02 / Projects / AI Workflow Lab</p>
+        <div class="modal__actions">
+          <a class="pill modal__back" href="#projects" data-open="projects"><span class="label">← Projects</span></a>
+          <button class="pill modal__close" type="button" data-close>
+            <span class="label">Close</span><span class="modal__x" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+      <div class="modal__body">
+      <article class="project" aria-labelledby="ailab-title">
+        <div class="project__art project__art--ailab" aria-hidden="true">
+          <svg><use href="#sym-nodes"/></svg>
+        </div>
+        <div class="project__body">
+          <p class="project__meta mono"><span class="tag">Exploration · Ongoing</span></p>
+          <h2 class="project__title" id="ailab-title">AI Workflow Lab</h2>
+          <p class="project__lead">An ongoing investigation into language models as engineering tools: where they help, where they drift, and how to keep long work coherent.</p>
+          <dl class="dgrid">
+            <div><dt class="mono">Environment</dt><dd>Claude Code · multi-model</dd></div>
+            <div><dt class="mono">Integrations</dt><dd>MCP · plugins</dd></div>
+            <div><dt class="mono">Focus</dt><dd>Context · memory · tokens</dd></div>
+            <div><dt class="mono">Status</dt><dd>Ongoing</dd></div>
+          </dl>
+          <p class="small-head label">Lines of inquiry</p>
+          <ol class="hl">
+            <li><span class="mono hl__n">01</span><strong class="hl__t">Context architecture</strong><span class="hl__d">Keeping long sessions coherent without constant re-summarising.</span></li>
+            <li><span class="mono hl__n">02</span><strong class="hl__t">Tool-connected agents</strong><span class="hl__d">Models wired to real tools through MCP and plugins.</span></li>
+            <li><span class="mono hl__n">03</span><strong class="hl__t">Multi-model work</strong><span class="hl__d">Which model suits planning, coding, research and debugging.</span></li>
+            <li><span class="mono hl__n">04</span><strong class="hl__t">Token economy</strong><span class="hl__d">Usage measured and tuned, not ignored.</span></li>
+          </ol>
+          <p class="roadmap mono">Applied in · Flare AI · this portfolio</p>
+        </div>
+      </article>
+      </div>
+    </div>
+  </dialog>
   <dialog class="modal" id="m-skills" aria-labelledby="skills-title">
     <div class="modal__panel">
       <div class="modal__head">
-        <p class="mono modal__crumb">06 / Capabilities</p>
+        <p class="mono modal__crumb">03 / Capabilities</p>
         <button class="pill modal__close" type="button" data-close>
           <span class="label">Close</span><span class="modal__x" aria-hidden="true"></span>
         </button>
@@ -624,15 +809,15 @@
             <p class="mono skill__n">B</p>
             <h3 class="skill__title">Software &amp; data</h3>
             <p class="skill__line">Verified data pipelines, grounded AI and hardened web delivery.</p>
-            <ul class="chips chips--sm" aria-label="Tools"><li>Python</li><li>JavaScript</li><li>Gemini API</li><li>Netlify</li><li>Playwright</li><li>GitHub</li></ul>
-            <p class="skill__used mono">Used in · Flare AI</p>
+            <ul class="chips chips--sm" aria-label="Tools"><li>Python</li><li>JavaScript</li><li>Gemini API</li><li>Claude Code</li><li>MCP</li><li>Netlify</li><li>Playwright</li><li>GitHub</li></ul>
+            <p class="skill__used mono">Used in · Flare AI · AI Workflow Lab</p>
           </div>
           <div class="skill">
             <p class="mono skill__n">C</p>
             <h3 class="skill__title">Hardware</h3>
-            <p class="skill__line">Actuation, sensing and electromechanical integration.</p>
-            <ul class="chips chips--sm" aria-label="Tools"><li>Arduino</li><li>Servo drive</li><li>Ultrasonic</li><li>Infrared</li></ul>
-            <p class="skill__used mono">Used in · Himonide</p>
+            <p class="skill__line">Actuation, sensing, telemetry and electromechanical integration.</p>
+            <ul class="chips chips--sm" aria-label="Tools"><li>Arduino</li><li>ESP32</li><li>Servo drive</li><li>Ultrasonic · IR</li><li>LoRa</li></ul>
+            <p class="skill__used mono">Used in · Himonide · Rocket Avionics (concept)</p>
           </div>
           <div class="skill">
             <p class="mono skill__n">D</p>
@@ -648,7 +833,7 @@
   <dialog class="modal" id="m-research" aria-labelledby="research-title">
     <div class="modal__panel">
       <div class="modal__head">
-        <p class="mono modal__crumb">07 / Research</p>
+        <p class="mono modal__crumb">04 / Research</p>
         <button class="pill modal__close" type="button" data-close>
           <span class="label">Close</span><span class="modal__x" aria-hidden="true"></span>
         </button>
@@ -676,7 +861,7 @@
   <dialog class="modal" id="m-contact" aria-labelledby="contact-title">
     <div class="modal__panel">
       <div class="modal__head">
-        <p class="mono modal__crumb">08 / Contact</p>
+        <p class="mono modal__crumb">05 / Contact</p>
         <button class="pill modal__close" type="button" data-close>
           <span class="label">Close</span><span class="modal__x" aria-hidden="true"></span>
         </button>
