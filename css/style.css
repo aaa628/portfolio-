@@ -383,6 +383,73 @@ html[data-theme="dark"] .header.is-scrolled { box-shadow: 0 1px 0 rgba(255, 255,
 .menu-toggle[aria-expanded="true"] .menu-toggle__lines::before { opacity: 1; transform: rotate(45deg); }
 .menu-toggle[aria-expanded="true"] .menu-toggle__lines::after { opacity: 1; transform: rotate(-45deg); }
 
+/* ---------- Discord: copy username ---------- */
+.discord {
+  position: relative;
+  width: 38px;
+  padding: 0;
+  justify-content: center;
+  overflow: visible;
+}
+.discord__icon { width: 19px; height: 19px; overflow: visible; }
+.discord__icon--sm { width: 15px; height: 15px; }
+.discord__lids { transform-box: fill-box; transform-origin: 50% 50%; transform: scaleY(0); }
+.discord__check { opacity: 0; }
+.discord__mark,
+.discord__lids { transition: opacity 0.2s var(--ease); }
+.js .discord .discord__icon { animation: dc-bob 3.2s ease-in-out infinite; }
+.js .discord__lids { animation: dc-blink 4.6s infinite; }
+@keyframes dc-bob { 50% { transform: translateY(-1.5px); } }
+@keyframes dc-blink { 0%, 93%, 100% { transform: scaleY(0); } 96% { transform: scaleY(1); } }
+.discord:hover,
+.discord:focus-visible { background: #5865f2; border-color: #5865f2; color: #fff; }
+.discord:hover .discord__icon { animation: dc-wiggle 0.6s ease-in-out; }
+@keyframes dc-wiggle { 25% { transform: rotate(-12deg); } 60% { transform: rotate(9deg); } 100% { transform: rotate(0); } }
+.discord__tip {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  padding: 5px 9px;
+  border-radius: 6px;
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 10.5px;
+  text-transform: none;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, -4px);
+  pointer-events: none;
+  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.discord:hover .discord__tip,
+.discord:focus-visible .discord__tip { opacity: 1; transform: translate(-50%, 0); }
+/* copied state: the mark becomes a check for a moment */
+.is-copied .discord__mark,
+.is-copied .discord__lids { opacity: 0; }
+.is-copied .discord__check { opacity: 1; }
+.discord.is-copied { animation: dc-pop 0.4s var(--ease); background: #5865f2; border-color: #5865f2; color: #fff; }
+@keyframes dc-pop { 40% { transform: scale(1.12); } }
+
+.toast {
+  position: fixed;
+  inset: auto auto clamp(18px, 4vw, 32px) 50%;
+  margin: 0;
+  padding: 11px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 11.5px;
+  text-transform: none;
+  box-shadow: 0 16px 30px -16px rgba(0, 0, 0, 0.5);
+  transform: translate(-50%, 0);
+  opacity: 1;
+  transition: opacity 0.25s var(--ease), transform 0.25s var(--ease);
+}
+.toast[hidden],
+.toast.is-out { opacity: 0; transform: translate(-50%, 10px); }
+.toast::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 9px; border-radius: 50%; background: #5865f2; vertical-align: 1px; }
+
 /* ---------- Menu overlay ---------- */
 .menu {
   position: fixed;
@@ -1596,6 +1663,27 @@ html:has(.modal[open]) { overflow: hidden; }
 }
 .contact__links a:hover { padding-left: 14px; color: var(--accent); }
 .contact__links .mono { color: var(--ink-3); font-size: 12px; }
+.contact__copy {
+  display: grid;
+  grid-template-columns: 120px 1fr auto;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 22px 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: clamp(18px, 2vw, 26px);
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: padding 0.3s var(--ease), color 0.2s;
+}
+.contact__copy:hover { padding-left: 14px; color: #5865f2; }
+.contact__copy-act { display: inline-flex; align-items: center; gap: 8px; }
+.contact__copy.is-copied .contact__copy-act { color: #5865f2; }
 .contact__links a > span:last-child { font-size: 22px; }
 
 .contact__badge {
@@ -1670,6 +1758,10 @@ html[data-theme="dark"] {
 .footer__h { color: var(--band-ink-2); margin-bottom: 14px !important; font-size: 11px; }
 .footer__cols li { padding: 3px 0; font-size: 16px; }
 .footer__cols a { text-decoration: none; }
+.footer__discord { padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
+.footer__discord .mono { color: var(--band-ink-2); font-size: 11px; text-transform: none; margin-left: 6px; }
+.footer__discord:hover,
+.footer__discord.is-copied { color: #8b93ff; }
 .footer__cols a:hover,
 .footer__top:hover { color: var(--accent); }
 .footer__meta {
@@ -1830,6 +1922,10 @@ html[data-theme="dark"] {
 }
 
 @media (max-width: 640px) {
+  .theme-toggle { width: 38px; padding: 0; justify-content: center; }
+  .theme-toggle .theme-toggle__text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .contact__copy { grid-template-columns: 1fr auto; }
+  .contact__copy .mono:first-child { grid-column: 1 / -1; margin-bottom: -10px; }
   .footer__cols { grid-template-columns: 1fr 1fr; }
   .footer__word { bottom: 38%; }
   .skills.skills--4 { grid-template-columns: 1fr; }
@@ -1860,6 +1956,7 @@ html[data-theme="dark"] {
 
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
+  .discord__lids { transform: scaleY(0) !important; }
   .js .header__verse .verse__line,
   .js .header__verse .verse__by { clip-path: none; }
   html { scroll-behavior: auto; }

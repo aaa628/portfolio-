@@ -370,6 +370,53 @@
     if (header.querySelector(":focus-visible")) header.classList.remove("is-hidden");
   });
 
+  /* ---------- Discord: copy the username ---------- */
+  var DISCORD = "aaa628no";
+  var toast = document.querySelector("[data-toast]");
+  var toastTimer = 0;
+  function showToast(msg) {
+    if (!toast) return;
+    toast.textContent = msg;
+    clearTimeout(toastTimer);
+    toast.classList.remove("is-out");
+    if (toast.showPopover) { try { toast.hidePopover(); } catch (e) {} toast.showPopover(); }
+    else toast.hidden = false;
+    toastTimer = setTimeout(function () {
+      toast.classList.add("is-out");
+      setTimeout(function () {
+        if (toast.hidePopover) { try { toast.hidePopover(); } catch (e) {} } else toast.hidden = true;
+      }, 260);
+    }, 2200);
+  }
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      var ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+      document.body.removeChild(ta);
+      ok ? resolve() : reject();
+    });
+  }
+  if (toast && !toast.showPopover) toast.hidden = true;
+  document.querySelectorAll("[data-discord]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      copyText(DISCORD).then(function () {
+        btn.classList.add("is-copied");
+        var label = btn.querySelector("[data-discord-label]");
+        if (label) label.textContent = "Copied";
+        showToast("Discord username copied · " + DISCORD);
+        setTimeout(function () {
+          btn.classList.remove("is-copied");
+          if (label) label.textContent = "Copy";
+        }, 1600);
+      }, function () {
+        showToast("Discord: " + DISCORD);   // copying blocked: at least show it
+      });
+    });
+  });
+
   /* ---------- Verse: Arabic <-> English ---------- */
   var verses = document.querySelectorAll("[data-verse]");
   var showingEnglish = false;
