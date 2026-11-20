@@ -414,7 +414,6 @@
   });
 
   /* ---------- Menu: live preview panel (built from the pop-ups' own content) ---------- */
-  var RESPONSE_TIME = "Usually replies within 1–2 days";   // TODO(now): set your real response time
   var mpv = menu && menu.querySelector("[data-mpv]");
   if (mpv) {
     var esc = function (t) { var d = document.createElement("div"); d.textContent = t; return d.innerHTML; };
@@ -453,8 +452,8 @@
     // Contact: availability + response time
     panel("contact").innerHTML = label("Contact") +
       '<p class="mpv__lead">' + esc(txt("#m-contact .contact__text")) + "</p>" +
-      '<dl class="mpv__rows"><div><dt class="mono">Response</dt><dd>' + esc(RESPONSE_TIME) + "</dd></div>" +
-      '<div><dt class="mono">Fastest</dt><dd>Discord · aaa628no</dd></div></dl>';
+      '<dl class="mpv__rows"><div><dt class="mono">Fastest</dt><dd>Discord · aaa628no</dd></div>' +
+      '<div><dt class="mono">Code</dt><dd>github.com/aaa628</dd></div></dl>';
 
     var navItems = menu.querySelectorAll(".menu__list li[data-preview]");
     var aside = menu.querySelector(".menu__aside");
