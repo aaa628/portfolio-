@@ -405,24 +405,6 @@ html[data-theme="dark"] .header.is-scrolled { box-shadow: 0 1px 0 rgba(255, 255,
 .discord:focus-visible { background: #5865f2; border-color: #5865f2; color: #fff; }
 .discord:hover .discord__icon { animation: dc-wiggle 0.6s ease-in-out; }
 @keyframes dc-wiggle { 25% { transform: rotate(-12deg); } 60% { transform: rotate(9deg); } 100% { transform: rotate(0); } }
-.discord__tip {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 50%;
-  padding: 5px 9px;
-  border-radius: 6px;
-  background: var(--ink);
-  color: var(--bg);
-  font-size: 10.5px;
-  text-transform: none;
-  white-space: nowrap;
-  opacity: 0;
-  transform: translate(-50%, -4px);
-  pointer-events: none;
-  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
-}
-.discord:hover .discord__tip,
-.discord:focus-visible .discord__tip { opacity: 1; transform: translate(-50%, 0); }
 /* copied state: the mark becomes a check for a moment */
 .is-copied .discord__mark,
 .is-copied .discord__lids { opacity: 0; }
@@ -449,6 +431,111 @@ html[data-theme="dark"] .header.is-scrolled { box-shadow: 0 1px 0 rgba(255, 255,
 .toast[hidden],
 .toast.is-out { opacity: 0; transform: translate(-50%, 10px); }
 .toast::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 9px; border-radius: 50%; background: #5865f2; vertical-align: 1px; }
+
+/* ---------- X button ---------- */
+.xbtn { width: 38px; padding: 0; justify-content: center; text-decoration: none; }
+.xbtn__icon { width: 15px; height: 15px; }
+.js .xbtn__icon { animation: x-tick 6s ease-in-out infinite; }
+@keyframes x-tick { 0%, 88%, 100% { transform: rotate(0); } 92% { transform: rotate(90deg) scale(0.85); } 96% { transform: rotate(90deg); } }
+.xbtn:hover,
+.xbtn:focus-visible { background: var(--ink); color: var(--bg); }
+
+/* ---------- Profile cards (hover / keyboard focus) ---------- */
+.social { position: relative; display: inline-flex; }
+.pcard {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: -6px;
+  z-index: 5;
+  width: 292px;
+  padding: 0 18px 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--bg);
+  color: var(--ink);
+  box-shadow: 0 28px 50px -24px rgba(0, 0, 0, 0.5), 0 2px 0 rgba(255, 255, 255, 0.4) inset;
+  text-align: left;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px) scale(0.98);
+  transform-origin: top right;
+  transition: opacity 0.2s var(--ease), transform 0.25s var(--ease), visibility 0s linear 0.25s;
+  transition-delay: 0.15s;
+}
+.pcard::before {           /* bridge, so the pointer can travel from button to card */
+  content: "";
+  position: absolute;
+  inset: -14px 0 auto 0;
+  height: 14px;
+}
+@media (hover: hover) {
+  .social:hover .pcard { opacity: 1; visibility: visible; transform: none; transition-delay: 0.12s, 0.12s, 0s; }
+}
+.social:has(:focus-visible) .pcard { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+
+.pcard__banner {
+  position: relative;
+  display: block;
+  height: 72px;
+  margin: 0 -18px;
+  border-radius: 17px 17px 0 0;
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px) 0 0 / 8px 8px,
+    linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px) 0 0 / 8px 8px,
+    #0e0e0f;
+}
+.pcard--discord .pcard__banner {
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px) 0 0 / 8px 8px,
+    linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px) 0 0 / 8px 8px,
+    linear-gradient(120deg, #5865f2, #3b44b8);
+}
+.pcard__banner-mark {
+  position: absolute;
+  right: 16px;
+  top: 14px;
+  width: 44px;
+  height: 44px;
+  color: rgba(255, 255, 255, 0.14);
+}
+.pcard__avatar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  margin: -32px 0 10px;
+  border: 4px solid var(--bg);
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--on-accent);
+  overflow: hidden;
+}
+.pcard--discord .pcard__avatar { background: #0e0e0f; color: #eceeee; }
+.pcard__avatar svg { width: 36px; height: 36px; }
+.pcard__avatar img { width: 100%; height: 100%; object-fit: cover; }
+.social:hover .pcard__avatar,
+.social:has(:focus-visible) .pcard__avatar { animation: pc-pop 0.5s var(--ease) 0.15s both; }
+@keyframes pc-pop { from { transform: scale(0.6); opacity: 0; } }
+.pcard p { margin: 0; }
+.pcard__name { font-stretch: 125%; font-weight: 800; font-size: 18px; line-height: 1.2; }
+.pcard__handle { color: var(--ink-3); font-size: 11px; text-transform: none; margin-bottom: 10px !important; }
+.pcard__bio { font-size: 14px; line-height: 1.45; color: var(--ink); }
+.pcard__meta { margin-top: 10px !important; color: var(--ink-3); font-size: 10.5px; text-transform: none; }
+.pcard__link { display: inline-block; text-decoration: none; color: #5865f2; }
+html[data-theme="dark"] .pcard__link { color: #8b93ff; }
+.pcard__link:hover { text-decoration: underline; }
+.pcard__cta {
+  display: block;
+  margin-top: 14px !important;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-2);
+  font-size: 10.5px;
+  text-decoration: none;
+}
+a.pcard__cta:hover { color: var(--accent); }
 
 /* ---------- Menu overlay ---------- */
 .menu {
@@ -1759,6 +1846,7 @@ html[data-theme="dark"] {
 .footer__cols li { padding: 3px 0; font-size: 16px; }
 .footer__cols a { text-decoration: none; }
 .footer__discord { padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
+.footer__sub { color: var(--band-ink-2); font-size: 11px; text-transform: none; margin-left: 6px; }
 .footer__discord .mono { color: var(--band-ink-2); font-size: 11px; text-transform: none; margin-left: 6px; }
 .footer__discord:hover,
 .footer__discord.is-copied { color: #8b93ff; }
