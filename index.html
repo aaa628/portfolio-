@@ -39,11 +39,22 @@
       try { t = localStorage.getItem("aaa628-theme"); } catch (e) {}
       if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t);
       document.documentElement.classList.add("js");
+      // First visit: play the logo intro (skipped for reduced motion)
+      var seen = null;
+      try { seen = localStorage.getItem("aaa628-intro"); } catch (e) {}
+      var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (!seen && !still) document.documentElement.classList.add("intro-pending");
     })();
   </script>
   <script src="js/main.js" defer></script>
 </head>
 <body>
+  <!-- First-visit logo reveal (pixel bloom). Drawn on the canvas by js/main.js -->
+  <div class="intro" data-intro>
+    <canvas class="intro__canvas" aria-hidden="true"></canvas>
+    <p class="intro__count mono" aria-hidden="true"><span data-intro-count>000</span> / 628</p>
+    <button class="intro__skip mono" type="button" data-intro-skip>Skip</button>
+  </div>
   <a class="skip" href="#index">Skip to content</a>
 
   <!-- ============ SVG sprite: shared artwork used by the cards and sections ============ -->
@@ -397,7 +408,10 @@
       </div>
       <div class="footer__meta footer__inner">
         <p class="mono">© 2026 <span class="handle">aaa628</span> · 628 Studio</p>
-        <a class="mono footer__top" href="#top">Back to top ↑</a>
+        <span class="footer__links">
+          <button class="mono footer__replay" type="button" data-replay-intro>Replay intro</button>
+          <a class="mono footer__top" href="#top">Back to top ↑</a>
+        </span>
       </div>
     </div>
 

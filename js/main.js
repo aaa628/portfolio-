@@ -1,4 +1,5 @@
 /* aaa628 — Portfolio interactions
+   - first-visit logo intro (pixel bloom)
    - flipping hero letters
    - card wheel (auto-spin, drag with inertia, active label)
    - pop-ups (cards, index and menu links open a dialog instead of scrolling)
@@ -9,6 +10,192 @@
 
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   var root = document.documentElement;
+
+  /* ---------- First-visit intro: the logo and name bloom out of a pixel grid ---------- */
+  var intro = document.querySelector("[data-intro]");
+  function runIntro() {
+    if (!intro) return;
+    var canvas = intro.querySelector("canvas");
+    var countEl = intro.querySelector("[data-intro-count]");
+    var skipBtn = intro.querySelector("[data-intro-skip]");
+    var ctx = canvas.getContext("2d");
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var vw = window.innerWidth, vh = window.innerHeight;
+    canvas.width = Math.round(vw * dpr);
+    canvas.height = Math.round(vh * dpr);
+
+    var CREAM = "#efece2";
+    var PALETTE = ["#e04a36", "#f2a93b", "#2f5fe0", "#efece2", "#e04a36", "#f6d27a"];
+    var FISH = new Path2D("M13 24 Q27 8 44 24 Q27 40 13 24 Z M13 24 L3 13.5 L3 34.5 Z");
+    var GILL = new Path2D("M24 15.5 Q20.5 24 24 32.5");
+    var WORD = "aaa628";
+
+    // ---- layout: [fish][gap][aaa628], centred, at most 82% of the width
+    var measure = document.createElement("canvas").getContext("2d");
+    function setFont(c, size) {
+      c.font = "900 " + size + "px Archivo, Arial Black, sans-serif";
+      if ("fontStretch" in c) c.fontStretch = "expanded";
+    }
+    setFont(measure, 100);
+    var m = measure.measureText(WORD);
+    var textW100 = m.width;
+    var asc100 = m.actualBoundingBoxAscent || 72, desc100 = m.actualBoundingBoxDescent || 2;
+    var fishW100 = 100 * 0.9 * (41 / 32), gap100 = 100 * 0.2;
+    var F = Math.min((vw * 0.82) / ((fishW100 + gap100 + textW100) / 100), vh * 0.3, 240);
+    var fishH = F * 0.9, fishW = fishH * (41 / 32), gap = F * 0.2;
+    var textW = textW100 * F / 100, asc = asc100 * F / 100, desc = desc100 * F / 100;
+    var totalW = fishW + gap + textW;
+    var x0 = (vw - totalW) / 2, cy = vh / 2;
+    var baseline = cy + (asc - desc) / 2;
+
+    function drawMark(c, ox, oy) {
+      // fish (with eye and gill cut out), then the name
+      c.save();
+      c.translate(x0 - ox, cy - fishH / 2 - oy);
+      c.scale(fishH / 32, fishH / 32);
+      c.translate(-3, -8);
+      c.lineJoin = "round"; c.lineWidth = 1.6;
+      c.fill(FISH); c.stroke(FISH);
+      c.globalCompositeOperation = "destination-out";
+      c.beginPath(); c.arc(35, 21.5, 3, 0, Math.PI * 2); c.fill();
+      c.lineWidth = 2.4; c.lineCap = "round"; c.stroke(GILL);
+      c.restore();
+      setFont(c, F);
+      c.textBaseline = "alphabetic";
+      c.fillText(WORD, x0 + fishW + gap - ox, baseline - oy);
+    }
+
+    // ---- rasterise the mark into a grid of cells
+    var cs = Math.max(6, Math.round(F / 15));          // cell size (CSS px)
+    var halo = cs * 9;                                 // how far the scattered squares reach
+    var bx = Math.floor(x0 - halo), by = Math.floor(cy - fishH / 2 - halo);
+    var bw = Math.ceil(totalW + halo * 2), bh = Math.ceil(fishH + halo * 2);
+    var mask = document.createElement("canvas"); mask.width = bw; mask.height = bh;
+    var mc = mask.getContext("2d"); mc.fillStyle = mc.strokeStyle = "#000";
+    drawMark(mc, bx, by);
+    var blur = document.createElement("canvas"); blur.width = bw; blur.height = bh;
+    var bc = blur.getContext("2d"); bc.filter = "blur(" + Math.round(cs * 2.6) + "px)"; bc.drawImage(mask, 0, 0);
+    var md = mc.getImageData(0, 0, bw, bh).data, bd = bc.getImageData(0, 0, bw, bh).data;
+    function alphaAt(d, x, y) {
+      x = Math.max(0, Math.min(bw - 1, x | 0)); y = Math.max(0, Math.min(bh - 1, y | 0));
+      return d[(y * bw + x) * 4 + 3] / 255;
+    }
+
+    var originX = x0 + fishW * 0.45, originY = cy;     // the bloom starts in the fish
+    var maxD = Math.hypot(totalW + halo, fishH / 2 + halo);
+    var cells = [];
+    for (var gy = 0; gy * cs < bh; gy++) {
+      for (var gx = 0; gx * cs < bw; gx++) {
+        var lx = gx * cs, ly = gy * cs, cov = 0;
+        for (var sy = 0; sy < 3; sy++) for (var sx = 0; sx < 3; sx++) cov += alphaAt(md, lx + (sx + 0.5) * cs / 3, ly + (sy + 0.5) * cs / 3);
+        cov /= 9;
+        var h = alphaAt(bd, lx + cs / 2, ly + cs / 2);
+        var kind = cov >= 0.5 ? 0 : cov >= 0.08 ? 1 : (h > 0.035 && Math.random() < h * 2 ? 2 : -1);
+        if (kind < 0) continue;
+        var px = bx + lx, py = by + ly;
+        var d = Math.hypot(px + cs / 2 - originX, py + cs / 2 - originY) / maxD;
+        var size = kind === 0 ? cs - 1.5 : kind === 1 ? cs * (0.5 + cov * 0.6) : cs * (0.22 + h * 0.6) * (0.6 + Math.random() * 0.4);
+        cells.push({
+          x: px, y: py, kind: kind, size: Math.min(size, cs - 1.5),
+          delay: 0.25 + d * 1.05 + Math.random() * 0.3,
+          color: PALETTE[(Math.random() * PALETTE.length) | 0],
+          outline: kind !== 0 && Math.random() < 0.35,
+          seed: Math.random() * 10
+        });
+      }
+    }
+
+    // ---- timeline (seconds)
+    var T_RESOLVE = 2.15, T_CLEAN = 2.7, T_EXIT = 3.25, T_END = 4.15;
+    var start = performance.now(), raf = 0, done = false, exiting = false;
+    var ease = function (t) { return 1 - Math.pow(1 - Math.max(0, Math.min(1, t)), 3); };
+
+    function frame(now) {
+      var t = (now - start) / 1000;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, vw, vh);
+
+      var fadeOut = ease((t - T_RESOLVE) / 0.5);           // edge + scattered squares leave
+      var crisp = ease((t - (T_RESOLVE + 0.1)) / 0.4);      // the clean mark arrives on top...
+      var gridOut = ease((t - (T_RESOLVE + 0.5)) / 0.3);    // ...then the grid under it goes
+      for (var i = 0; i < cells.length; i++) {
+        var c = cells[i], lt = t - c.delay;
+        if (lt <= 0) continue;
+        var grow = ease(lt / 0.22);
+        var alpha = c.kind === 0 ? 1 - gridOut : 1 - fadeOut;
+        if (alpha <= 0.01) continue;
+        var flicker = lt < 0.45 || c.kind !== 0;
+        var col = flicker ? PALETTE[((c.seed + Math.floor(t * 14)) | 0) % PALETTE.length] : CREAM;
+        if (c.kind !== 0 && lt > 0.6) col = c.color;
+        var sz = c.size * grow, off = (cs - sz) / 2;
+        ctx.globalAlpha = alpha;
+        if (c.outline && lt > 0.3) {
+          ctx.strokeStyle = col; ctx.lineWidth = 1;
+          ctx.strokeRect(c.x + off + 0.5, c.y + off + 0.5, sz - 1, sz - 1);
+        } else {
+          ctx.fillStyle = col;
+          ctx.fillRect(c.x + off, c.y + off, sz, sz);
+        }
+      }
+      if (crisp > 0) {
+        ctx.globalAlpha = crisp;
+        ctx.fillStyle = ctx.strokeStyle = CREAM;
+        drawMark(ctx, 0, 0);
+      }
+      ctx.globalAlpha = 1;
+      if (countEl) countEl.textContent = String(Math.round(628 * ease(t / T_CLEAN))).padStart(3, "0");
+
+      if (t >= T_EXIT && !exiting) leave();
+      if (t < T_END && !done) raf = requestAnimationFrame(frame);
+    }
+
+    function leave() {
+      if (exiting) return;
+      exiting = true;
+      root.classList.remove("intro-pending");          // the hero starts its own entrance now
+      intro.classList.add("is-leaving");
+      setTimeout(finish, 950);
+    }
+    function finish() {
+      done = true;
+      cancelAnimationFrame(raf);
+      intro.classList.remove("is-playing", "is-leaving");
+      root.classList.remove("intro-pending");
+      try { localStorage.setItem("aaa628-intro", "seen"); } catch (e) {}
+      document.removeEventListener("keydown", onKey);
+    }
+    function skip() {
+      // jump straight to the clean mark, then lift
+      start = performance.now() - T_CLEAN * 1000;
+      leave();
+    }
+    function onKey(e) { if (e.key === "Escape" || e.key === "Enter" || e.key === " ") skip(); }
+    if (skipBtn) skipBtn.onclick = skip;
+    document.addEventListener("keydown", onKey);
+
+    intro.classList.add("is-playing");
+    raf = requestAnimationFrame(frame);
+  }
+
+  function startIntro() {
+    // wait for the (embedded) display font so the name is drawn in Archivo
+    var go = function () { runIntro(); };
+    if (document.fonts && document.fonts.load) {
+      Promise.race([
+        document.fonts.load('900 100px "Archivo"'),
+        new Promise(function (r) { setTimeout(r, 800); })
+      ]).then(go, go);
+    } else {
+      go();
+    }
+  }
+  if (root.classList.contains("intro-pending")) startIntro();
+  document.querySelectorAll("[data-replay-intro]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      root.classList.add("intro-pending");
+      startIntro();
+    });
+  });
 
   /* ---------- Hero: split the word into flipping letters ---------- */
   function buildFlipWord(el) {
