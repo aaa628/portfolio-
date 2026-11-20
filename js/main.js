@@ -341,7 +341,17 @@
   /* ---------- Header background after scrolling ---------- */
   var header = document.getElementById("header");
   function onScrollHeader() {
-    if (header) header.classList.toggle("is-scrolled", window.scrollY > 24);
+    if (!header) return;
+    header.classList.toggle("is-scrolled", window.scrollY > 24);
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    header.style.setProperty("--sp", max > 0 ? Math.min(1, window.scrollY / max).toFixed(4) : "0");
+  }
+  // The header's grid texture leans slightly toward the pointer
+  if (header && !reduceMotion.matches && window.matchMedia("(pointer: fine)").matches) {
+    window.addEventListener("pointermove", function (e) {
+      header.style.setProperty("--mx", ((e.clientX / window.innerWidth) * 2 - 1).toFixed(3));
+      header.style.setProperty("--my", ((e.clientY / window.innerHeight) * 2 - 1).toFixed(3));
+    }, { passive: true });
   }
   window.addEventListener("scroll", onScrollHeader, { passive: true });
   onScrollHeader();
