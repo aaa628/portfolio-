@@ -339,6 +339,101 @@
     }
   });
 
+  /* ---------- Menu: live preview panel (built from the pop-ups' own content) ---------- */
+  var RESPONSE_TIME = "Usually replies within 1–2 days";   // TODO(now): set your real response time
+  var mpv = menu && menu.querySelector("[data-mpv]");
+  if (mpv) {
+    var esc = function (t) { var d = document.createElement("div"); d.textContent = t; return d.innerHTML; };
+    var txt = function (sel) { var el = document.querySelector(sel); return el ? el.textContent.replace(/\s+/g, " ").trim() : ""; };
+    var panel = function (name) { return mpv.querySelector('[data-panel="' + name + '"]'); };
+    var label = function (t) { return '<p class="mono menu__label">Preview / ' + t + "</p>"; };
+
+    // About: the homepage lead + location
+    panel("about").innerHTML = label("About") +
+      '<p class="mpv__lead">' + esc(txt(".index__lead")) + "</p>" +
+      '<dl class="mpv__rows"><div><dt class="mono">Based</dt><dd>' + esc(txt(".index__meta")) + "</dd></div></dl>";
+
+    // Projects: every row of the Projects pop-up, clickable
+    var rows = Array.prototype.map.call(document.querySelectorAll("#m-projects .plist a"), function (a) {
+      return '<li><a href="#' + a.getAttribute("data-open") + '" data-open="' + a.getAttribute("data-open") + '">' +
+        '<span class="mpv__name">' + esc(a.querySelector(".plist__name").textContent) + "</span>" +
+        '<span class="mono mpv__meta">' + esc(a.querySelector(".plist__meta").textContent) + "</span></a></li>";
+    }).join("");
+    panel("projects").innerHTML = label("Projects") + '<ul class="mpv__list">' + rows + "</ul>";
+
+    // Capabilities: the four areas and their one-liners
+    var caps = Array.prototype.map.call(document.querySelectorAll("#m-skills .skill"), function (k) {
+      return '<li><div><span class="mpv__name">' + esc(k.querySelector(".skill__title").textContent) + "</span>" +
+        '<span class="mpv__text">' + esc(k.querySelector(".skill__line").textContent) + "</span></div></li>";
+    }).join("");
+    panel("skills").innerHTML = label("Capabilities") + '<ul class="mpv__list">' + caps + "</ul>";
+
+    // Research: the quote + the three pillars
+    var pillars = Array.prototype.map.call(document.querySelectorAll("#m-research .fields dt"), function (dt) {
+      var n = dt.querySelector(".fields__n"), name = dt.textContent.replace(n ? n.textContent : "", "").trim();
+      return '<li><div><span class="mono mpv__meta" style="text-align:left">' + esc(n ? n.textContent : "") + '</span><span class="mpv__name">' + esc(name) + "</span></div></li>";
+    }).join("");
+    panel("research").innerHTML = label("Research") +
+      '<p class="mpv__lead">' + esc(txt("#m-research .quote p")) + "</p>" + '<ul class="mpv__list">' + pillars + "</ul>";
+
+    // Contact: availability + response time
+    panel("contact").innerHTML = label("Contact") +
+      '<p class="mpv__lead">' + esc(txt("#m-contact .contact__text")) + "</p>" +
+      '<dl class="mpv__rows"><div><dt class="mono">Response</dt><dd>' + esc(RESPONSE_TIME) + "</dd></div>" +
+      '<div><dt class="mono">Fastest</dt><dd>Discord · aaa628no</dd></div></dl>';
+
+    var navItems = menu.querySelectorAll(".menu__list li[data-preview]");
+    var aside = menu.querySelector(".menu__aside");
+    var current = "now", backTimer = 0;
+    var showPanel = function (name) {
+      clearTimeout(backTimer);
+      if (name === current) return;
+      current = name;
+      mpv.querySelectorAll(".mpv__panel").forEach(function (p) {
+        var on = p.getAttribute("data-panel") === name;
+        p.hidden = !on;
+        p.classList.toggle("is-active", on);
+      });
+      navItems.forEach(function (li) { li.classList.toggle("is-current", li.getAttribute("data-preview") === name); });
+    };
+    var backToNow = function () {
+      clearTimeout(backTimer);
+      backTimer = setTimeout(function () { showPanel("now"); }, 260);
+    };
+    navItems.forEach(function (li) {
+      var name = li.getAttribute("data-preview");
+      li.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") showPanel(name); });
+      li.querySelector("a").addEventListener("focus", function () { showPanel(name); });
+    });
+    menu.querySelector(".menu__list").addEventListener("pointerleave", backToNow);
+    if (aside) {
+      aside.addEventListener("pointerenter", function () { clearTimeout(backTimer); });
+      aside.addEventListener("pointerleave", backToNow);
+    }
+    menu.addEventListener("focusout", function () {
+      setTimeout(function () {
+        var a = document.activeElement;
+        if (!menu.contains(a) || (!a.closest(".menu__list") && !a.closest(".menu__aside"))) showPanel("now");
+      }, 0);
+    });
+    menu.resetPreview = function () { current = ""; showPanel("now"); };
+  }
+
+  /* ---------- Menu: live local time (IST) ---------- */
+  var clockEl = menu && menu.querySelector("[data-clock]");
+  var clockTimer = 0;
+  var clockFmt = (window.Intl && Intl.DateTimeFormat) ? new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }) : null;
+  function tickClock() { if (clockEl && clockFmt) clockEl.textContent = clockFmt.format(new Date()); }
+  if (menu) {
+    new MutationObserver(function () {
+      clearInterval(clockTimer);
+      if (!menu.hidden) {
+        tickClock(); clockTimer = setInterval(tickClock, 1000);
+        if (menu.resetPreview) menu.resetPreview();
+      }
+    }).observe(menu, { attributes: true, attributeFilter: ["hidden"] });
+  }
+
   /* ---------- Header background after scrolling ---------- */
   var header = document.getElementById("header");
   var lastY = window.scrollY;
@@ -401,6 +496,17 @@
     });
   }
   if (toast && !toast.showPopover) toast.hidden = true;
+  document.querySelectorAll("[data-copy]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var value = btn.getAttribute("data-copy"), what = btn.getAttribute("data-copy-what") || "Text";
+      copyText(value).then(function () {
+        var lab = btn.querySelector("[data-copy-label]");
+        btn.classList.add("is-copied"); if (lab) lab.textContent = "Copied";
+        showToast(what + " copied · " + value);
+        setTimeout(function () { btn.classList.remove("is-copied"); if (lab) lab.textContent = "Copy"; }, 1600);
+      }, function () { showToast(what + ": " + value); });
+    });
+  });
   document.querySelectorAll("[data-discord]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       copyText(DISCORD).then(function () {

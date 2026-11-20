@@ -248,6 +248,7 @@
         <span class="label theme-toggle__text">Dark</span>
       </button>
       <button class="pill menu-toggle" type="button" aria-expanded="false" aria-controls="menu" data-menu-toggle>
+        <kbd class="menu-toggle__esc mono" aria-hidden="true">Esc</kbd>
         <span class="label">Menu</span>
         <span class="menu-toggle__lines" aria-hidden="true"></span>
       </button>
@@ -261,38 +262,47 @@
       <div class="menu__grid">
         <nav class="menu__nav" aria-label="Sections">
           <ol class="menu__list">
-            <li style="--k:0"><a href="#about" data-open="about"><span class="mono menu__n">01</span><span class="menu__word">About</span><span class="mono menu__note">Profile</span><span class="menu__arrow" aria-hidden="true">→</span></a></li>
-            <li style="--k:1"><a href="#projects" data-open="projects"><span class="mono menu__n">02</span><span class="menu__word">Projects</span><span class="mono menu__note">06 builds</span><span class="menu__arrow" aria-hidden="true">→</span></a></li>
-            <li style="--k:2"><a href="#skills" data-open="skills"><span class="mono menu__n">03</span><span class="menu__word">Capabilities</span><span class="mono menu__note">A–D</span><span class="menu__arrow" aria-hidden="true">→</span></a></li>
-            <li style="--k:3"><a href="#research" data-open="research"><span class="mono menu__n">04</span><span class="menu__word">Research</span><span class="mono menu__note">R&amp;D focus</span><span class="menu__arrow" aria-hidden="true">→</span></a></li>
-            <li style="--k:4"><a href="#contact" data-open="contact"><span class="mono menu__n">05</span><span class="menu__word">Contact</span><span class="mono menu__note">Say hello</span><span class="menu__arrow" aria-hidden="true">→</span></a></li>
+            <li style="--k:0" data-preview="about"><a href="#about" data-open="about"><span class="mono menu__n">01</span><span class="menu__word">About</span><span class="mono menu__note">Bio / 628</span><span class="menu__arrow" aria-hidden="true">→</span></a></li>
+            <li style="--k:1" data-preview="projects"><a href="#projects" data-open="projects"><span class="mono menu__n">02</span><span class="menu__word">Projects</span><span class="mono menu__note">06 builds</span><span class="menu__arrow" aria-hidden="true">→</span></a></li>
+            <li style="--k:2" data-preview="skills"><a href="#skills" data-open="skills"><span class="mono menu__n">03</span><span class="menu__word">Capabilities</span><span class="mono menu__note">Stack &amp; systems</span><span class="menu__arrow" aria-hidden="true">→</span></a></li>
+            <li style="--k:3" data-preview="research"><a href="#research" data-open="research"><span class="mono menu__n">04</span><span class="menu__word">Research</span><span class="mono menu__note">R&amp;D focus</span><span class="menu__arrow" aria-hidden="true">→</span></a></li>
+            <li style="--k:4" data-preview="contact"><a href="#contact" data-open="contact"><span class="mono menu__n">05</span><span class="menu__word">Contact</span><span class="mono menu__note">Direct</span><span class="menu__arrow" aria-hidden="true">→</span></a></li>
           </ol>
         </nav>
         <aside class="menu__aside">
-          <section>
-            <p class="mono menu__label">Verse</p>
-            <div class="verse menu__verse" data-verse dir="rtl">
-              <p class="verse__line">
-                <span class="verse__ar" lang="ar">إذا غامرتَ في شرفٍ مرومٍ، فلا تقنعْ بما دونَ النجومِ</span>
-                <span class="verse__en" lang="en" hidden>“When you pursue a lofty ambition, accept nothing below the stars.”</span>
-              </p>
-              <p class="verse__by"><span class="verse__by-ar" lang="ar">— أبو الطيب المتنبي</span><span class="verse__by-en mono" lang="en" hidden>— Al-Mutanabbi</span></p>
-              <button class="verse__toggle" type="button" data-verse-toggle aria-pressed="false" aria-label="Show the English translation"><span class="mono">EN</span></button>
+          <!-- Right column, top: "Now" by default; hovering a section swaps in its preview.
+               Previews are built by js/main.js from the pop-ups' own content. -->
+          <div class="mpv" data-mpv>
+            <div class="mpv__panel is-active" data-panel="now">
+              <p class="mono menu__label">Now / Telemetry</p>
+              <dl class="mpv__rows">
+                <div><dt class="mono">Status</dt><dd><span class="mpv__dot" aria-hidden="true"></span>Available for builds</dd></div>
+                <!-- TODO(now): what you are building at the moment, and which pop-up it opens -->
+                <div><dt class="mono">Currently</dt><dd>Building Project 0, a 150 km² open world. <a class="mpv__link mono" href="#project-0" data-open="project-0">Open →</a></dd></div>
+                <div><dt class="mono">Local time</dt><dd><span data-clock>--:--:--</span> <span class="mono mpv__muted">IST · UTC+5:30</span></dd></div>
+              </dl>
             </div>
-          </section>
-          <section>
+            <div class="mpv__panel" data-panel="about" hidden></div>
+            <div class="mpv__panel" data-panel="projects" hidden></div>
+            <div class="mpv__panel" data-panel="skills" hidden></div>
+            <div class="mpv__panel" data-panel="research" hidden></div>
+            <div class="mpv__panel" data-panel="contact" hidden></div>
+          </div>
+          <section class="menu__else">
             <p class="mono menu__label">Elsewhere</p>
             <ul class="menu__social">
+              <!-- TODO(links): your GitHub handle and email -->
+              <li><a href="https://github.com/[YOUR_HANDLE]" target="_blank" rel="noopener" data-todo="github"><span class="mono">GitHub</span><span>github.com/[YOUR_HANDLE]</span><span class="mono menu__act" aria-hidden="true">Open ↗</span></a></li>
               <li><a href="https://x.com/_aaa628" target="_blank" rel="noopener"><span class="mono">X</span><span>@_aaa628</span><span class="mono menu__act" aria-hidden="true">Open ↗</span></a></li>
               <li><button type="button" data-discord aria-label="Copy my Discord username, aaa628no"><span class="mono">Discord</span><span>aaa628no</span><span class="mono menu__act" aria-hidden="true"><span data-discord-label>Copy</span></span></button></li>
-              <!-- TODO(links): same email placeholder as the Contact pop-up -->
-              <li><a href="mailto:hello@example.com" data-todo="email"><span class="mono">Email</span><span>hello@example.com</span><span class="mono menu__act" aria-hidden="true">Write ↗</span></a></li>
+              <li><button type="button" data-copy="[YOUR_EMAIL]" data-copy-what="Email" aria-label="Copy my email address"><span class="mono">Email</span><span>[YOUR_EMAIL]</span><span class="mono menu__act" aria-hidden="true"><span data-copy-label>Copy</span></span></button></li>
             </ul>
           </section>
         </aside>
       </div>
       <div class="menu__foot mono"><span><span class="handle">aaa628</span> · 628 Studio</span><span>Kashmir, India</span></div>
     </div>
+  </div>
   </div>
 
   <main>
