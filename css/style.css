@@ -513,6 +513,7 @@ html[data-theme="dark"] .header.is-scrolled { box-shadow: 0 1px 0 rgba(255, 255,
   overflow: hidden;
 }
 .pcard--discord .pcard__avatar { background: #0e0e0f; color: #eceeee; }
+html[data-theme="dark"] .pcard--discord .pcard__avatar { background: #2b2d31; }
 .pcard__avatar svg { width: 36px; height: 36px; }
 .pcard__avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .social:hover .pcard__avatar,
