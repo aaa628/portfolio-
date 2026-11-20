@@ -11,42 +11,23 @@
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   var root = document.documentElement;
 
-  /* ---------- Menu footer: a livelier copy of the page footer at the bottom of the menu ----------
-     Cloned before anything else binds, so its Discord/copy/replay buttons are wired like the original. */
+  /* ---------- Footer world: extra animation details, then a copy at the bottom of the menu ----------
+     Done before anything else binds, so the copy's Discord/copy/replay buttons are wired like the original. */
   (function () {
     var menuEl = document.getElementById("menu");
     var src = document.querySelector("[data-footer]");
-    if (!menuEl || !src) return;
+    if (!src) return;
     var NS = "http://www.w3.org/2000/svg";
-    var mf = src.cloneNode(true);
-    mf.removeAttribute("data-footer");
-    mf.setAttribute("data-menu-footer", "");
-    mf.classList.add("footer--menu");
-    // unique ids inside the copy
-    mf.querySelectorAll("[id]").forEach(function (el) { el.id = el.id + "-m"; });
-    mf.querySelectorAll("[clip-path]").forEach(function (el) {
-      el.setAttribute("clip-path", el.getAttribute("clip-path").replace(/#([\w-]+)\)/, "#$1-m)"));
-    });
-    var scene = mf.querySelector("[data-footer-scene]");
-    scene.removeAttribute("data-footer-scene");
-    scene.setAttribute("data-menu-scene", "");
-    // "Back to top" scrolls the menu instead of the page
-    var top = mf.querySelector(".footer__top");
-    if (top) {
-      var btn = document.createElement("button");
-      btn.type = "button"; btn.className = top.className + " footer__replay"; btn.setAttribute("data-menu-top", "");
-      btn.textContent = "Back to index ↑";
-      top.replaceWith(btn);
-    }
+    // Extra life for the footer world (applies to the page footer and to its copy in the menu)
     // wordmark letters rise one by one
-    var word = mf.querySelector(".footer__word");
+    var word = src.querySelector(".footer__word");
     if (word) {
       var t = word.textContent; word.textContent = "";
       t.split("").forEach(function (ch, i) {
         var sp = document.createElement("span"); sp.textContent = ch; sp.style.setProperty("--i", i); word.appendChild(sp);
       });
     }
-    var svg = mf.querySelector("svg.footer__svg");
+    var svg = src.querySelector("svg.footer__svg");
     var world = svg && svg.querySelector("g[clip-path]");
     // rocket: exhaust flame under the body
     var rocket = svg && svg.querySelector(".sc-rocket");
@@ -79,7 +60,27 @@
       }
       svg.insertBefore(stars, svg.firstChild.nextSibling);
     }
-    menuEl.appendChild(mf);
+    var mf = src.cloneNode(true);
+    mf.removeAttribute("data-footer");
+    mf.setAttribute("data-menu-footer", "");
+    mf.classList.add("footer--menu");
+    // unique ids inside the copy
+    mf.querySelectorAll("[id]").forEach(function (el) { el.id = el.id + "-m"; });
+    mf.querySelectorAll("[clip-path]").forEach(function (el) {
+      el.setAttribute("clip-path", el.getAttribute("clip-path").replace(/#([\w-]+)\)/, "#$1-m)"));
+    });
+    var scene = mf.querySelector("[data-footer-scene]");
+    scene.removeAttribute("data-footer-scene");
+    scene.setAttribute("data-menu-scene", "");
+    // "Back to top" scrolls the menu instead of the page
+    var top = mf.querySelector(".footer__top");
+    if (top) {
+      var btn = document.createElement("button");
+      btn.type = "button"; btn.className = top.className + " footer__replay"; btn.setAttribute("data-menu-top", "");
+      btn.textContent = "Back to index ↑";
+      top.replaceWith(btn);
+    }
+    if (menuEl) menuEl.appendChild(mf);
   })();
 
   /* ---------- Intro on every load: the logo and name bloom out of a pixel grid ---------- */
@@ -756,17 +757,29 @@
     var ticking = false;
     var setProgress = function () {
       ticking = false;
-      if (reduceMotion.matches) { footer.style.setProperty("--p", "1"); return; }
+      if (reduceMotion.matches) { footer.style.setProperty("--p", "1"); footer.classList.add("is-built", "is-in"); return; }
       var r = scene.getBoundingClientRect();
       var p = (window.innerHeight - r.top) / (r.height * 0.9);
       p = Math.max(0, Math.min(1, p));
       footer.style.setProperty("--p", p.toFixed(3));
+      footer.classList.toggle("is-built", p > 0.97);   // rocket launches, windows flicker
     };
     window.addEventListener("scroll", function () {
       if (!ticking) { ticking = true; requestAnimationFrame(setProgress); }
     }, { passive: true });
     window.addEventListener("resize", setProgress);
     setProgress();
+
+    // The sign-off band slides in when it first comes into view
+    var band = footer.querySelector(".footer__band");
+    if ("IntersectionObserver" in window && band) {
+      var bo = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) { footer.classList.add("is-in"); bo.disconnect(); }
+      }, { threshold: 0.2 });
+      bo.observe(band);
+    } else {
+      footer.classList.add("is-in");
+    }
 
     // Ambient motion (walker, beacons, satellite) only while the footer is on screen
     var setLive = function (live) {
