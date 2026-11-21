@@ -201,10 +201,16 @@
 
   <!-- ============ Header ============ -->
   <header class="header" id="header">
-    <a class="brand" href="#top" aria-label="aaa628, back to top">
-      <svg class="brand__mark" aria-hidden="true"><use href="#sym-emblem"/></svg>
-      <span class="label handle">aaa628</span>
-    </a>
+    <div class="header__left">
+      <a class="brand" href="#top" aria-label="aaa628, back to top">
+        <svg class="brand__mark" aria-hidden="true"><use href="#sym-emblem"/></svg>
+        <span class="label handle">aaa628</span>
+      </a>
+        <button class="pill theme-toggle" type="button" aria-pressed="false" data-theme-toggle>
+          <span class="theme-toggle__dot" aria-hidden="true"></span>
+          <span class="label theme-toggle__text">Dark</span>
+        </button>
+    </div>
     <div class="verse header__verse" data-verse dir="rtl">
       <p class="verse__line">
         <span class="verse__ar" lang="ar">إذا غامرتَ في شرفٍ مرومٍ، فلا تقنعْ بما دونَ النجومِ</span>
@@ -287,10 +293,6 @@
           <p class="pcard__cta mono">Click the icon to copy the username</p>
         </div>
       </div>
-      <button class="pill theme-toggle" type="button" aria-pressed="false" data-theme-toggle>
-        <span class="theme-toggle__dot" aria-hidden="true"></span>
-        <span class="label theme-toggle__text">Dark</span>
-      </button>
       <button class="pill menu-toggle" type="button" aria-expanded="false" aria-controls="menu" data-menu-toggle>
         <span class="label">Menu</span>
         <span class="menu-toggle__lines" aria-hidden="true"></span>
