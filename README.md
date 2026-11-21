@@ -21,7 +21,11 @@ Then open http://localhost:8000.
 
 ## Deploy
 
-Any static host works: GitHub Pages (Settings → Pages → deploy from branch, root folder), Netlify (drag the folder in) or Vercel.
+Live at **https://aaa628.fishing**, served by GitHub Pages from this repository.
+
+- `CNAME` holds the custom domain; `.nojekyll` makes Pages serve the files as they are.
+- GitHub: Settings → Pages → *Deploy from a branch*, pick the branch that holds the site, folder `/ (root)`.
+- Porkbun DNS for `aaa628.fishing`: four `A` records on the bare domain to `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`, and `CNAME www → aaa628.github.io`.
 
 ## Files
 
