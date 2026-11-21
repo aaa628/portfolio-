@@ -388,12 +388,120 @@
     }
     if (themeMeta) themeMeta.setAttribute("content", dark ? "#0c0d0e" : "#e3e3e1");
   }
+  function applyTheme(next) {
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem("aaa628-theme", next); } catch (e) {}
+    syncThemeUI();
+  }
+
+  /* Theme transition: blades fly in, a jagged slash wall covers the screen, the theme swaps
+     underneath, then the colour breaks apart in splatter to reveal the new theme. */
+  var themeBusy = false;
+  function themeTransition(next) {
+    if (reduceMotion.matches || !document.createElement("canvas").getContext) { applyTheme(next); return; }
+    themeBusy = true;
+    var ACC = { light: "#e04a36", dark: "#3cc8d4" };
+    var fromAcc = ACC[next === "dark" ? "light" : "dark"], toAcc = ACC[next], INK = "#0b0b0c";
+    var cv = document.createElement("canvas");
+    cv.className = "theme-fx";
+    cv.setAttribute("aria-hidden", "true");
+    document.body.appendChild(cv);
+    var dpr = Math.min(window.devicePixelRatio || 1, 2), W = window.innerWidth, H = window.innerHeight;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    var c = cv.getContext("2d");
+    var D = Math.hypot(W, H), ANG = -0.42;                // the sweep runs along a tilted axis
+    var R = function (a, b) { return a + Math.random() * (b - a); };
+    var ease = function (t) { t = Math.max(0, Math.min(1, t)); return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
+    var easeOut = function (t) { t = Math.max(0, Math.min(1, t)); return 1 - Math.pow(1 - t, 3); };
+
+    // 1) blades in the current accent
+    var blades = [];
+    for (var i = 0; i < 34; i++) blades.push({ y: R(-D / 2, D / 2), len: R(18, 70), w: R(3, 9), sp: R(1.6, 2.8), t0: R(0, 0.28) });
+    // 2) the wall: jagged front in the new accent, black streaks riding its edge
+    var teeth = [];
+    var N = 26;
+    for (var k = 0; k <= N; k++) teeth.push(k % 2 ? R(-30, 0) : R(40, 150));
+    var streaks = [];
+    for (var j = 0; j < 12; j++) streaks.push({ y: R(-D / 2, D / 2), len: R(120, 320), w: R(10, 26), lead: R(-40, 120) });
+    // 3) the reveal: wobbly holes that grow out of the colour, plus drifting embers
+    var holes = [];
+    for (var h = 0; h < 30; h++) {
+      var pts = [];
+      for (var q = 0; q < 12; q++) pts.push(R(0.72, 1.18));
+      holes.push({ x: R(-0.05, 1.05) * W, y: R(-0.05, 1.05) * H, r: R(0.18, 0.42) * D, d: R(0, 0.22), pts: pts, rot: R(0, 6.28) });
+    }
+    var embers = [];
+    for (var e2 = 0; e2 < 40; e2++) embers.push({ x: R(0, W), y: R(0, H), vx: R(-40, 40), vy: R(-160, -60), s: R(2, 6), rot: R(0, 6.28), d: R(0, 0.25) });
+
+    var T_WALL0 = 0.12, T_WALL1 = 0.6, T_SWAP = 0.62, T_REVEAL = 0.7, T_END = 1.32;
+    var swapped = false, start = performance.now();
+
+    function wallFront(t) { return -D / 2 - 220 + ease((t - T_WALL0) / (T_WALL1 - T_WALL0)) * (D + 440); }
+    function blade(x, y, len, w, col) {
+      c.beginPath(); c.moveTo(x - len, y); c.lineTo(x, y - w / 2); c.lineTo(x + len * 0.35, y); c.lineTo(x, y + w / 2); c.closePath();
+      c.fillStyle = col; c.fill();
+    }
+    function frame(now) {
+      var t = (now - start) / 1000;
+      c.setTransform(dpr, 0, 0, dpr, 0, 0);
+      c.clearRect(0, 0, W, H);
+      if (t < T_REVEAL) {
+        c.save(); c.translate(W / 2, H / 2); c.rotate(ANG);
+        var X = wallFront(t);
+        // blades shoot across ahead of the wall
+        blades.forEach(function (b) {
+          var lt = t - b.t0; if (lt <= 0) return;
+          var bx = -D / 2 - 80 + lt * b.sp * D;
+          if (bx < X + 30) return;                       // already swallowed by the wall
+          blade(bx, b.y, b.len, b.w, fromAcc);
+        });
+        if (t > T_WALL0) {
+          // the jagged wall
+          c.beginPath(); c.moveTo(-D, -D / 2 - 40);
+          for (var k2 = 0; k2 <= N; k2++) c.lineTo(X + teeth[k2], -D / 2 - 40 + (D + 80) * k2 / N);
+          c.lineTo(-D, D / 2 + 40); c.closePath();
+          c.fillStyle = toAcc; c.fill();
+          // black streaks on its edge
+          streaks.forEach(function (st) { blade(X + st.lead, st.y, st.len, st.w, INK); });
+        }
+        c.restore();
+      } else {
+        // fully covered: swap happened; now the colour breaks apart
+        c.fillStyle = toAcc; c.fillRect(0, 0, W, H);
+        c.globalCompositeOperation = "destination-out";
+        holes.forEach(function (o) {
+          var g = easeOut((t - T_REVEAL - o.d) / 0.42); if (g <= 0) return;
+          c.beginPath();
+          for (var q2 = 0; q2 < o.pts.length; q2++) {
+            var a = o.rot + q2 / o.pts.length * Math.PI * 2, rr = o.r * g * o.pts[q2];
+            var px = o.x + Math.cos(a) * rr, py = o.y + Math.sin(a) * rr;
+            q2 ? c.lineTo(px, py) : c.moveTo(px, py);
+          }
+          c.closePath(); c.fill();
+        });
+        c.globalCompositeOperation = "source-over";
+        // embers drift up and fade
+        embers.forEach(function (m) {
+          var lt2 = t - T_REVEAL - m.d; if (lt2 <= 0) return;
+          var life = 1 - lt2 / 0.55; if (life <= 0) return;
+          c.save(); c.globalAlpha = life;
+          c.translate(m.x + m.vx * lt2, m.y + m.vy * lt2); c.rotate(m.rot + lt2 * 4);
+          blade(0, 0, m.s * 2.2, m.s, toAcc);
+          c.restore();
+        });
+      }
+      if (!swapped && t >= T_SWAP) { swapped = true; applyTheme(next); }
+      if (t < T_END) requestAnimationFrame(frame);
+      else { cv.remove(); themeBusy = false; }
+    }
+    requestAnimationFrame(frame);
+  }
+
   if (themeBtn) {
     themeBtn.addEventListener("click", function () {
+      if (themeBusy) return;
       var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
-      root.setAttribute("data-theme", next);
-      try { localStorage.setItem("aaa628-theme", next); } catch (e) {}
-      syncThemeUI();
+      themeTransition(next);
     });
   }
   syncThemeUI();
