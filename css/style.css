@@ -504,11 +504,39 @@ html[data-theme="dark"] .header.is-scrolled { box-shadow: 0 1px 0 rgba(255, 255,
     linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px) 0 0 / 8px 8px,
     #0e0e0f;
 }
-.pcard--discord .pcard__banner {
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px) 0 0 / 8px 8px,
-    linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px) 0 0 / 8px 8px,
-    linear-gradient(120deg, #5865f2, #3b44b8);
+.pcard--discord .pcard__banner { background: linear-gradient(170deg, #6470f5, #4a55d6); }
+
+/* Discord card banner: a bobber on still water in falling snow.
+   Paused while the card is closed; a still frame with reduced motion. */
+.bob { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.pcard--discord .bob * { animation-play-state: paused; }
+.social:hover .pcard--discord .bob *,
+.social:has(:focus-visible) .pcard--discord .bob * { animation-play-state: running; }
+.bob__flake { opacity: 0.7; transform: translateY(var(--y)); animation: bob-fall var(--t) linear var(--d) infinite; }
+@keyframes bob-fall {
+  0% { opacity: 0; transform: translate(0, -4px); }
+  12% { opacity: 0.7; }
+  85% { opacity: 0.7; }
+  100% { opacity: 0; transform: translate(var(--dx), 47px); }
+}
+.bob__float { animation: bob-float 1.6s ease-in-out infinite alternate; }
+@keyframes bob-float { to { transform: translateY(1.2px); } }
+.bob__bite { animation: bob-bite 8s ease-in-out 1s infinite; }
+@keyframes bob-bite {
+  0%, 62%, 82%, 100% { transform: translateY(0); }
+  65% { transform: translateY(4px); }
+  69% { transform: translateY(-1px); }
+  73% { transform: translateY(2.5px); }
+}
+.bob__ripple,
+.bob__splash { vector-effect: non-scaling-stroke; stroke-width: 0.7; transform-box: fill-box; transform-origin: center; }
+.bob__ripple { opacity: 0.5; animation: bob-ripple 3.2s ease-out infinite; }
+@keyframes bob-ripple { from { opacity: 0.6; transform: scale(1); } to { opacity: 0; transform: scale(5); } }
+.bob__splash { opacity: 0; animation: bob-splash 8s ease-out 1s infinite; }
+@keyframes bob-splash {
+  0%, 64% { opacity: 0; transform: scale(1); }
+  65% { opacity: 0.9; transform: scale(1); }
+  84%, 100% { opacity: 0; transform: scale(8); }
 }
 /* banner image: an <img> in the HTML (removed on error, so the pattern above shows instead) */
 .pcard__banner img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
