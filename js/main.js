@@ -11,6 +11,78 @@
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   var root = document.documentElement;
 
+  /* ---------- Footer world: extra animation details, then a copy at the bottom of the menu ----------
+     Done before anything else binds, so the copy's Discord/copy/replay buttons are wired like the original. */
+  (function () {
+    var menuEl = document.getElementById("menu");
+    var src = document.querySelector("[data-footer]");
+    if (!src) return;
+    var NS = "http://www.w3.org/2000/svg";
+    // Extra life for the footer world (applies to the page footer and to its copy in the menu)
+    // wordmark letters rise one by one
+    var word = src.querySelector(".footer__word");
+    if (word) {
+      var t = word.textContent; word.textContent = "";
+      t.split("").forEach(function (ch, i) {
+        var sp = document.createElement("span"); sp.textContent = ch; sp.style.setProperty("--i", i); word.appendChild(sp);
+      });
+    }
+    var svg = src.querySelector("svg.footer__svg");
+    var world = svg && svg.querySelector("g[clip-path]");
+    // rocket: exhaust flame under the body
+    var rocket = svg && svg.querySelector(".sc-rocket");
+    if (rocket) {
+      var flame = document.createElementNS(NS, "path");
+      flame.setAttribute("class", "sc-flame");
+      flame.setAttribute("d", "M745 366 Q757 412 769 366 Q763 380 757 368 Q751 380 745 366 Z");
+      rocket.insertBefore(flame, rocket.firstChild);
+    }
+    // smoke on the pad, stars in the sky
+    if (world) {
+      var smoke = document.createElementNS(NS, "g");
+      smoke.setAttribute("class", "sc-smoke");
+      [[-34, 0], [-18, 6], [0, 10], [18, 6], [34, 0], [-50, -4], [50, -4]].forEach(function (o, i) {
+        var c = document.createElementNS(NS, "circle");
+        c.setAttribute("cx", 757 + o[0]); c.setAttribute("cy", 368 + o[1] * -1); c.setAttribute("r", 9 + (i % 3) * 3);
+        c.style.setProperty("--d", (i * 0.07).toFixed(2) + "s");
+        smoke.appendChild(c);
+      });
+      world.appendChild(smoke);
+      var stars = document.createElementNS(NS, "g");
+      stars.setAttribute("class", "sc-stars");
+      for (var i = 0; i < 18; i++) {
+        var st = document.createElementNS(NS, "circle");
+        st.setAttribute("cx", (40 + Math.random() * 1360).toFixed(0));
+        st.setAttribute("cy", (14 + Math.random() * 110).toFixed(0));
+        st.setAttribute("r", (0.9 + Math.random() * 1.2).toFixed(1));
+        st.style.setProperty("--d", (-Math.random() * 4).toFixed(2) + "s");
+        stars.appendChild(st);
+      }
+      svg.insertBefore(stars, svg.firstChild.nextSibling);
+    }
+    var mf = src.cloneNode(true);
+    mf.removeAttribute("data-footer");
+    mf.setAttribute("data-menu-footer", "");
+    mf.classList.add("footer--menu");
+    // unique ids inside the copy
+    mf.querySelectorAll("[id]").forEach(function (el) { el.id = el.id + "-m"; });
+    mf.querySelectorAll("[clip-path]").forEach(function (el) {
+      el.setAttribute("clip-path", el.getAttribute("clip-path").replace(/#([\w-]+)\)/, "#$1-m)"));
+    });
+    var scene = mf.querySelector("[data-footer-scene]");
+    scene.removeAttribute("data-footer-scene");
+    scene.setAttribute("data-menu-scene", "");
+    // "Back to top" scrolls the menu instead of the page
+    var top = mf.querySelector(".footer__top");
+    if (top) {
+      var btn = document.createElement("button");
+      btn.type = "button"; btn.className = top.className + " footer__replay"; btn.setAttribute("data-menu-top", "");
+      btn.textContent = "Back to index ↑";
+      top.replaceWith(btn);
+    }
+    if (menuEl) menuEl.appendChild(mf);
+  })();
+
   /* ---------- Intro on every load: the logo and name bloom out of a pixel grid ---------- */
   var intro = document.querySelector("[data-intro]");
   function runIntro() {
@@ -32,8 +104,10 @@
 
     // ---- layout: [fish][gap][aaa628], centred, at most 82% of the width
     var measure = document.createElement("canvas").getContext("2d");
+    var FAMILY = (document.fonts && document.fonts.check && document.fonts.check('900 100px "Archivo"'))
+      ? '"Archivo"' : '"Arial Black", Arial, sans-serif';
     function setFont(c, size) {
-      c.font = "900 " + size + "px Archivo, Arial Black, sans-serif";
+      c.font = "900 " + size + "px " + FAMILY;
       if ("fontStretch" in c) c.fontStretch = "expanded";
     }
     setFont(measure, 100);
@@ -76,6 +150,11 @@
     var blur = document.createElement("canvas"); blur.width = bw; blur.height = bh;
     var bc = blur.getContext("2d"); bc.filter = "blur(" + Math.round(cs * 2.6) + "px)"; bc.drawImage(mask, 0, 0);
     var md = mc.getImageData(0, 0, bw, bh).data, bd = bc.getImageData(0, 0, bw, bh).data;
+    var crispCv = document.createElement("canvas");
+    crispCv.width = Math.ceil(bw * dpr); crispCv.height = Math.ceil(bh * dpr);
+    var cc = crispCv.getContext("2d");
+    cc.scale(dpr, dpr); cc.fillStyle = cc.strokeStyle = CREAM;
+    drawMark(cc, bx, by);
     function alphaAt(d, x, y) {
       x = Math.max(0, Math.min(bw - 1, x | 0)); y = Math.max(0, Math.min(bh - 1, y | 0));
       return d[(y * bw + x) * 4 + 3] / 255;
@@ -86,11 +165,15 @@
     var cells = [];
     for (var gy = 0; gy * cs < bh; gy++) {
       for (var gx = 0; gx * cs < bw; gx++) {
-        var lx = gx * cs, ly = gy * cs, cov = 0;
-        for (var sy = 0; sy < 3; sy++) for (var sx = 0; sx < 3; sx++) cov += alphaAt(md, lx + (sx + 0.5) * cs / 3, ly + (sy + 0.5) * cs / 3);
-        cov /= 9;
+        // exact ink coverage of this square (every pixel), so no sliver of the mark is missed
+        var lx = gx * cs, ly = gy * cs, cov = 0, n = 0;
+        for (var yy = ly; yy < ly + cs && yy < bh; yy++) {
+          for (var xx = lx; xx < lx + cs && xx < bw; xx++) { cov += md[(yy * bw + xx) * 4 + 3]; n++; }
+        }
+        cov = n ? cov / (n * 255) : 0;
         var h = alphaAt(bd, lx + cs / 2, ly + cs / 2);
-        var kind = cov >= 0.5 ? 0 : cov >= 0.08 ? 1 : (h > 0.035 && Math.random() < h * 2 ? 2 : -1);
+        // 0 inside, 1 edge, 3 thin sliver of the mark (no square, but it still resolves), 2 scattered halo
+        var kind = cov >= 0.5 ? 0 : cov >= 0.08 ? 1 : cov > 0 ? 3 : (h > 0.035 && Math.random() < h * 2 ? 2 : -1);
         if (kind < 0) continue;
         var px = bx + lx, py = by + ly;
         var d = Math.hypot(px + cs / 2 - originX, py + cs / 2 - originY) / maxD;
@@ -100,13 +183,16 @@
           delay: 0.25 + d * 1.05 + Math.random() * 0.3,
           color: PALETTE[(Math.random() * PALETTE.length) | 0],
           outline: kind !== 0 && Math.random() < 0.35,
-          seed: Math.random() * 10
+          seed: Math.random() * 10,
+          ro: d * 0.6 + Math.random() * 0.12      // resolve offset: when this square becomes the real mark
         });
       }
     }
 
     // ---- timeline (seconds)
-    var T_RESOLVE = 2.15, T_CLEAN = 2.7, T_EXIT = 3.25, T_END = 4.15;
+    var T_RESOLVE = 2.1;                // the resolve wave starts here...
+    var T_FULL = T_RESOLVE + 0.76;      // ...and has reached every square by here
+    var T_CLEAN = T_FULL, T_EXIT = T_FULL + 0.5, T_END = T_EXIT + 0.95;
     var start = performance.now(), raf = 0, done = false, exiting = false;
     var ease = function (t) { return 1 - Math.pow(1 - Math.max(0, Math.min(1, t)), 3); };
 
@@ -115,15 +201,31 @@
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, vw, vh);
 
-      var fadeOut = ease((t - T_RESOLVE) / 0.5);           // edge + scattered squares leave
-      var crisp = ease((t - (T_RESOLVE + 0.1)) / 0.4);      // the clean mark arrives on top...
-      var gridOut = ease((t - (T_RESOLVE + 0.5)) / 0.3);    // ...then the grid under it goes
+      var full = t >= T_FULL;
+      var fadeOut = ease((t - T_RESOLVE) / 0.45);       // the scattered squares drift away
+      if (full) ctx.drawImage(crispCv, 0, 0, crispCv.width, crispCv.height, bx, by, bw, bh);
       for (var i = 0; i < cells.length; i++) {
         var c = cells[i], lt = t - c.delay;
+        if (c.kind === 3 && !full && t >= T_RESOLVE + c.ro) {
+          ctx.globalAlpha = 1;
+          ctx.drawImage(crispCv, (c.x - bx - 0.5) * dpr, (c.y - by - 0.5) * dpr, (cs + 1) * dpr, (cs + 1) * dpr,
+            c.x - 0.5, c.y - 0.5, cs + 1, cs + 1);
+        }
+        if (c.kind === 3) continue;
         if (lt <= 0) continue;
-        var grow = ease(lt / 0.22);
-        var alpha = c.kind === 0 ? 1 - gridOut : 1 - fadeOut;
+        if (c.kind !== 2) {
+          if (full) continue;                            // the clean mark is already drawn whole
+          if (t >= T_RESOLVE + c.ro) {
+            // this square becomes its exact piece of the clean mark (slightly overlapped: no seams)
+            ctx.globalAlpha = 1;
+            ctx.drawImage(crispCv, (c.x - bx - 0.5) * dpr, (c.y - by - 0.5) * dpr, (cs + 1) * dpr, (cs + 1) * dpr,
+              c.x - 0.5, c.y - 0.5, cs + 1, cs + 1);
+            continue;
+          }
+        }
+        var alpha = c.kind === 2 ? 1 - fadeOut : 1;
         if (alpha <= 0.01) continue;
+        var grow = ease(lt / 0.22);
         var flicker = lt < 0.45 || c.kind !== 0;
         var col = flicker ? PALETTE[((c.seed + Math.floor(t * 14)) | 0) % PALETTE.length] : CREAM;
         if (c.kind !== 0 && lt > 0.6) col = c.color;
@@ -136,11 +238,6 @@
           ctx.fillStyle = col;
           ctx.fillRect(c.x + off, c.y + off, sz, sz);
         }
-      }
-      if (crisp > 0) {
-        ctx.globalAlpha = crisp;
-        ctx.fillStyle = ctx.strokeStyle = CREAM;
-        drawMark(ctx, 0, 0);
       }
       ctx.globalAlpha = 1;
       if (countEl) countEl.textContent = String(Math.round(628 * ease(t / T_CLEAN))).padStart(3, "0");
@@ -291,12 +388,120 @@
     }
     if (themeMeta) themeMeta.setAttribute("content", dark ? "#0c0d0e" : "#e3e3e1");
   }
+  function applyTheme(next) {
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem("aaa628-theme", next); } catch (e) {}
+    syncThemeUI();
+  }
+
+  /* Theme transition: blades fly in, a jagged slash wall covers the screen, the theme swaps
+     underneath, then the colour breaks apart in splatter to reveal the new theme. */
+  var themeBusy = false;
+  function themeTransition(next) {
+    if (reduceMotion.matches || !document.createElement("canvas").getContext) { applyTheme(next); return; }
+    themeBusy = true;
+    var ACC = { light: "#e04a36", dark: "#3cc8d4" };
+    var fromAcc = ACC[next === "dark" ? "light" : "dark"], toAcc = ACC[next], INK = "#0b0b0c";
+    var cv = document.createElement("canvas");
+    cv.className = "theme-fx";
+    cv.setAttribute("aria-hidden", "true");
+    document.body.appendChild(cv);
+    var dpr = Math.min(window.devicePixelRatio || 1, 2), W = window.innerWidth, H = window.innerHeight;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    var c = cv.getContext("2d");
+    var D = Math.hypot(W, H), ANG = -0.42;                // the sweep runs along a tilted axis
+    var R = function (a, b) { return a + Math.random() * (b - a); };
+    var ease = function (t) { t = Math.max(0, Math.min(1, t)); return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
+    var easeOut = function (t) { t = Math.max(0, Math.min(1, t)); return 1 - Math.pow(1 - t, 3); };
+
+    // 1) blades in the current accent
+    var blades = [];
+    for (var i = 0; i < 34; i++) blades.push({ y: R(-D / 2, D / 2), len: R(18, 70), w: R(3, 9), sp: R(1.6, 2.8), t0: R(0, 0.28) });
+    // 2) the wall: jagged front in the new accent, black streaks riding its edge
+    var teeth = [];
+    var N = 26;
+    for (var k = 0; k <= N; k++) teeth.push(k % 2 ? R(-30, 0) : R(40, 150));
+    var streaks = [];
+    for (var j = 0; j < 12; j++) streaks.push({ y: R(-D / 2, D / 2), len: R(120, 320), w: R(10, 26), lead: R(-40, 120) });
+    // 3) the reveal: wobbly holes that grow out of the colour, plus drifting embers
+    var holes = [];
+    for (var h = 0; h < 30; h++) {
+      var pts = [];
+      for (var q = 0; q < 12; q++) pts.push(R(0.72, 1.18));
+      holes.push({ x: R(-0.05, 1.05) * W, y: R(-0.05, 1.05) * H, r: R(0.18, 0.42) * D, d: R(0, 0.22), pts: pts, rot: R(0, 6.28) });
+    }
+    var embers = [];
+    for (var e2 = 0; e2 < 40; e2++) embers.push({ x: R(0, W), y: R(0, H), vx: R(-40, 40), vy: R(-160, -60), s: R(2, 6), rot: R(0, 6.28), d: R(0, 0.25) });
+
+    var T_WALL0 = 0.12, T_WALL1 = 0.6, T_SWAP = 0.62, T_REVEAL = 0.7, T_END = 1.32;
+    var swapped = false, start = performance.now();
+
+    function wallFront(t) { return -D / 2 - 220 + ease((t - T_WALL0) / (T_WALL1 - T_WALL0)) * (D + 440); }
+    function blade(x, y, len, w, col) {
+      c.beginPath(); c.moveTo(x - len, y); c.lineTo(x, y - w / 2); c.lineTo(x + len * 0.35, y); c.lineTo(x, y + w / 2); c.closePath();
+      c.fillStyle = col; c.fill();
+    }
+    function frame(now) {
+      var t = (now - start) / 1000;
+      c.setTransform(dpr, 0, 0, dpr, 0, 0);
+      c.clearRect(0, 0, W, H);
+      if (t < T_REVEAL) {
+        c.save(); c.translate(W / 2, H / 2); c.rotate(ANG);
+        var X = wallFront(t);
+        // blades shoot across ahead of the wall
+        blades.forEach(function (b) {
+          var lt = t - b.t0; if (lt <= 0) return;
+          var bx = -D / 2 - 80 + lt * b.sp * D;
+          if (bx < X + 30) return;                       // already swallowed by the wall
+          blade(bx, b.y, b.len, b.w, fromAcc);
+        });
+        if (t > T_WALL0) {
+          // the jagged wall
+          c.beginPath(); c.moveTo(-D, -D / 2 - 40);
+          for (var k2 = 0; k2 <= N; k2++) c.lineTo(X + teeth[k2], -D / 2 - 40 + (D + 80) * k2 / N);
+          c.lineTo(-D, D / 2 + 40); c.closePath();
+          c.fillStyle = toAcc; c.fill();
+          // black streaks on its edge
+          streaks.forEach(function (st) { blade(X + st.lead, st.y, st.len, st.w, INK); });
+        }
+        c.restore();
+      } else {
+        // fully covered: swap happened; now the colour breaks apart
+        c.fillStyle = toAcc; c.fillRect(0, 0, W, H);
+        c.globalCompositeOperation = "destination-out";
+        holes.forEach(function (o) {
+          var g = easeOut((t - T_REVEAL - o.d) / 0.42); if (g <= 0) return;
+          c.beginPath();
+          for (var q2 = 0; q2 < o.pts.length; q2++) {
+            var a = o.rot + q2 / o.pts.length * Math.PI * 2, rr = o.r * g * o.pts[q2];
+            var px = o.x + Math.cos(a) * rr, py = o.y + Math.sin(a) * rr;
+            q2 ? c.lineTo(px, py) : c.moveTo(px, py);
+          }
+          c.closePath(); c.fill();
+        });
+        c.globalCompositeOperation = "source-over";
+        // embers drift up and fade
+        embers.forEach(function (m) {
+          var lt2 = t - T_REVEAL - m.d; if (lt2 <= 0) return;
+          var life = 1 - lt2 / 0.55; if (life <= 0) return;
+          c.save(); c.globalAlpha = life;
+          c.translate(m.x + m.vx * lt2, m.y + m.vy * lt2); c.rotate(m.rot + lt2 * 4);
+          blade(0, 0, m.s * 2.2, m.s, toAcc);
+          c.restore();
+        });
+      }
+      if (!swapped && t >= T_SWAP) { swapped = true; applyTheme(next); }
+      if (t < T_END) requestAnimationFrame(frame);
+      else { cv.remove(); themeBusy = false; }
+    }
+    requestAnimationFrame(frame);
+  }
+
   if (themeBtn) {
     themeBtn.addEventListener("click", function () {
+      if (themeBusy) return;
       var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
-      root.setAttribute("data-theme", next);
-      try { localStorage.setItem("aaa628-theme", next); } catch (e) {}
-      syncThemeUI();
+      themeTransition(next);
     });
   }
   syncThemeUI();
@@ -304,17 +509,19 @@
   /* ---------- Menu overlay ---------- */
   var menu = document.getElementById("menu");
   var menuBtn = document.querySelector("[data-menu-toggle]");
-  function setMenu(open) {
+  function setMenu(open, fromKeyboard) {
     if (!menu || !menuBtn) return;
     menuBtn.setAttribute("aria-expanded", String(open));
     menuBtn.querySelector(".label").textContent = open ? "Close" : "Menu";
     document.body.style.overflow = open ? "hidden" : "";
+    root.classList.toggle("menu-open", open);          // the header steps aside
     if (open) {
       menu.hidden = false;
       requestAnimationFrame(function () {
         menu.classList.add("is-open");
-        var first = menu.querySelector("a");
-        if (first) first.focus();
+        // keyboard: start on the first section; mouse/touch: park focus on Close (no visible ring)
+        var target = fromKeyboard ? menu.querySelector(".menu__list a") : menu.querySelector("[data-menu-close]");
+        if (target) target.focus({ preventScroll: true });
       });
     } else {
       menu.classList.remove("is-open");
@@ -322,12 +529,13 @@
     }
   }
   if (menuBtn) {
-    menuBtn.addEventListener("click", function () {
-      setMenu(menuBtn.getAttribute("aria-expanded") !== "true");
+    menuBtn.addEventListener("click", function (e) {
+      setMenu(menuBtn.getAttribute("aria-expanded") !== "true", e.detail === 0);
     });
   }
   if (menu) {
     menu.addEventListener("click", function (e) {
+      if (e.target.closest("[data-menu-close]")) { setMenu(false); if (menuBtn) menuBtn.focus({ preventScroll: true }); return; }
       if (e.target.closest("a")) setMenu(false);
     });
   }
@@ -337,6 +545,155 @@
       menuBtn.focus();
     }
   });
+
+  /* ---------- Menu: live preview panel (built from the pop-ups' own content) ---------- */
+  var mpv = menu && menu.querySelector("[data-mpv]");
+  if (mpv) {
+    var esc = function (t) { var d = document.createElement("div"); d.textContent = t; return d.innerHTML; };
+    var txt = function (sel) { var el = document.querySelector(sel); return el ? el.textContent.replace(/\s+/g, " ").trim() : ""; };
+    var panel = function (name) { return mpv.querySelector('[data-panel="' + name + '"]'); };
+    var label = function (t) { return '<p class="mono menu__label">Preview / ' + t + "</p>"; };
+
+    // About: the homepage lead + location
+    panel("about").innerHTML = label("About") +
+      '<p class="mpv__lead">' + esc(txt(".index__lead")) + "</p>" +
+      '<dl class="mpv__rows"><div><dt class="mono">Based</dt><dd>' + esc(txt(".index__meta")) + "</dd></div></dl>";
+
+    // Projects: every row of the Projects pop-up, clickable
+    var rows = Array.prototype.map.call(document.querySelectorAll("#m-projects .plist a"), function (a) {
+      return '<li><a href="#' + a.getAttribute("data-open") + '" data-open="' + a.getAttribute("data-open") + '">' +
+        '<span class="mpv__name">' + esc(a.querySelector(".plist__name").textContent) + "</span>" +
+        '<span class="mono mpv__meta">' + esc(a.querySelector(".plist__meta").textContent) + "</span></a></li>";
+    }).join("");
+    panel("projects").innerHTML = label("Projects") + '<ul class="mpv__list">' + rows + "</ul>";
+
+    // Capabilities: the four areas and their one-liners
+    var caps = Array.prototype.map.call(document.querySelectorAll("#m-skills .skill"), function (k) {
+      return '<li><div><span class="mpv__name">' + esc(k.querySelector(".skill__title").textContent) + "</span>" +
+        '<span class="mpv__text">' + esc(k.querySelector(".skill__line").textContent) + "</span></div></li>";
+    }).join("");
+    panel("skills").innerHTML = label("Capabilities") + '<ul class="mpv__list">' + caps + "</ul>";
+
+    // Research: the quote + the three pillars
+    var pillars = Array.prototype.map.call(document.querySelectorAll("#m-research .fields dt"), function (dt) {
+      var n = dt.querySelector(".fields__n"), name = dt.textContent.replace(n ? n.textContent : "", "").trim();
+      return '<li><div><span class="mono mpv__meta" style="text-align:left">' + esc(n ? n.textContent : "") + '</span><span class="mpv__name">' + esc(name) + "</span></div></li>";
+    }).join("");
+    panel("research").innerHTML = label("Research") +
+      '<p class="mpv__lead">' + esc(txt("#m-research .quote p")) + "</p>" + '<ul class="mpv__list">' + pillars + "</ul>";
+
+    // Contact: availability + response time
+    panel("contact").innerHTML = label("Contact") +
+      '<p class="mpv__lead">' + esc(txt("#m-contact .contact__text")) + "</p>" +
+      '<dl class="mpv__rows"><div><dt class="mono">Fastest</dt><dd>Discord · aaa628no</dd></div>' +
+      '<div><dt class="mono">Code</dt><dd>github.com/aaa628</dd></div></dl>';
+
+    var navItems = menu.querySelectorAll(".menu__list li[data-preview]");
+    var aside = menu.querySelector(".menu__aside");
+    var current = "now", backTimer = 0;
+    var showPanel = function (name) {
+      clearTimeout(backTimer);
+      if (name === current) return;
+      current = name;
+      mpv.querySelectorAll(".mpv__panel").forEach(function (p) {
+        var on = p.getAttribute("data-panel") === name;
+        p.classList.toggle("is-active", on);
+        p.setAttribute("aria-hidden", String(!on));
+      });
+      navItems.forEach(function (li) { li.classList.toggle("is-current", li.getAttribute("data-preview") === name); });
+    };
+    var backToNow = function () {
+      clearTimeout(intent);
+      clearTimeout(backTimer);
+      backTimer = setTimeout(function () { showPanel("now"); }, 260);
+    };
+    var intent = 0;
+    navItems.forEach(function (li) {
+      var name = li.getAttribute("data-preview");
+      // a short intent delay, so sweeping across rows doesn't flicker the preview
+      li.addEventListener("pointerenter", function (e) {
+        if (e.pointerType !== "mouse") return;
+        clearTimeout(intent); clearTimeout(backTimer);
+        intent = setTimeout(function () { showPanel(name); }, 70);
+      });
+      li.querySelector("a").addEventListener("focus", function () { showPanel(name); });
+    });
+    menu.querySelector(".menu__list").addEventListener("pointerleave", backToNow);
+    if (aside) {
+      aside.addEventListener("pointerenter", function () { clearTimeout(backTimer); });
+      aside.addEventListener("pointerleave", backToNow);
+    }
+    menu.addEventListener("focusout", function () {
+      setTimeout(function () {
+        var a = document.activeElement;
+        if (!menu.contains(a) || (!a.closest(".menu__list") && !a.closest(".menu__aside"))) showPanel("now");
+      }, 0);
+    });
+    menu.resetPreview = function () { current = ""; showPanel("now"); };
+  }
+
+  /* ---------- Menu footer: builds as the menu scrolls; rocket launches once complete ---------- */
+  var mfoot = menu && menu.querySelector("[data-menu-footer]");
+  if (mfoot) {
+    var mscene = mfoot.querySelector("[data-menu-scene]");
+    var msvg = mscene.querySelector("svg");
+    var mTicking = false;
+    var setMenuProgress = function () {
+      mTicking = false;
+      if (menu.hidden) return;
+      if (reduceMotion.matches) { mfoot.style.setProperty("--p", "1"); mfoot.classList.add("is-built"); return; }
+      var r = mscene.getBoundingClientRect();
+      var p = Math.max(0, Math.min(1, (window.innerHeight - r.top) / (r.height * 0.85)));
+      mfoot.style.setProperty("--p", p.toFixed(3));
+      mfoot.classList.toggle("is-built", p > 0.97);
+    };
+    menu.addEventListener("scroll", function () {
+      if (!mTicking) { mTicking = true; requestAnimationFrame(setMenuProgress); }
+    }, { passive: true });
+    window.addEventListener("resize", setMenuProgress);
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.target === mfoot) {
+            mfoot.classList.toggle("is-live", en.isIntersecting && !reduceMotion.matches);
+            if (msvg && msvg.pauseAnimations) { en.isIntersecting && !reduceMotion.matches ? msvg.unpauseAnimations() : msvg.pauseAnimations(); }
+          } else if (en.isIntersecting) {
+            mfoot.classList.add("is-in");               // the sign-off band slides in
+          }
+        });
+      }, { root: menu, threshold: 0.15 }).observe(mfoot);
+    }
+    var bandObs = "IntersectionObserver" in window && new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) mfoot.classList.add("is-in");
+    }, { root: menu, threshold: 0.2 });
+    if (bandObs) bandObs.observe(mfoot.querySelector(".footer__band")); else mfoot.classList.add("is-in");
+    menu.addEventListener("click", function (e) {
+      if (e.target.closest("[data-menu-top]")) menu.scrollTo({ top: 0, behavior: reduceMotion.matches ? "auto" : "smooth" });
+    });
+    // each time the menu opens: back to the top, world un-built, band hidden again
+    new MutationObserver(function () {
+      if (!menu.hidden) {
+        menu.scrollTop = 0;
+        mfoot.classList.remove("is-in", "is-built");
+        setMenuProgress();
+      }
+    }).observe(menu, { attributes: true, attributeFilter: ["hidden"] });
+  }
+
+  /* ---------- Menu: live local time (IST) ---------- */
+  var clockEl = menu && menu.querySelector("[data-clock]");
+  var clockTimer = 0;
+  var clockFmt = (window.Intl && Intl.DateTimeFormat) ? new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }) : null;
+  function tickClock() { if (clockEl && clockFmt) clockEl.textContent = clockFmt.format(new Date()); }
+  if (menu) {
+    new MutationObserver(function () {
+      clearInterval(clockTimer);
+      if (!menu.hidden) {
+        tickClock(); clockTimer = setInterval(tickClock, 1000);
+        if (menu.resetPreview) menu.resetPreview();
+      }
+    }).observe(menu, { attributes: true, attributeFilter: ["hidden"] });
+  }
 
   /* ---------- Header background after scrolling ---------- */
   var header = document.getElementById("header");
@@ -400,6 +757,17 @@
     });
   }
   if (toast && !toast.showPopover) toast.hidden = true;
+  document.querySelectorAll("[data-copy]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var value = btn.getAttribute("data-copy"), what = btn.getAttribute("data-copy-what") || "Text";
+      copyText(value).then(function () {
+        var lab = btn.querySelector("[data-copy-label]");
+        btn.classList.add("is-copied"); if (lab) lab.textContent = "Copied";
+        showToast(what + " copied · " + value);
+        setTimeout(function () { btn.classList.remove("is-copied"); if (lab) lab.textContent = "Copy"; }, 1600);
+      }, function () { showToast(what + ": " + value); });
+    });
+  });
   document.querySelectorAll("[data-discord]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       copyText(DISCORD).then(function () {
@@ -521,17 +889,29 @@
     var ticking = false;
     var setProgress = function () {
       ticking = false;
-      if (reduceMotion.matches) { footer.style.setProperty("--p", "1"); return; }
+      if (reduceMotion.matches) { footer.style.setProperty("--p", "1"); footer.classList.add("is-built", "is-in"); return; }
       var r = scene.getBoundingClientRect();
       var p = (window.innerHeight - r.top) / (r.height * 0.9);
       p = Math.max(0, Math.min(1, p));
       footer.style.setProperty("--p", p.toFixed(3));
+      footer.classList.toggle("is-built", p > 0.97);   // rocket launches, windows flicker
     };
     window.addEventListener("scroll", function () {
       if (!ticking) { ticking = true; requestAnimationFrame(setProgress); }
     }, { passive: true });
     window.addEventListener("resize", setProgress);
     setProgress();
+
+    // The sign-off band slides in when it first comes into view
+    var band = footer.querySelector(".footer__band");
+    if ("IntersectionObserver" in window && band) {
+      var bo = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) { footer.classList.add("is-in"); bo.disconnect(); }
+      }, { threshold: 0.2 });
+      bo.observe(band);
+    } else {
+      footer.classList.add("is-in");
+    }
 
     // Ambient motion (walker, beacons, satellite) only while the footer is on screen
     var setLive = function (live) {

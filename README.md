@@ -21,7 +21,11 @@ Then open http://localhost:8000.
 
 ## Deploy
 
-Any static host works: GitHub Pages (Settings → Pages → deploy from branch, root folder), Netlify (drag the folder in) or Vercel.
+Live at **https://aaa628.fishing**, served by GitHub Pages from this repository.
+
+- `CNAME` holds the custom domain; `.nojekyll` makes Pages serve the files as they are.
+- GitHub: Settings → Pages → *Deploy from a branch*, branch **`main`**, folder `/ (root)`. `main` is also the repository's default branch.
+- Porkbun DNS for `aaa628.fishing`: four `A` records on the bare domain to `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`, and `CNAME www → aaa628.github.io`.
 
 ## Files
 
@@ -34,7 +38,7 @@ Any static host works: GitHub Pages (Settings → Pages → deploy from branch, 
 
 ## Profile-card avatars
 
-The X, Discord and GitHub hover cards show `assets/avatar-x.jpg`, `assets/avatar-discord.jpg` and `assets/avatar-github.jpg` when those files exist (square images, about 200 × 200 px, cropped to a circle automatically). Without them the cards fall back to the fish logo. To use an image hosted elsewhere, change the `src` of the `<img>` inside each `.pcard__avatar` in `index.html`.
+The GitHub, X and Discord hover cards show `assets/avatar-github.jpg`, `assets/avatar-x.jpg` and `assets/avatar-discord.jpg` when those files exist (square images, about 200 × 200 px, cropped to a circle automatically). Without them the cards fall back to the fish logo. To use an image hosted elsewhere, change the `src` of the `<img>` inside each `.pcard__avatar` in `index.html`.
 
 The cards' banners use `assets/banner-x.jpg` and `assets/banner-discord.jpg` (4:1, 584 × 144 px, i.e. 2× the 292 × 72 banner). They are `<img>` tags inside each `.pcard__banner` in `index.html`; if a file is missing, the card's grid pattern shows instead. Keep the bottom-left corner unimportant: the avatar covers it.
 
@@ -44,7 +48,7 @@ The GitHub card's banner has no image file: it is an animated space scene drawn 
 
 Search `index.html` for `TODO`:
 
-- **`TODO(links)`**: the Flare AI live site, source code and demo video buttons (`data-todo="flare-…"`), plus email and LinkedIn in Contact
+- **`TODO(links)`**: the Flare AI live site, source code and demo video buttons (`data-todo="flare-…"`), plus email, GitHub and LinkedIn in Contact
 - **`TODO(photo)`**: the "Me" card in the wheel. Replace its contents with `<img src="assets/portrait.jpg" alt="…">` (both copies, `--i:2` and `--i:9`)
 
 ## Pop-ups
