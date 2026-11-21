@@ -449,13 +449,12 @@
           <span class="wheel__label label" data-wheel-label>Me</span>
         </p>
 
-        <div class="wheel__spin" data-wheel-spin style="--n:15">
-          <!-- Five cards, then two decorative repeats of the same five to fill the ring -->
-          <a class="card card--projects" href="#projects" data-open="projects" data-label="Projects" style="--i:0">
-            <span class="card__top mono">Index</span>
-            <span class="card__count">06</span>
-            <span class="card__title">Projects</span>
-            <span class="card__list mono">Flare AI<br>628 Studio<br>Project 0<br>Himonide<br>Avionics<br>AI Lab</span>
+        <div class="wheel__spin" data-wheel-spin style="--n:18">
+          <!-- Six cards, then two decorative repeats of the same six to fill the ring -->
+          <a class="card card--studio" href="#studio" data-open="studio" data-label="628 Studio" style="--i:0">
+            <span class="card__top label">628 Studio</span>
+            <svg class="card__emblem" aria-hidden="true"><use href="#sym-emblem"/></svg>
+            <span class="card__foot mono">CEO · Founder</span>
           </a>
           <a class="card card--me" href="#about" data-open="about" data-label="Me" style="--i:1">
             <!-- TODO(photo): swap this card's contents for <img src="assets/portrait.jpg" alt="Portrait of aaa628"> -->
@@ -469,69 +468,85 @@
             <span class="card__stack">Worlds<br>Software<br>Hardware<br>Systems</span>
             <span class="card__foot mono">A · B · C · D</span>
           </a>
-          <a class="card card--physics" href="#research" data-open="research" data-label="Research" style="--i:3">
+          <a class="card card--projects" href="#projects" data-open="projects" data-label="Projects" style="--i:3">
+            <span class="card__top mono">Index</span>
+            <span class="card__count">06</span>
+            <span class="card__title">Projects</span>
+            <span class="card__list mono">Flare AI<br>628 Studio<br>Project 0<br>Himonide<br>Avionics<br>AI Lab</span>
+          </a>
+          <a class="card card--physics" href="#research" data-open="research" data-label="Research" style="--i:4">
             <span class="card__top label">Research</span>
             <svg class="card__orbit" aria-hidden="true"><use href="#sym-orbit"/></svg>
             <span class="card__eq mono">LLM systems<br>Applied physics<br>Hardware</span>
           </a>
-          <a class="card card--contact" href="#contact" data-open="contact" data-label="Contact" style="--i:4">
+          <a class="card card--contact" href="#contact" data-open="contact" data-label="Contact" style="--i:5">
             <svg class="card__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 L19 5 M8 5 H19 V16"/></svg>
             <span class="card__vertical">Contact</span>
             <span class="card__top mono">Say hello</span>
           </a>
           <!-- repeats (decorative) -->
-          <a class="card card--projects" href="#projects" data-open="projects" data-label="Projects" style="--i:5" aria-hidden="true" tabindex="-1">
-            <span class="card__top mono">Index</span>
-            <span class="card__count">06</span>
-            <span class="card__title">Projects</span>
-            <span class="card__list mono">Flare AI<br>628 Studio<br>Project 0<br>Himonide<br>Avionics<br>AI Lab</span>
+          <a class="card card--studio" href="#studio" data-open="studio" data-label="628 Studio" style="--i:6" aria-hidden="true" tabindex="-1">
+            <span class="card__top label">628 Studio</span>
+            <svg class="card__emblem" aria-hidden="true"><use href="#sym-emblem"/></svg>
+            <span class="card__foot mono">CEO · Founder</span>
           </a>
-          <a class="card card--me" href="#about" data-open="about" data-label="Me" style="--i:6" aria-hidden="true" tabindex="-1">
+          <a class="card card--me" href="#about" data-open="about" data-label="Me" style="--i:7" aria-hidden="true" tabindex="-1">
             <!-- TODO(photo): swap this card's contents for <img src="assets/portrait.jpg" alt="Portrait of aaa628"> -->
             <span class="card__code label handle">aaa<br>628</span>
             <span class="card__hello mono">Hello, I'm</span>
             <span class="card__mono-big">aaa<br>628</span>
             <span class="card__foot mono">Student developer</span>
           </a>
-          <a class="card card--caps" href="#skills" data-open="skills" data-label="Capabilities" style="--i:7" aria-hidden="true" tabindex="-1">
+          <a class="card card--caps" href="#skills" data-open="skills" data-label="Capabilities" style="--i:8" aria-hidden="true" tabindex="-1">
             <span class="card__top mono">Capabilities</span>
             <span class="card__stack">Worlds<br>Software<br>Hardware<br>Systems</span>
             <span class="card__foot mono">A · B · C · D</span>
           </a>
-          <a class="card card--physics" href="#research" data-open="research" data-label="Research" style="--i:8" aria-hidden="true" tabindex="-1">
+          <a class="card card--projects" href="#projects" data-open="projects" data-label="Projects" style="--i:9" aria-hidden="true" tabindex="-1">
+            <span class="card__top mono">Index</span>
+            <span class="card__count">06</span>
+            <span class="card__title">Projects</span>
+            <span class="card__list mono">Flare AI<br>628 Studio<br>Project 0<br>Himonide<br>Avionics<br>AI Lab</span>
+          </a>
+          <a class="card card--physics" href="#research" data-open="research" data-label="Research" style="--i:10" aria-hidden="true" tabindex="-1">
             <span class="card__top label">Research</span>
             <svg class="card__orbit" aria-hidden="true"><use href="#sym-orbit"/></svg>
             <span class="card__eq mono">LLM systems<br>Applied physics<br>Hardware</span>
           </a>
-          <a class="card card--contact" href="#contact" data-open="contact" data-label="Contact" style="--i:9" aria-hidden="true" tabindex="-1">
+          <a class="card card--contact" href="#contact" data-open="contact" data-label="Contact" style="--i:11" aria-hidden="true" tabindex="-1">
             <svg class="card__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 L19 5 M8 5 H19 V16"/></svg>
             <span class="card__vertical">Contact</span>
             <span class="card__top mono">Say hello</span>
           </a>
-          <a class="card card--projects" href="#projects" data-open="projects" data-label="Projects" style="--i:10" aria-hidden="true" tabindex="-1">
-            <span class="card__top mono">Index</span>
-            <span class="card__count">06</span>
-            <span class="card__title">Projects</span>
-            <span class="card__list mono">Flare AI<br>628 Studio<br>Project 0<br>Himonide<br>Avionics<br>AI Lab</span>
+          <a class="card card--studio" href="#studio" data-open="studio" data-label="628 Studio" style="--i:12" aria-hidden="true" tabindex="-1">
+            <span class="card__top label">628 Studio</span>
+            <svg class="card__emblem" aria-hidden="true"><use href="#sym-emblem"/></svg>
+            <span class="card__foot mono">CEO · Founder</span>
           </a>
-          <a class="card card--me" href="#about" data-open="about" data-label="Me" style="--i:11" aria-hidden="true" tabindex="-1">
+          <a class="card card--me" href="#about" data-open="about" data-label="Me" style="--i:13" aria-hidden="true" tabindex="-1">
             <!-- TODO(photo): swap this card's contents for <img src="assets/portrait.jpg" alt="Portrait of aaa628"> -->
             <span class="card__code label handle">aaa<br>628</span>
             <span class="card__hello mono">Hello, I'm</span>
             <span class="card__mono-big">aaa<br>628</span>
             <span class="card__foot mono">Student developer</span>
           </a>
-          <a class="card card--caps" href="#skills" data-open="skills" data-label="Capabilities" style="--i:12" aria-hidden="true" tabindex="-1">
+          <a class="card card--caps" href="#skills" data-open="skills" data-label="Capabilities" style="--i:14" aria-hidden="true" tabindex="-1">
             <span class="card__top mono">Capabilities</span>
             <span class="card__stack">Worlds<br>Software<br>Hardware<br>Systems</span>
             <span class="card__foot mono">A · B · C · D</span>
           </a>
-          <a class="card card--physics" href="#research" data-open="research" data-label="Research" style="--i:13" aria-hidden="true" tabindex="-1">
+          <a class="card card--projects" href="#projects" data-open="projects" data-label="Projects" style="--i:15" aria-hidden="true" tabindex="-1">
+            <span class="card__top mono">Index</span>
+            <span class="card__count">06</span>
+            <span class="card__title">Projects</span>
+            <span class="card__list mono">Flare AI<br>628 Studio<br>Project 0<br>Himonide<br>Avionics<br>AI Lab</span>
+          </a>
+          <a class="card card--physics" href="#research" data-open="research" data-label="Research" style="--i:16" aria-hidden="true" tabindex="-1">
             <span class="card__top label">Research</span>
             <svg class="card__orbit" aria-hidden="true"><use href="#sym-orbit"/></svg>
             <span class="card__eq mono">LLM systems<br>Applied physics<br>Hardware</span>
           </a>
-          <a class="card card--contact" href="#contact" data-open="contact" data-label="Contact" style="--i:14" aria-hidden="true" tabindex="-1">
+          <a class="card card--contact" href="#contact" data-open="contact" data-label="Contact" style="--i:17" aria-hidden="true" tabindex="-1">
             <svg class="card__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 L19 5 M8 5 H19 V16"/></svg>
             <span class="card__vertical">Contact</span>
             <span class="card__top mono">Say hello</span>
@@ -795,7 +810,7 @@
   <dialog class="modal" id="m-studio" aria-labelledby="studio-title">
     <div class="modal__panel">
       <div class="modal__head">
-        <p class="mono modal__crumb">02 / Projects / 628 Studio</p>
+        <p class="mono modal__crumb">628 Studio</p>
         <div class="modal__actions">
           <a class="pill modal__back" href="#projects" data-open="projects"><span class="label">← Projects</span></a>
           <button class="pill modal__close" type="button" data-close>
@@ -804,26 +819,83 @@
         </div>
       </div>
       <div class="modal__body">
-      <article class="project" aria-labelledby="studio-title">
-        <div class="project__art project__art--studio" aria-hidden="true">
-          <svg><use href="#sym-emblem"/></svg>
-        </div>
-        <div class="project__body">
-          <p class="project__meta mono"><span class="tag">Studio · Active</span></p>
-          <h2 class="project__title" id="studio-title">628 Studio</h2>
-          <p class="project__lead">An independent studio for interactive worlds and the systems beneath them, run by a small team that builds everything in-house. I founded it and lead it as CEO: direction, systems architecture and world construction.</p>
-        <dl class="dgrid">
-          <div><dt class="mono">Role</dt><dd>CEO · Primary founder</dd></div>
-          <div><dt class="mono">Team</dt><dd>Small · fully in-house</dd></div>
-          <div><dt class="mono">Pipeline</dt><dd>Unreal Engine 5 · Gaea · World Machine</dd></div>
-          <div><dt class="mono">Flagship</dt><dd>Project 0</dd></div>
-        </dl>
-          <p class="small-head label">Practice</p>
-        <ol class="hl">
-          <li><span class="mono hl__n">01</span><strong class="hl__t">Systems before assets</strong><span class="hl__d">Every feature specified as architecture before production.</span></li>
-          <li><span class="mono hl__n">02</span><strong class="hl__t">Full-stack production</strong><span class="hl__d">Design, code, terrain, models and animation. Nothing outsourced.</span></li>
-          <li><span class="mono hl__n">03</span><strong class="hl__t">Terrain pipeline</strong><span class="hl__d">Landscapes authored in Gaea and World Machine, assembled in UE5.</span></li>
-        </ol>
+      <article class="studio" aria-labelledby="studio-title">
+        <header class="studio__hero">
+          <div class="studio__mark" aria-hidden="true"><svg><use href="#sym-emblem"/></svg></div>
+          <div class="studio__intro">
+            <p class="project__meta mono"><span class="tag tag--accent">Studio · Active</span> Kashmir, India</p>
+            <h2 class="studio__title" id="studio-title">628 Studio</h2>
+            <p class="project__lead">An independent studio for interactive worlds and the systems beneath them, run by a small team that builds everything in-house. I founded it and lead it as CEO: direction, systems architecture and world construction.</p>
+          </div>
+        </header>
+
+        <div class="studio__grid">
+          <section class="studio__sec" aria-labelledby="st-studio">
+            <h3 class="studio__h label" id="st-studio"><span class="mono">01</span>Studio</h3>
+            <dl class="dgrid">
+              <div><dt class="mono">Founded by</dt><dd class="nocase">aaa628</dd></div>
+              <div><dt class="mono">Leadership</dt><dd>CEO · Primary founder</dd></div>
+              <div><dt class="mono">Team</dt><dd>Small · fully in-house</dd></div>
+              <div><dt class="mono">Base</dt><dd>Kashmir, India</dd></div>
+            </dl>
+          </section>
+
+          <section class="studio__sec" aria-labelledby="st-team">
+            <h3 class="studio__h label" id="st-team"><span class="mono">02</span>Team</h3>
+            <ul class="team">
+              <li class="team__row">
+                <span class="team__avatar" aria-hidden="true"><svg><use href="#sym-emblem"/></svg></span>
+                <span class="team__who"><strong class="nocase">aaa628</strong><span>CEO &amp; primary founder</span></span>
+                <span class="team__does mono">Direction · Systems · Worlds</span>
+              </li>
+              <!-- TODO(cofounders): one row per co-founder. Copy this, fill it in, and delete the
+                   "Co-founders" placeholder row below:
+              <li class="team__row">
+                <span class="team__avatar team__avatar--initial" aria-hidden="true">X</span>
+                <span class="team__who"><strong>NAME</strong><span>Co-founder · ROLE</span></span>
+                <a class="team__link mono" href="https://THEIR-PORTFOLIO" target="_blank" rel="noopener">Portfolio ↗</a>
+              </li> -->
+              <li class="team__row team__row--pending">
+                <span class="team__avatar team__avatar--ghost" aria-hidden="true">+</span>
+                <span class="team__who"><strong>Co-founders</strong><span>Profiles linking soon</span></span>
+              </li>
+            </ul>
+          </section>
+
+          <section class="studio__sec" aria-labelledby="st-prod">
+            <h3 class="studio__h label" id="st-prod"><span class="mono">03</span>In production</h3>
+            <a class="studio__project" href="#project-0" data-open="project-0">
+              <span class="studio__thumb" aria-hidden="true"><svg><use href="#sym-topo"/></svg></span>
+              <span class="studio__pname">Project 0 <span class="mono">Flagship</span></span>
+              <span class="studio__pline">A 150 km² multiplayer world of rival villages.</span>
+              <span class="studio__pmeta mono">In development · Open →</span>
+            </a>
+          </section>
+
+          <section class="studio__sec" aria-labelledby="st-practice">
+            <h3 class="studio__h label" id="st-practice"><span class="mono">04</span>Practice</h3>
+            <ol class="hl">
+              <li><span class="mono hl__n">01</span><strong class="hl__t">Systems before assets</strong><span class="hl__d">Every feature specified as architecture before production.</span></li>
+              <li><span class="mono hl__n">02</span><strong class="hl__t">Full-stack production</strong><span class="hl__d">Design, code, terrain, models and animation. Nothing outsourced.</span></li>
+              <li><span class="mono hl__n">03</span><strong class="hl__t">Terrain pipeline</strong><span class="hl__d">Landscapes authored in Gaea and World Machine, assembled in UE5.</span></li>
+            </ol>
+          </section>
+
+          <section class="studio__sec" aria-labelledby="st-pipe">
+            <h3 class="studio__h label" id="st-pipe"><span class="mono">05</span>Pipeline</h3>
+            <ul class="chips" aria-label="Tools"><li>Unreal Engine 5</li><li>Gaea</li><li>World Machine</li></ul>
+            <ul class="chips chips--sm studio__disc" aria-label="Disciplines"><li>Design</li><li>Code</li><li>Terrain</li><li>Models</li><li>Animation</li></ul>
+          </section>
+
+          <section class="studio__sec" aria-labelledby="st-collab">
+            <h3 class="studio__h label" id="st-collab"><span class="mono">06</span>Collaborate</h3>
+            <p class="studio__collab">Open to collaboration. The fastest way to reach the studio is Discord.</p>
+            <div class="btn-row">
+              <button class="btn btn--solid" type="button" data-discord aria-label="Copy my Discord username, aaa628no">Discord · aaa628no <span aria-hidden="true">⧉</span></button>
+              <a class="btn" href="https://x.com/_aaa628" target="_blank" rel="noopener">X <span aria-hidden="true">↗</span></a>
+              <a class="btn" href="https://github.com/aaa628" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
+            </div>
+          </section>
         </div>
       </article>
       </div>
