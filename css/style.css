@@ -21,7 +21,7 @@
 
   --pad: clamp(16px, 3.7vw, 56px);
   --max: 1440px;
-  --header-h: 64px;
+  --header-h: 52px;
   --f-sans: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
@@ -260,17 +260,17 @@ html[data-theme="dark"] .header.is-scrolled { box-shadow: 0 1px 0 rgba(255, 255,
 .verse__by-ar {
   font-family: "Kufi Verse", "Noto Kufi Arabic", "Geeza Pro", "Segoe UI", sans-serif;
 }
-.verse__ar { font-weight: 600; font-size: 15px; line-height: 1.9; white-space: nowrap; }
-.verse__en { font-weight: 500; font-size: 14px; letter-spacing: -0.005em; white-space: nowrap; }
+.verse__ar { font-weight: 600; font-size: 13.5px; line-height: 1.75; white-space: nowrap; }
+.verse__en { font-weight: 500; font-size: 13px; letter-spacing: -0.005em; white-space: nowrap; }
 .verse__by { color: var(--ink-3); white-space: nowrap; }
-.verse__by-ar { font-weight: 400; font-size: 12px; }
+.verse__by-ar { font-weight: 400; font-size: 11px; }
 .verse__by-en { font-size: 10.5px; }
 .verse__toggle {
   flex: none;
   display: inline-grid;
   place-items: center;
-  min-width: 34px;
-  height: 26px;
+  min-width: 30px;
+  height: 22px;
   padding: 0 9px;
   border: 1px solid var(--line-strong);
   border-radius: 999px;
@@ -288,10 +288,13 @@ html[data-theme="dark"] .header.is-scrolled { box-shadow: 0 1px 0 rgba(255, 255,
 .verse.is-swapping .verse__by { opacity: 0; transform: translateY(4px); }
 
 .header__verse {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  /* centred in the free space between the name and the buttons, so it can't touch either */
+  margin-inline: auto;
+  padding-inline: 16px;
+  min-width: 0;
+}
+@media (max-width: 1000px) {
+  .header__verse { display: none; }   /* too tight for the verse: it isn't squeezed or clipped */
 }
 .js .header__verse .verse__line,
 .js .header__verse .verse__by { clip-path: inset(-12px -6px -12px 100%); animation: verse-in 1.6s cubic-bezier(0.65, 0, 0.35, 1) 0.45s forwards; }
@@ -320,16 +323,17 @@ html[data-theme="dark"] .header.is-scrolled { box-shadow: 0 1px 0 rgba(255, 255,
   gap: 10px;
   text-decoration: none;
 }
-.brand__mark { width: 24px; height: 24px; }
+.brand__mark { width: 21px; height: 21px; }
 
-.header__actions { display: flex; gap: 8px; }
+.header__actions { display: flex; gap: 6px; }
+.header .pill .label { font-size: 11px; }
 
 .pill {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  height: 38px;
-  padding: 0 16px;
+  height: 32px;
+  padding: 0 13px;
   border: 1px solid var(--line-strong);
   border-radius: 999px;
   background: transparent;
@@ -373,12 +377,12 @@ html[data-theme="dark"] .header.is-scrolled { box-shadow: 0 1px 0 rgba(255, 255,
 /* ---------- Discord: copy username ---------- */
 .discord {
   position: relative;
-  width: 38px;
+  width: 32px;
   padding: 0;
   justify-content: center;
   overflow: visible;
 }
-.discord__icon { width: 19px; height: 19px; overflow: visible; }
+.discord__icon { width: 16px; height: 16px; overflow: visible; }
 .discord__icon--sm { width: 15px; height: 15px; }
 .discord__lids { transform-box: fill-box; transform-origin: 50% 50%; transform: scaleY(0); }
 .discord__check { opacity: 0; }
@@ -420,8 +424,8 @@ html[data-theme="dark"] .header.is-scrolled { box-shadow: 0 1px 0 rgba(255, 255,
 .toast::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 9px; border-radius: 50%; background: #5865f2; vertical-align: 1px; }
 
 /* ---------- X button ---------- */
-.xbtn { width: 38px; padding: 0; justify-content: center; text-decoration: none; }
-.xbtn__icon { width: 15px; height: 15px; }
+.xbtn { width: 32px; padding: 0; justify-content: center; text-decoration: none; }
+.xbtn__icon { width: 13px; height: 13px; }
 .js .xbtn__icon { animation: x-tick 6s ease-in-out infinite; }
 @keyframes x-tick { 0%, 88%, 100% { transform: rotate(0); } 92% { transform: rotate(90deg) scale(0.85); } 96% { transform: rotate(90deg); } }
 .xbtn:hover,
@@ -2243,7 +2247,7 @@ html[data-theme="dark"] {
 }
 
 @media (max-width: 640px) {
-  .theme-toggle { width: 38px; padding: 0; justify-content: center; }
+  .theme-toggle { width: 32px; padding: 0; justify-content: center; }
   .theme-toggle .theme-toggle__text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .contact__copy { grid-template-columns: 1fr auto; }
   .contact__copy .mono:first-child { grid-column: 1 / -1; margin-bottom: -10px; }
