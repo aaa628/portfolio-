@@ -2014,6 +2014,9 @@ html:has(.modal[open]) { overflow: hidden; }
 .studio__project:hover { border-color: var(--accent); transform: translateY(-2px); }
 .studio__thumb { grid-area: thumb; position: relative; width: 84px; height: 84px; border-radius: 12px; overflow: hidden; background: #f3f3f1; color: #111; }
 .studio__thumb svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.studio__thumb--flare { background: #0b0b0c; }
+.studio__thumb--flare svg { inset: -10%; width: 120%; height: 120%; }
+.studio__work { display: grid; gap: 12px; }
 .studio__pname { grid-area: name; font-stretch: 125%; font-weight: 800; font-size: 18px; text-transform: uppercase; }
 .studio__pname .mono { margin-left: 8px; color: var(--accent); font-size: 10px; letter-spacing: 0.04em; }
 .studio__pline { grid-area: line; color: var(--ink-2); font-size: 14px; }
