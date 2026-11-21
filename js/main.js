@@ -104,8 +104,10 @@
 
     // ---- layout: [fish][gap][aaa628], centred, at most 82% of the width
     var measure = document.createElement("canvas").getContext("2d");
+    var FAMILY = (document.fonts && document.fonts.check && document.fonts.check('900 100px "Archivo"'))
+      ? '"Archivo"' : '"Arial Black", Arial, sans-serif';
     function setFont(c, size) {
-      c.font = "900 " + size + "px Archivo, Arial Black, sans-serif";
+      c.font = "900 " + size + "px " + FAMILY;
       if ("fontStretch" in c) c.fontStretch = "expanded";
     }
     setFont(measure, 100);
@@ -148,6 +150,11 @@
     var blur = document.createElement("canvas"); blur.width = bw; blur.height = bh;
     var bc = blur.getContext("2d"); bc.filter = "blur(" + Math.round(cs * 2.6) + "px)"; bc.drawImage(mask, 0, 0);
     var md = mc.getImageData(0, 0, bw, bh).data, bd = bc.getImageData(0, 0, bw, bh).data;
+    var crispCv = document.createElement("canvas");
+    crispCv.width = Math.ceil(bw * dpr); crispCv.height = Math.ceil(bh * dpr);
+    var cc = crispCv.getContext("2d");
+    cc.scale(dpr, dpr); cc.fillStyle = cc.strokeStyle = CREAM;
+    drawMark(cc, bx, by);
     function alphaAt(d, x, y) {
       x = Math.max(0, Math.min(bw - 1, x | 0)); y = Math.max(0, Math.min(bh - 1, y | 0));
       return d[(y * bw + x) * 4 + 3] / 255;
@@ -158,11 +165,15 @@
     var cells = [];
     for (var gy = 0; gy * cs < bh; gy++) {
       for (var gx = 0; gx * cs < bw; gx++) {
-        var lx = gx * cs, ly = gy * cs, cov = 0;
-        for (var sy = 0; sy < 3; sy++) for (var sx = 0; sx < 3; sx++) cov += alphaAt(md, lx + (sx + 0.5) * cs / 3, ly + (sy + 0.5) * cs / 3);
-        cov /= 9;
+        // exact ink coverage of this square (every pixel), so no sliver of the mark is missed
+        var lx = gx * cs, ly = gy * cs, cov = 0, n = 0;
+        for (var yy = ly; yy < ly + cs && yy < bh; yy++) {
+          for (var xx = lx; xx < lx + cs && xx < bw; xx++) { cov += md[(yy * bw + xx) * 4 + 3]; n++; }
+        }
+        cov = n ? cov / (n * 255) : 0;
         var h = alphaAt(bd, lx + cs / 2, ly + cs / 2);
-        var kind = cov >= 0.5 ? 0 : cov >= 0.08 ? 1 : (h > 0.035 && Math.random() < h * 2 ? 2 : -1);
+        // 0 inside, 1 edge, 3 thin sliver of the mark (no square, but it still resolves), 2 scattered halo
+        var kind = cov >= 0.5 ? 0 : cov >= 0.08 ? 1 : cov > 0 ? 3 : (h > 0.035 && Math.random() < h * 2 ? 2 : -1);
         if (kind < 0) continue;
         var px = bx + lx, py = by + ly;
         var d = Math.hypot(px + cs / 2 - originX, py + cs / 2 - originY) / maxD;
@@ -172,13 +183,16 @@
           delay: 0.25 + d * 1.05 + Math.random() * 0.3,
           color: PALETTE[(Math.random() * PALETTE.length) | 0],
           outline: kind !== 0 && Math.random() < 0.35,
-          seed: Math.random() * 10
+          seed: Math.random() * 10,
+          ro: d * 0.6 + Math.random() * 0.12      // resolve offset: when this square becomes the real mark
         });
       }
     }
 
     // ---- timeline (seconds)
-    var T_RESOLVE = 2.15, T_CLEAN = 2.7, T_EXIT = 3.25, T_END = 4.15;
+    var T_RESOLVE = 2.1;                // the resolve wave starts here...
+    var T_FULL = T_RESOLVE + 0.76;      // ...and has reached every square by here
+    var T_CLEAN = T_FULL, T_EXIT = T_FULL + 0.5, T_END = T_EXIT + 0.95;
     var start = performance.now(), raf = 0, done = false, exiting = false;
     var ease = function (t) { return 1 - Math.pow(1 - Math.max(0, Math.min(1, t)), 3); };
 
@@ -187,15 +201,31 @@
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, vw, vh);
 
-      var fadeOut = ease((t - T_RESOLVE) / 0.5);           // edge + scattered squares leave
-      var crisp = ease((t - (T_RESOLVE + 0.1)) / 0.4);      // the clean mark arrives on top...
-      var gridOut = ease((t - (T_RESOLVE + 0.5)) / 0.3);    // ...then the grid under it goes
+      var full = t >= T_FULL;
+      var fadeOut = ease((t - T_RESOLVE) / 0.45);       // the scattered squares drift away
+      if (full) ctx.drawImage(crispCv, 0, 0, crispCv.width, crispCv.height, bx, by, bw, bh);
       for (var i = 0; i < cells.length; i++) {
         var c = cells[i], lt = t - c.delay;
+        if (c.kind === 3 && !full && t >= T_RESOLVE + c.ro) {
+          ctx.globalAlpha = 1;
+          ctx.drawImage(crispCv, (c.x - bx - 0.5) * dpr, (c.y - by - 0.5) * dpr, (cs + 1) * dpr, (cs + 1) * dpr,
+            c.x - 0.5, c.y - 0.5, cs + 1, cs + 1);
+        }
+        if (c.kind === 3) continue;
         if (lt <= 0) continue;
-        var grow = ease(lt / 0.22);
-        var alpha = c.kind === 0 ? 1 - gridOut : 1 - fadeOut;
+        if (c.kind !== 2) {
+          if (full) continue;                            // the clean mark is already drawn whole
+          if (t >= T_RESOLVE + c.ro) {
+            // this square becomes its exact piece of the clean mark (slightly overlapped: no seams)
+            ctx.globalAlpha = 1;
+            ctx.drawImage(crispCv, (c.x - bx - 0.5) * dpr, (c.y - by - 0.5) * dpr, (cs + 1) * dpr, (cs + 1) * dpr,
+              c.x - 0.5, c.y - 0.5, cs + 1, cs + 1);
+            continue;
+          }
+        }
+        var alpha = c.kind === 2 ? 1 - fadeOut : 1;
         if (alpha <= 0.01) continue;
+        var grow = ease(lt / 0.22);
         var flicker = lt < 0.45 || c.kind !== 0;
         var col = flicker ? PALETTE[((c.seed + Math.floor(t * 14)) | 0) % PALETTE.length] : CREAM;
         if (c.kind !== 0 && lt > 0.6) col = c.color;
@@ -208,11 +238,6 @@
           ctx.fillStyle = col;
           ctx.fillRect(c.x + off, c.y + off, sz, sz);
         }
-      }
-      if (crisp > 0) {
-        ctx.globalAlpha = crisp;
-        ctx.fillStyle = ctx.strokeStyle = CREAM;
-        drawMark(ctx, 0, 0);
       }
       ctx.globalAlpha = 1;
       if (countEl) countEl.textContent = String(Math.round(628 * ease(t / T_CLEAN))).padStart(3, "0");
