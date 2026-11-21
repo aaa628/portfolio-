@@ -449,28 +449,8 @@ html[data-theme="dark"] .header.is-scrolled { box-shadow: 0 1px 0 rgba(255, 255,
 .ghbtn:hover .ghbtn__icon { animation: gh-spin 0.6s var(--ease); }
 @keyframes gh-spin { to { transform: rotate(360deg); } }
 .pcard--github .pcard__banner { background: #090b1a; }
-.pcard--github .pcard__banner-mark { color: rgba(238, 240, 255, 0.85); }
-.space { position: absolute; inset: 0; width: 100%; height: 100%; }
 .pcard__link--gh { color: var(--ink-2); }
 .pcard__link--gh:hover { color: var(--accent); }
-/* the banner only animates while the card is open */
-.space .sp-star,
-.space .sp-glow,
-.space .sp-astro,
-.space .sp-planet,
-.space .sp-tether { animation-play-state: paused; }
-.social--github:hover .space *,
-.social--github:has(:focus-visible) .space * { animation-play-state: running; }
-.sp-star { animation: sp-twinkle 2.6s ease-in-out infinite; animation-delay: var(--d); }
-@keyframes sp-twinkle { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
-.sp-glow { transform-box: fill-box; transform-origin: center; animation: sp-drift 9s ease-in-out infinite alternate; }
-@keyframes sp-drift { to { transform: translate(40px, 6px) scale(1.15); } }
-.sp-astro { transform-box: fill-box; transform-origin: 30% 40%; animation: sp-float 5.5s ease-in-out infinite; }
-@keyframes sp-float { 0%, 100% { transform: translate(0, 0) rotate(-6deg); } 50% { transform: translate(6px, -6px) rotate(8deg); } }
-.sp-tether { animation: sp-dash 4s linear infinite; }
-@keyframes sp-dash { to { stroke-dashoffset: -20; } }
-.sp-planet { transform-box: fill-box; transform-origin: center; animation: sp-bob 7s ease-in-out infinite; }
-@keyframes sp-bob { 50% { transform: translateY(-3px); } }
 
 .xbtn { width: 32px; padding: 0; justify-content: center; text-decoration: none; }
 .xbtn__icon { width: 13px; height: 13px; }
@@ -524,11 +504,39 @@ html[data-theme="dark"] .header.is-scrolled { box-shadow: 0 1px 0 rgba(255, 255,
     linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px) 0 0 / 8px 8px,
     #0e0e0f;
 }
-.pcard--discord .pcard__banner {
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px) 0 0 / 8px 8px,
-    linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px) 0 0 / 8px 8px,
-    linear-gradient(120deg, #5865f2, #3b44b8);
+.pcard--discord .pcard__banner { background: linear-gradient(170deg, #6470f5, #4a55d6); }
+
+/* Discord card banner: a bobber on still water in falling snow.
+   Paused while the card is closed; a still frame with reduced motion. */
+.bob { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.pcard--discord .bob * { animation-play-state: paused; }
+.social:hover .pcard--discord .bob *,
+.social:has(:focus-visible) .pcard--discord .bob * { animation-play-state: running; }
+.bob__flake { opacity: 0.7; transform: translateY(var(--y)); animation: bob-fall var(--t) linear var(--d) infinite; }
+@keyframes bob-fall {
+  0% { opacity: 0; transform: translate(0, -4px); }
+  12% { opacity: 0.7; }
+  85% { opacity: 0.7; }
+  100% { opacity: 0; transform: translate(var(--dx), 47px); }
+}
+.bob__float { animation: bob-float 1.6s ease-in-out infinite alternate; }
+@keyframes bob-float { to { transform: translateY(1.2px); } }
+.bob__bite { animation: bob-bite 8s ease-in-out 1s infinite; }
+@keyframes bob-bite {
+  0%, 62%, 82%, 100% { transform: translateY(0); }
+  65% { transform: translateY(4px); }
+  69% { transform: translateY(-1px); }
+  73% { transform: translateY(2.5px); }
+}
+.bob__ripple,
+.bob__splash { vector-effect: non-scaling-stroke; stroke-width: 0.7; transform-box: fill-box; transform-origin: center; }
+.bob__ripple { opacity: 0.5; animation: bob-ripple 3.2s ease-out infinite; }
+@keyframes bob-ripple { from { opacity: 0.6; transform: scale(1); } to { opacity: 0; transform: scale(5); } }
+.bob__splash { opacity: 0; animation: bob-splash 8s ease-out 1s infinite; }
+@keyframes bob-splash {
+  0%, 64% { opacity: 0; transform: scale(1); }
+  65% { opacity: 0.9; transform: scale(1); }
+  84%, 100% { opacity: 0; transform: scale(8); }
 }
 /* banner image: an <img> in the HTML (removed on error, so the pattern above shows instead) */
 .pcard__banner img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -578,6 +586,83 @@ html[data-theme="dark"] .pcard__link { color: #8b93ff; }
   text-decoration: none;
 }
 a.pcard__cta:hover { color: var(--accent); }
+
+/* ---------- GitHub card: animated space + code banner ----------
+   Looping parts are paused until the card opens; the typing and the
+   constellation replay every time it opens. */
+.pcard--github .pcard__avatar { background: #0d1117; color: #e6edf3; }
+.space { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.pcard--github .space * { animation-play-state: paused; }
+.social:hover .pcard--github .space *,
+.social:has(:focus-visible) .pcard--github .space * { animation-play-state: running; }
+
+.space__drift { animation: sp-drift 90s linear infinite; }
+@keyframes sp-drift { to { transform: translateX(-292px); } }
+.space__tw { transform-box: fill-box; transform-origin: center; animation: sp-tw 3.2s ease-in-out infinite; }
+@keyframes sp-tw { 50% { opacity: 0.2; transform: scale(0.55); } }
+.space__shoot { opacity: 0; animation: sp-shoot 7s linear 1.2s infinite; }
+@keyframes sp-shoot {
+  0%, 76% { opacity: 0; transform: translate(150px, -4px); }
+  79% { opacity: 1; }
+  88%, 100% { opacity: 0; transform: translate(212px, 15px); }
+}
+
+/* planet: the satellite circles it on an ellipse (x and y swing a quarter-turn apart);
+   the "back" copy shows while it is behind the planet, the "front" copy while in front */
+.space__ring { fill: none; stroke: #c4b5fd; stroke-opacity: 0.55; stroke-width: 1.2; }
+.space__sx { transform: translateX(-38px); animation: sp-ox 6s cubic-bezier(0.37, 0, 0.63, 1) infinite alternate; }
+.space__sy { animation: sp-oy 6s cubic-bezier(0.37, 0, 0.63, 1) -3s infinite alternate; }
+@keyframes sp-ox { from { transform: translateX(-38px); } to { transform: translateX(38px); } }
+@keyframes sp-oy { from { transform: translateY(-9px); } to { transform: translateY(9px); } }
+.space__sat--front { animation: sp-front 12s step-end infinite; }
+.space__sat--back { opacity: 0; animation: sp-back 12s step-end infinite; }
+@keyframes sp-front { 0% { opacity: 1; } 50%, 100% { opacity: 0; } }
+@keyframes sp-back { 0% { opacity: 0; } 50%, 100% { opacity: 1; } }
+.space__blip { animation: sp-blip 1.4s steps(1) infinite; }
+@keyframes sp-blip { 50% { opacity: 0; } }
+
+/* git graph constellation */
+.space__edge { fill: none; stroke: #a5b4fc; stroke-opacity: 0.5; stroke-width: 0.7; stroke-linecap: round; stroke-dasharray: 1; }
+.space__edge--b { stroke: #d2a8ff; }
+.space__node { transform-box: fill-box; transform-origin: center; }
+.space__node--b { fill: #d2a8ff; }
+.space__node--head { fill: #7ee787; }
+.space__ping { fill: none; stroke: #7ee787; stroke-width: 0.8; transform-box: fill-box; transform-origin: center; opacity: 0; animation: sp-ping 2.4s ease-out 2.4s infinite; }
+@keyframes sp-ping { 0% { opacity: 0.9; transform: scale(1); } 100% { opacity: 0; transform: scale(3.2); } }
+.social:hover .space__edge,
+.social:has(:focus-visible) .space__edge { animation: sp-draw 1.1s ease-out 0.6s both; }
+.social:hover .space__edge--b,
+.social:has(:focus-visible) .space__edge--b { animation-delay: 0.9s; }
+@keyframes sp-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+.social:hover .space__node,
+.social:has(:focus-visible) .space__node { animation: sp-node 0.35s var(--ease) calc(0.6s + var(--i) * 0.16s) both; }
+@keyframes sp-node { from { opacity: 0; transform: scale(0); } }
+
+/* terminal: types itself out */
+.space__code {
+  position: absolute;
+  left: 14px;
+  top: 9px;
+  display: grid;
+  gap: 1px;
+  color: #e6edf3;
+  font-size: 9.5px;
+  line-height: 13px;
+  letter-spacing: 0;
+  text-transform: none;
+  text-shadow: 0 0 6px #05060f, 0 0 2px #05060f;
+}
+.space__row { display: flex; align-items: center; }
+.space__line { display: block; width: calc(var(--n) * 1ch); overflow: hidden; white-space: nowrap; }
+.space__line--c { color: #8b93c9; }
+.space__p { color: #7ee787; }
+.space__k { color: #79c0ff; }
+.space__s { color: #d2a8ff; }
+.space__cursor { width: 0.6em; height: 1.05em; margin-left: 1px; background: #e6edf3; animation: sp-blink 1s steps(1) infinite; }
+@keyframes sp-blink { 50% { opacity: 0; } }
+.social:hover .space__line,
+.social:has(:focus-visible) .space__line { animation: sp-type calc(var(--n) * 36ms) steps(var(--n)) var(--d, 0s) both; }
+@keyframes sp-type { from { width: 0; } }
 
 /* ---------- Menu overlay: index left, live preview + links right ---------- */
 .menu {

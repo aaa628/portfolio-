@@ -44,7 +44,11 @@ The eye badge in the footer (and the Visitors row in the menu) counts unique dev
 
 The GitHub, X and Discord hover cards show `assets/avatar-github.jpg`, `assets/avatar-x.jpg` and `assets/avatar-discord.jpg` when those files exist (square images, about 200 × 200 px, cropped to a circle automatically). Without them the cards fall back to the fish logo. To use an image hosted elsewhere, change the `src` of the `<img>` inside each `.pcard__avatar` in `index.html`.
 
-The cards' banners use `assets/banner-x.jpg` and `assets/banner-discord.jpg` (4:1, 584 × 144 px, i.e. 2× the 292 × 72 banner). They are `<img>` tags inside each `.pcard__banner` in `index.html`; if a file is missing, the card's grid pattern shows instead. Keep the bottom-left corner unimportant: the avatar covers it.
+The X card's banner is `assets/banner-x.jpg` (4:1, 584 × 144 px, i.e. 2× the 292 × 72 banner), an `<img>` inside its `.pcard__banner` in `index.html`; if the file is missing, the card's grid pattern shows instead. Keep the bottom-left corner unimportant: the avatar covers it.
+
+The Discord card's banner has no image file either: a fishing bobber on still water in falling snow, drawn in SVG inside `.pcard--discord` in `index.html`, with its styles under "Discord card banner" in `css/style.css` (the bobber bobs, ripples spread, and every few seconds it dips for a bite).
+
+The GitHub card's banner has no image file: it is an animated space scene drawn in SVG inside `.pcard--github` in `index.html` (stars, a ringed planet with an orbiting satellite, a git graph drawn as a constellation, and a terminal line that types itself). Its styles are under "GitHub card" in `css/style.css`. The looping parts only run while the card is open, and everything stands still with reduced motion.
 
 ## Placeholders to replace
 
