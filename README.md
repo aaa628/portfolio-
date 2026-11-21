@@ -36,6 +36,10 @@ Live at **https://aaa628.fishing**, served by GitHub Pages from this repository.
 | `js/main.js` | Flipping title, card wheel (auto-spin, drag), pop-ups, theme toggle, menu |
 | `assets/favicon.svg` | Site icon (the fish logo) |
 
+## Visitor counter
+
+The eye badge in the footer (and the Visitors row in the menu) counts unique devices using [Abacus](https://abacus.jasoncameron.dev), a free counter API with no account. A browser's first visit to aaa628.fishing adds 1 and stores `aaa628-counted` in localStorage; later visits only read the number. Other hosts (local copies, previews) only read it. If the service is unreachable the badge stays hidden. Counter key: `aaa628-fishing/visitors`.
+
 ## Profile-card avatars
 
 The GitHub, X and Discord hover cards show `assets/avatar-github.jpg`, `assets/avatar-x.jpg` and `assets/avatar-discord.jpg` when those files exist (square images, about 200 × 200 px, cropped to a circle automatically). Without them the cards fall back to the fish logo. To use an image hosted elsewhere, change the `src` of the `<img>` inside each `.pcard__avatar` in `index.html`.

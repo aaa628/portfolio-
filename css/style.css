@@ -2072,6 +2072,17 @@ html[data-theme="dark"] {
 }
 .footer__meta .handle { color: var(--band-ink); }
 .footer__top { text-decoration: none; }
+/* visitor counter */
+.visits { display: inline-flex; align-items: center; gap: 8px; margin: 0; text-transform: none; }
+.visits[hidden] { display: none; }
+.visits__eye { width: 16px; height: 16px; color: var(--accent); overflow: visible; }
+.visits__pupil { transform-box: fill-box; transform-origin: center; }
+.js .visits__eye { animation: vz-blink 5s ease-in-out infinite; transform-origin: center; }
+.js .visits__pupil { animation: vz-look 7s ease-in-out infinite; }
+@keyframes vz-blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
+@keyframes vz-look { 0%, 40%, 100% { transform: translateX(0); } 50%, 60% { transform: translateX(-2px); } 70%, 80% { transform: translateX(2px); } }
+.visits__n { color: var(--band-ink); font-variant-numeric: tabular-nums; font-weight: 500; }
+.mpv__rows .visits__n { color: var(--ink); font-family: var(--f-mono); font-size: 14px; }
 .footer__links { display: inline-flex; gap: 20px; align-items: center; }
 .footer__replay {
   padding: 0;
@@ -2329,6 +2340,7 @@ html[data-theme="dark"] {
 
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
+  .visits__eye, .visits__pupil { animation: none !important; }
   .js .footer .footer__sign,
   .js .footer .footer__cols > div,
   .js .footer .footer__meta { opacity: 1; transform: none; }

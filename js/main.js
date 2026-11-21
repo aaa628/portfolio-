@@ -727,6 +727,49 @@
     if (header.querySelector(":focus-visible")) header.classList.remove("is-hidden");
   });
 
+  /* ---------- Visitor counter: one count per device ----------
+     Uses Abacus (abacus.jasoncameron.dev), a free counter API: no account, no cookies, nothing
+     personal is sent. The first visit from a browser adds 1 and remembers that in localStorage;
+     later visits only read the number. Only the live domain counts, so previews and local copies
+     never inflate it. */
+  (function () {
+    var wraps = document.querySelectorAll("[data-visits-wrap]");
+    if (!wraps.length || !window.fetch) return;
+    var API = "https://abacus.jasoncameron.dev", KEY = "aaa628-fishing/visitors";
+    var live = /(^|\.)aaa628\.fishing$/.test(location.hostname);
+    var counted = false;
+    try { counted = localStorage.getItem("aaa628-counted") === "1"; } catch (e) {}
+    var url = API + (live && !counted ? "/hit/" : "/get/") + KEY;
+    fetch(url, { cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+      .then(function (d) {
+        var n = Number(d && d.value);
+        if (!isFinite(n) || n < 0) return;
+        if (live && !counted) { try { localStorage.setItem("aaa628-counted", "1"); } catch (e) {} }
+        var fmt = function (v) { return Math.round(v).toLocaleString("en-US"); };
+        wraps.forEach(function (w) { w.hidden = false; });
+        // count up the first time each number scrolls into view
+        document.querySelectorAll("[data-visits]").forEach(function (el) {
+          var run = function () {
+            if (reduceMotion.matches || n < 2) { el.textContent = fmt(n); return; }
+            var t0 = performance.now(), dur = 1200;
+            (function step(now) {
+              var p = Math.min(1, (now - t0) / dur);
+              el.textContent = fmt(n * (1 - Math.pow(1 - p, 3)));
+              if (p < 1) requestAnimationFrame(step);
+            })(t0);
+          };
+          if ("IntersectionObserver" in window) {
+            var io2 = new IntersectionObserver(function (es) {
+              if (es[0].isIntersecting) { io2.disconnect(); run(); }
+            });
+            io2.observe(el);
+          } else run();
+        });
+      })
+      .catch(function () { /* service unreachable or counter not created yet: keep it hidden */ });
+  })();
+
   /* ---------- Discord: copy the username ---------- */
   var DISCORD = "aaa628no";
   var toast = document.querySelector("[data-toast]");
